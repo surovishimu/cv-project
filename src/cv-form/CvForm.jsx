@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
+import { useNavigate } from 'react-router-dom';
 
 const CvForm = () => {
+    const navigate = useNavigate();
     const [experienceFields, setExperienceFields] = useState([{ id: 1 }]);
     const [educationFields, setEducationFields] = useState([{ id: 1 }]);
     const [qualificationFields, setQualificationFields] = useState([{ id: 1 }]);
@@ -85,13 +87,22 @@ const CvForm = () => {
             jobtitle,
             experiences,
             education,
-            qualifications 
+            qualifications
         });
-
-        // Log formData
         console.log(formData);
+        // Construct query parameters
+        const queryParams = new URLSearchParams({
+            name,
+            jobtitle,
+            experiences: JSON.stringify(experiences),
+            education: JSON.stringify(education),
+            qualifications: JSON.stringify(qualifications)
+        }).toString();
 
+        // Navigate to the PdfDownload component with query parameters
+        navigate(`/pdf?${queryParams}`);
     };
+
     return (
         <>
             <div className='w-4/5'>
@@ -314,6 +325,7 @@ const CvForm = () => {
                 </form>
 
             </div>
+
         </>
     );
 };

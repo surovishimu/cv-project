@@ -1,56 +1,55 @@
-import React from 'react';
-import { Document, Page, Text, View, PDFDownloadLink } from '@react-pdf/renderer';
+import React, { useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-
-const PdfDocument = ({ formData, withBrand, range }) => (
-    <Document>
-        <Page size="A4">
-            <View>
-                <Text>Name: {formData.name}</Text>
-                {withBrand && <Text>Brand: {formData.brandName}</Text>}
-                <Text>Type: {formData.type}</Text>
-                <Text>Price: ${formData.price}</Text>
-                <Text>Description: {formData.description}</Text>
-                <Text>Rating: {formData.rating}</Text>
-                <Text>Range: {range}</Text> {/* Display range value */}
-            </View>
-        </Page>
-    </Document>
-);
 
 const PdfDownload = () => {
     const location = useLocation();
     const { search } = location;
     const formData = Object.fromEntries(new URLSearchParams(search));
-    const range = formData.range || ''; // Get range value from formData
+    const contentRef = useRef(null);
+
+    console.log(formData.experiences); // Add this line for debugging
 
     return (
         <div className='w-4/5'>
             <div className="flex flex-col items-center h-screen">
-                <div className="w-80 p-4 border border-gray-300 rounded shadow">
-                    <h2 className="text-xl font-bold mb-4">Form Data</h2>
-                    <p><strong>Name:</strong> {formData.name}</p>
-                    <p><strong>Brand:</strong> {formData.brandName}</p>
-                    <p><strong>Type:</strong> {formData.type}</p>
-                    <p><strong>Price:</strong> ${formData.price}</p>
-                    <p><strong>Description:</strong> {formData.description}</p>
-                    <p><strong>Rating:</strong> {formData.rating}</p>
-                    <p><strong>Range:</strong> {range}</p>
+                <div className="flex w-full">
+                    <div className='bg-customRed w-2/6'>
+                        <h1>photo</h1>
+                    </div>
+                    <div className='w-4/6' ref={contentRef}>
+                        <div className='bg-customgray w-full mt-24 px-20 py-8'>
+                            <p className='font-bold text-5xl'>{formData.name}</p>
+                            <p className='font-semibold text-2xl'>{formData.jobtitle}</p>
+                            {/* Render experiences only if it's an array */}
+                            {Array.isArray(formData.experiences) && formData.experiences.map((experience, index) => (
+                                <div key={index} className="mt-5 p-8 -mb-4 flex">
+                                    <input
+                                        type="date"
+                                        value={experience.experienceStart}
+                                        className="py-2 ml-14 bg-customgray"
+                                        readOnly
+                                    />
+                                    <input
+                                        type="date"
+                                        value={experience.experienceEnd}
+                                        className="py-2 ml-20 bg-customgray"
+                                        readOnly
+                                    />
+                                    <div className="w-full">
+                                        <p className="text-lg font-semibold">{experience.jobtitle}</p>
+                                        <p>{experience.companyName}</p>
+                                        <p>{experience.location}</p>
+                                        <p>{experience.professionalSummary}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 <div className="text-center mt-4">
-                    <PDFDownloadLink document={<PdfDocument formData={formData} withBrand={false} />} fileName="form_data_without_brand.pdf">
-                        {({ loading }) =>
-                            loading ? 'Loading document...' : 'Download PDF without Brand'
-                        }
-                    </PDFDownloadLink>
-                    <PDFDownloadLink document={<PdfDocument formData={formData} withBrand={true} />} fileName="form_data_with_brand.pdf">
-                        {({ loading }) =>
-                            loading ? 'Loading document...' : 'Download PDF with Brand'
-                        }
-                    </PDFDownloadLink>
+                    <button>Download PDF</button>
                 </div>
             </div>
-
         </div>
     );
 };
