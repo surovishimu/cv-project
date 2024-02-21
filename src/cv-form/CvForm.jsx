@@ -5,9 +5,11 @@ import { HiUser } from "react-icons/hi2";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiLocationMarker, HiPhone, HiMail } from "react-icons/hi";
 import { GrLinkedinOption } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 
 
 const CvForm = () => {
+    const navigate = useNavigate();
     const [skills, setSkills] = useState([
         { name: 'Communication Skill', level: 50 },
         { name: 'Team Leading', level: 70 },
@@ -91,17 +93,32 @@ const CvForm = () => {
         // Gather form data from state variables
         const name = e.target.name.value;
         const jobtitle = e.target.jobtitle2.value;
+        const profileDescription = value;
         const experiences = experienceFields.map(experience => ({ ...experience }));
         const education = educationFields.map(education => ({ ...education }));
         const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
+        const location = e.target.location.value; // Get location from form input
+        const phoneNumber = e.target.phoneNumber.value; // Get phone number from form input
+        const emailAddress = e.target.emailAddress.value; // Get email address from form input
+        const linkedinProfile = e.target.linkedinProfile.value;
+        const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
+        const languageSkillsData = [{ name: 'English', level: englishSkill.level }, { name: 'German', level: germanSkill.level }];
 
+        navigate('/pdf');
         const formData = {
             name,
             jobtitle,
+            profileDescription,
             experiences,
             education,
             qualifications,
-            imageUrl
+            imageUrl,
+            location,
+            phoneNumber,
+            emailAddress,
+            linkedinProfile,
+            skillsData,
+            languageSkillsData
         };
 
         // Send form data to the server
@@ -127,10 +144,12 @@ const CvForm = () => {
     return (
         <>
 
-            <div className='w-4/5'>
+            <div className='max-w-screen-lg mx-auto'>
                 <form onSubmit={handleSubmit}>
                     <div className='w-full flex'>
                         <div className='w-2/6 bg-customRed'>
+
+                            {/* image field */}
                             <div>
                                 <div className="w-[129px] h-[128px] bg-white rounded-full relative mx-auto my-16">
                                     <label htmlFor="image">
@@ -156,23 +175,27 @@ const CvForm = () => {
                                     </label>
                                 </div>
                             </div>
-                            <h1 className=" text-start  font-semibold mb-3 text-2xl text-white  ml-10">Profile</h1>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder=""
-                                    className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 "
-                                    value={value}
-                                    onChange={descriptionHandleChange}
-                                    style={{ textIndent: "0" }} // Set text-indent to 0
-                                />
-                                {/* Render placeholder text only if input value is empty */}
-                                {value === "" && (
-                                    <div className="absolute bottom-0 left-0 text-gray-400 pl-12 pb-2"><small>Profile Description</small></div>
-                                )}
+
+                            {/* profile description */}
+                            <div>
+                                <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-10">Profile</h1>
+                                <div className="relative">
+                                    <textarea
+
+                                        className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
+                                        value={value}
+                                        onChange={descriptionHandleChange}
+                                        style={{ textIndent: "0" }} // Set text-indent to 0
+                                    />
+                                    {/* Render placeholder text only if input value is empty */}
+                                    {value === "" && (
+                                        <div className="absolute bottom-0 left-0 text-gray-400 pl-12 pb-2"><small>Profile Description</small></div>
+                                    )}
+                                </div>
                             </div>
 
 
+                            {/* skills field */}
                             <div>
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
                                     Skills
@@ -200,6 +223,7 @@ const CvForm = () => {
                                 </div>
                             </div>
 
+                            {/* language skill field */}
                             <div>
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
                                     Language Skills
@@ -241,25 +265,28 @@ const CvForm = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* contact info */}
                             <div>
-                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information </h1>
+                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                     <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                     <HiPhone className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                     <HiMail className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                     <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                                 </div>
                             </div>
+
                         </div>
 
                         <div className='w-4/6 '>
@@ -305,10 +332,10 @@ const CvForm = () => {
                                         />
                                         <input
                                             type="text"
-                                            id={`jobTitle_${index}`}
-                                            name={`jobTitle_${index}`}
-                                            value={experience.jobTitle}
-                                            onChange={(e) => handleChange(index, 'jobTitle', e.target.value, setExperienceFields)}
+                                            id={`jobTitle2_${index}`}
+                                            name={`jobTitle2_${index}`}
+                                            value={experience.jobTitle2}
+                                            onChange={(e) => handleChange(index, 'jobTitle2', e.target.value, setExperienceFields)}
                                             placeholder='Job Title'
                                             className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
