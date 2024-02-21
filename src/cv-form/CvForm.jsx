@@ -1,115 +1,265 @@
-import { useEffect, useState } from "react";
-import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { LuPlus, LuPlusCircle } from "react-icons/lu";
+import { HiOutlineMinus, HiOutlineMinusCircle } from "react-icons/hi";
+import { HiUser } from "react-icons/hi2";
+import { HiOutlinePlus } from "react-icons/hi2";
+import { HiLocationMarker, HiPhone, HiMail } from "react-icons/hi";
+import { GrLinkedinOption } from "react-icons/gr";
+
 
 const CvForm = () => {
-    const navigate = useNavigate();
-    const [experienceFields, setExperienceFields] = useState([{ id: 1 }]);
-    const [educationFields, setEducationFields] = useState([{ id: 1 }]);
-    const [qualificationFields, setQualificationFields] = useState([{ id: 1 }]);
-    const [formData, setFormData] = useState({
-        name: "",
-        jobtitle: "",
-        experiences: [],
-        education: [],
-        qualifications: []
-    });
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
-    const handleAddExperienceField = () => {
-        if (experienceFields.length < 10) {
-            const newId = experienceFields[experienceFields.length - 1].id + 1;
-            setExperienceFields([...experienceFields, { id: newId }]);
+    const [skills, setSkills] = useState([
+        { name: 'Communication Skill', level: 50 },
+        { name: 'Team Leading', level: 70 },
+        { name: 'Reasoning and Problem Solving', level: 60 },
+        { name: 'Navigation Skills', level: 80 }
+    ]);
+    const [englishSkill, setEnglishSkill] = useState({ name: 'English', level: 50 });
+    const [germanSkill, setGermanSkill] = useState({ name: 'German', level: 50 });
+
+
+    // Function to update skill name or level
+    const updateSkill = (index, field, value) => {
+        const updatedSkills = [...skills];
+        updatedSkills[index][field] = value;
+        setSkills(updatedSkills);
+    };
+    const updateLanguageSkill = (language, field, value) => {
+        if (language === 'English') {
+            setEnglishSkill(prevSkill => ({ ...prevSkill, [field]: value }));
+        } else if (language === 'German') {
+            setGermanSkill(prevSkill => ({ ...prevSkill, [field]: value }));
+        }
+    };
+    const [image, setImage] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+    };
+    const uploadImageToCloudinary = async () => {
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", "mycloud"); // Replace with your Cloudinary upload preset
+
+        try {
+            const response = await fetch("https://api.cloudinary.com/v1_1/dh7r22hsh/image/upload", {
+                method: "POST",
+                body: formData
+            });
+            if (!response.ok) {
+                throw new Error("Failed to upload image to Cloudinary");
+            }
+            const data = await response.json();
+            setImageUrl(data.secure_url);
+            return data.secure_url; // Return the secure URL of the uploaded image
+        } catch (error) {
+            console.error("Error uploading image to Cloudinary:", error);
+            return null;
         }
     };
 
-    const handleRemoveExperienceField = (id) => {
-        setExperienceFields(experienceFields.filter(field => field.id !== id));
+    const [value, setValue] = useState(""); // State to store the input value
+
+    const descriptionHandleChange = (event) => {
+        setValue(event.target.value); // Update the state with the input value
     };
-    const handleAddEducationField = () => {
-        if (educationFields.length < 10) {
-            const newId = educationFields[educationFields.length - 1].id + 1;
-            setEducationFields([...educationFields, { id: newId }]);
-        }
+    const [experienceFields, setExperienceFields] = useState([{ experienceStart: '', experienceEnd: '', experienceJobTitle: '', companyName: '', location: '', professionalSummary: '' }]);
+    const [educationFields, setEducationFields] = useState([{ eduPassDate: '', schoolName: '', edulocation: '', degree: '', major: '', curricularActivity: '', additionalNotes: '' }]);
+    const [qualificationFields, setQualificationFields] = useState([{ year: '', technicalSkills: '', additionalQualifications: '' }]);
+
+
+    const addField = (setter) => {
+        setter((prevFields) => [...prevFields, {}]);
     };
 
-    const handleRemoveEducationField = (id) => {
-        setEducationFields(educationFields.filter(field => field.id !== id));
-    };
-    const handleAddQualificationField = () => {
-        if (qualificationFields.length < 10) {
-            const newId = qualificationFields[qualificationFields.length - 1].id + 1;
-            setQualificationFields([...qualificationFields, { id: newId }]);
-        }
+    const removeField = (index, setter) => {
+        setter((prevFields) => prevFields.filter((_, i) => i !== index));
     };
 
-    const handleRemoveQualificationField = (id) => {
-        setQualificationFields(qualificationFields.filter(field => field.id !== id));
+    const handleChange = (index, field, value, setter) => {
+        setter((prevFields) => {
+            const updatedFields = [...prevFields];
+            updatedFields[index][field] = value;
+            return updatedFields;
+        });
     };
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const form = e.target;
-        const name = form.name.value;
-        const jobtitle = form.jobtitle.value;
+        const imageUrl = await uploadImageToCloudinary();
+        // Gather form data from state variables
+        const name = e.target.name.value;
+        const jobtitle = e.target.jobtitle2.value;
+        const experiences = experienceFields.map(experience => ({ ...experience }));
+        const education = educationFields.map(education => ({ ...education }));
+        const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
 
-        // Collect experience data
-        const experiences = experienceFields.map(field => ({
-            experienceStart: form[`experienceStart_${field.id}`].value,
-            experienceEnd: form[`experienceEnd_${field.id}`].value,
-            jobtitle: form[`jobtitle_${field.id}`].value,
-            companyName: form[`companyName_${field.id}`].value,
-            location: form[`location_${field.id}`].value,
-            professionalSummary: form[`professionalSummary_${field.id}`].value
-        }));
-
-        // Collect education data
-        const education = educationFields.map(field => ({
-            eduPassDate: form[`eduPassDate_${field.id}`].value,
-            schoolName: form[`schoolName_${field.id}`].value,
-            edulocation: form[`edulocation_${field.id}`].value,
-            degree: form[`degree_${field.id}`].value,
-            major: form[`major_${field.id}`].value,
-            curricularActivity: form[`curricularActivity_${field.id}`].value,
-            additionalNotes: form[`additionalNotes_${field.id}`].value
-        }));
-
-        // Collect qualification data
-        const qualifications = qualificationFields.map(field => ({
-            year: form[`year_${field.id}`].value,
-            technicalSkills: form[`technicalSkills_${field.id}`].value,
-            additionalQualifications: form[`additionalQualifications_${field.id}`].value
-        }));
-
-        // Update formData state with all collected data
-        setFormData({
+        const formData = {
             name,
             jobtitle,
             experiences,
             education,
-            qualifications
-        });
-        console.log(formData);
-        // Construct query parameters
-        const queryParams = new URLSearchParams({
-            name,
-            jobtitle,
-            experiences: JSON.stringify(experiences),
-            education: JSON.stringify(education),
-            qualifications: JSON.stringify(qualifications)
-        }).toString();
+            qualifications,
+            imageUrl
+        };
 
-        // Navigate to the PdfDownload component with query parameters
-        navigate(`/pdf?${queryParams}`);
+        // Send form data to the server
+        try {
+            const response = await fetch('http://localhost:5000/userInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Handle successful response here
+            console.log('Form data submitted successfully!');
+        } catch (error) {
+            // Handle error here
+            console.error('There was a problem with your fetch operation:', error);
+        }
     };
 
     return (
         <>
+
             <div className='w-4/5'>
                 <form onSubmit={handleSubmit}>
-                    <div className='flex w-full '>
+                    <div className='w-full flex'>
                         <div className='w-2/6 bg-customRed'>
-                            hi
+                            <div>
+                                <div className="w-[129px] h-[128px] bg-white rounded-full relative mx-auto my-16">
+                                    <label htmlFor="image">
+                                        <input
+                                            type="file"
+                                            id="image"
+                                            name="image"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="hidden"
+                                        />
+
+                                        <div className="w-[129px] h-[128px] bg-white rounded-full flex items-center justify-center relative">
+                                            {imageUrl ? (
+                                                <img src={imageUrl} alt="Selected" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <HiUser className="w-24 h-24 mx-auto text-[#a3a3a3] mt-[43px]" />
+                                            )}
+                                            <div className="bg-[#F1F1F1] rounded-full absolute right-1 top-24">
+                                                <HiOutlinePlus className="m-2 text-[#525252] text-2xl " />
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <h1 className=" text-start  font-semibold mb-3 text-2xl text-white  ml-10">Profile</h1>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder=""
+                                    className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 "
+                                    value={value}
+                                    onChange={descriptionHandleChange}
+                                    style={{ textIndent: "0" }} // Set text-indent to 0
+                                />
+                                {/* Render placeholder text only if input value is empty */}
+                                {value === "" && (
+                                    <div className="absolute bottom-0 left-0 text-gray-400 pl-12 pb-2"><small>Profile Description</small></div>
+                                )}
+                            </div>
+
+
+                            <div>
+                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
+                                    Skills
+                                </h1>
+                                <div className="ml-10">
+                                    {skills.map((skill, index) => (
+                                        <div key={index} className="mt-5">
+                                            <h1 className="text-white mb-2">{skill.name}</h1>
+                                            <button type="button" onClick={() => updateSkill(index, 'level', Math.max(skill.level - 10, 0))}>
+                                                <HiOutlineMinus className="text-customgray mr-1" />
+                                            </button>
+                                            <input
+                                                type="range"
+                                                min={0}
+                                                max="100"
+                                                value={skill.level}
+                                                className="range range-xs w-2/3"
+                                                onChange={(e) => updateSkill(index, 'level', parseInt(e.target.value))}
+                                            />
+                                            <button type="button" onClick={() => updateSkill(index, 'level', Math.min(skill.level + 10, 100))}>
+                                                <LuPlus className="text-customgray ml-1 " />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
+                                    Language Skills
+                                </h1>
+                                <div className="ml-10">
+                                    <div className="mt-5">
+                                        <h1 className="text-white mb-2">English</h1>
+                                        <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.max(englishSkill.level - 10, 0))}>
+                                            <HiOutlineMinus className="text-customgray mr-1" />
+                                        </button>
+                                        <input
+                                            type="range"
+                                            min={0}
+                                            max="100"
+                                            value={englishSkill.level}
+                                            className="range range-xs w-2/3"
+                                            onChange={(e) => updateLanguageSkill('English', 'level', parseInt(e.target.value))}
+                                        />
+                                        <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.min(englishSkill.level + 10, 100))}>
+                                            <LuPlus className="text-customgray ml-1" />
+                                        </button>
+                                    </div>
+                                    <div className="mt-5">
+                                        <h1 className="text-white mb-2">German</h1>
+                                        <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.max(germanSkill.level - 10, 0))}>
+                                            <HiOutlineMinus className="text-customgray mr-1" />
+                                        </button>
+                                        <input
+                                            type="range"
+                                            min={0}
+                                            max="100"
+                                            value={germanSkill.level}
+                                            className="range range-xs w-2/3"
+                                            onChange={(e) => updateLanguageSkill('German', 'level', parseInt(e.target.value))}
+                                        />
+                                        <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.min(germanSkill.level + 10, 100))}>
+                                            <LuPlus className="text-customgray ml-1" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information </h1>
+                                <div className="ml-10 mt-5 relative">
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
+                                </div>
+                                <div className="ml-10 mt-5 relative">
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <HiPhone className="absolute top-2 left-2 text-customgray" />
+                                </div>
+                                <div className="ml-10 mt-5 relative">
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <HiMail className="absolute top-2 left-2 text-customgray" />
+                                </div>
+                                <div className="ml-10 mt-5 relative">
+                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray" type="text" placeholder=" " />
+                                    <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
+                                </div>
+                            </div>
                         </div>
 
                         <div className='w-4/6 '>
@@ -124,197 +274,218 @@ const CvForm = () => {
                                 />
                                 <input
                                     type="text"
-                                    id="job-title"
-                                    name="jobtitle"
+                                    id="jobtitle2"
+                                    name="jobtitle2"
                                     placeholder='Job Title'
                                     className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
                                 />
                             </div>
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
-                            <div className="bg-customgray mx-10 py-5">
-                                {experienceFields.map((field, index) => (
-                                    <div className="" key={field.id}>
-                                        <div className="bg-customgray mt-5 p-8 -mb-4 flex">
-                                            <input
-                                                type="date"
-                                                id={`experienceStart_${field.id}`}
-                                                name={`experienceStart_${field.id}`}
-                                                className=" py-2  ml-14 bg-customgray"
-                                            />
-                                            <input
-                                                type="date"
-                                                id={`experienceEnd_${field.id}`}
-                                                name={`experienceEnd_${field.id}`}
-                                                className=" py-2  ml-20 bg-customgray"
-                                            />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            id={`jobtitle_${field.id}`}
-                                            name={`jobtitle_${field.id}`}
-                                            placeholder='Job Title'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
 
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`companyName_${field.id}`}
-                                            name={`companyName_${field.id}`}
-                                            placeholder='Company Name'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
-
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`location_${field.id}`}
-                                            name={`location_${field.id}`}
-                                            placeholder='Location'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
-
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`professionalSummary_${field.id}`}
-                                            name={`professionalSummary_${field.id}`}
-                                            placeholder='Professional Summary'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-16"
-
-                                        />
-                                        <div className="flex justify-center mt-5 gap-4">
-                                            {index === experienceFields.length - 1 && experienceFields.length < 10 && (
-                                                <button type="button" onClick={handleAddExperienceField}>
-                                                    <CiCirclePlus className="text-4xl" />
-                                                </button>
-                                            )}
-                                            {experienceFields.length > 1 && (
-                                                <button type="button" onClick={() => handleRemoveExperienceField(field.id)}>
-                                                    <CiCircleMinus className="text-4xl" />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Education</h1>
-                            <div className="bg-customgray mx-10 py-5">
-                                {educationFields.map((field, index) => (
-                                    <div className="" key={field.id}>
+                            {/* Professional experience fiels */}
+                            <div className="bg-customgray mx-10 py-5 px-5">
+                                {experienceFields.map((experience, index) => (
+                                    <div key={index} className="mb-4">
 
                                         <input
                                             type="date"
-                                            id={`eduPassDate_${field.id}`}
-                                            name={`eduPassDate_${field.id}`}
-                                            className=" py-2  ml-14 bg-customgray"
-                                        />
-
-
-                                        <input
-                                            type="text"
-                                            id={`schoolName_${field.id}`}
-                                            name={`schoolName_${field.id}`}
-                                            placeholder='School/University Name'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
-
+                                            id={`experienceStart_${index}`}
+                                            name={`experienceStart_${index}`}
+                                            value={experience.experienceStart}
+                                            onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
+                                            className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
                                         <input
+                                            type="date"
+                                            id={`experienceEnd_${index}`}
+                                            name={`experienceEnd_${index}`}
+                                            value={experience.experienceEnd}
+                                            onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
+                                            className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+                                        <input
                                             type="text"
-                                            id={`edulocation_${field.id}`}
-                                            name={`edulocation_${field.id}`}
+                                            id={`jobTitle_${index}`}
+                                            name={`jobTitle_${index}`}
+                                            value={experience.jobTitle}
+                                            onChange={(e) => handleChange(index, 'jobTitle', e.target.value, setExperienceFields)}
+                                            placeholder='Job Title'
+                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+                                        <input
+                                            type="text"
+                                            id={`companyName_${index}`}
+                                            name={`companyName_${index}`}
+                                            value={experience.companyName}
+                                            onChange={(e) => handleChange(index, 'companyName', e.target.value, setExperienceFields)}
+                                            placeholder='Company Name'
+                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+                                        <input
+                                            type="text"
+                                            id={`location_${index}`}
+                                            name={`location_${index}`}
+                                            value={experience.location}
+                                            onChange={(e) => handleChange(index, 'location', e.target.value, setExperienceFields)}
                                             placeholder='Location'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
-
+                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
                                         <input
                                             type="text"
-                                            id={`degree_${field.id}`}
-                                            name={`degree_${field.id}`}
-                                            placeholder='Degree Obtained'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
-
+                                            id={`professionalSummary_${index}`}
+                                            name={`professionalSummary_${index}`}
+                                            value={experience.professionalSummary}
+                                            onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
+                                            placeholder='Professional Summary'
+                                            className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
-                                        <input
-                                            type="text"
-                                            id={`major_${field.id}`}
-                                            name={`major_${field.id}`}
-                                            placeholder='Major/Field of Study'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
 
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`curricularActivity_${field.id}`}
-                                            name={`curricularActivity_${field.id}`}
-                                            placeholder='Extracurricular Activities (optional)'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
+                                        <div>
 
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`additionalNotes_${field.id}`}
-                                            name={`additionalNotes_${field.id}`}
-                                            placeholder='Additional Notes (optional)'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
-
-                                        />
-                                        <div className="flex justify-center mt-5 gap-4">
-                                            {index === educationFields.length - 1 && educationFields.length < 10 && (
-                                                <button type="button" onClick={handleAddEducationField}>
-                                                    <CiCirclePlus className="text-4xl" />
-                                                </button>
-                                            )}
-                                            {educationFields.length > 1 && (
-                                                <button type="button" onClick={() => handleRemoveEducationField(field.id)}>
-                                                    <CiCircleMinus className="text-4xl" />
-                                                </button>
-                                            )}
+                                            <button type="button" onClick={() => removeField(index, setExperienceFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={experienceFields.length === 1}>
+                                                -
+                                            </button>
+                                            <button type="button" onClick={() => addField(setExperienceFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                +
+                                            </button>
                                         </div>
                                     </div>
+
+
                                 ))}
+
                             </div>
-                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Qualifications</h1>
-                            <div className="bg-customgray mx-10 py-5">
-                                {qualificationFields.map((field, index) => (
-                                    <div className="" key={field.id}>
 
-                                        <input
-                                            type="text"
-                                            id={`year_${field.id}`}
-                                            name={`year_${field.id}`}
-                                            placeholder='Year'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
+                            {/* Education field */}
+                            <div>
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Education</h1>
+                                <div className="bg-customgray mx-10 py-5 px-5">
+                                    {educationFields.map((education, index) => (
+                                        <div key={index} className="mb-4">
+                                            <input
+                                                type="date"
+                                                id={`eduPassDate_${index}`}
+                                                name={`eduPassDate_${index}`}
+                                                value={education.eduPassDate}
+                                                onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
+                                                className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`schoolName_${index}`}
+                                                name={`schoolName_${index}`}
+                                                value={education.schoolName}
+                                                onChange={(e) => handleChange(index, 'schoolName', e.target.value, setEducationFields)}
+                                                placeholder='School/University Name'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`edulocation_${index}`}
+                                                name={`edulocation_${index}`}
+                                                value={education.edulocation}
+                                                onChange={(e) => handleChange(index, 'edulocation', e.target.value, setEducationFields)}
+                                                placeholder='Location'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`degree_${index}`}
+                                                name={`degree_${index}`}
+                                                value={education.degree}
+                                                onChange={(e) => handleChange(index, 'degree', e.target.value, setEducationFields)}
+                                                placeholder='Degree Obtained'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`major_${index}`}
+                                                name={`major_${index}`}
+                                                value={education.major}
+                                                onChange={(e) => handleChange(index, 'major', e.target.value, setEducationFields)}
+                                                placeholder='Major/Field of Study'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`curricularActivity_${index}`}
+                                                name={`curricularActivity_${index}`}
+                                                value={education.curricularActivity}
+                                                onChange={(e) => handleChange(index, 'curricularActivity', e.target.value, setEducationFields)}
+                                                placeholder='Extracurricular Activity'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`additionalNotes_${index}`}
+                                                name={`additionalNotes_${index}`}
+                                                value={education.additionalNotes}
+                                                onChange={(e) => handleChange(index, 'additionalNotes', e.target.value, setEducationFields)}
+                                                placeholder='Additional Notes'
+                                                className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
 
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`technicalSkills_${field.id}`}
-                                            name={`technicalSkills_${field.id}`}
-                                            placeholder='Technical skills'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-4"
+                                            <div>
 
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`additionalQualifications_${field.id}`}
-                                            name={`additionalQualifications_${field.id}`}
-                                            placeholder='Additional Qualifications'
-                                            className="w-9/12 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray mt-16"
-
-                                        />
-
-                                        <div className="flex justify-center mt-5 gap-4">
-                                            {index === qualificationFields.length - 1 && qualificationFields.length < 10 && (
-                                                <button type="button" onClick={handleAddQualificationField}>
-                                                    <CiCirclePlus className="text-4xl" />
+                                                <button type="button" onClick={() => removeField(index, setEducationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={educationFields.length === 1}>
+                                                    -
                                                 </button>
-                                            )}
-                                            {qualificationFields.length > 1 && (
-                                                <button type="button" onClick={() => handleRemoveQualificationField(field.id)}>
-                                                    <CiCircleMinus className="text-4xl" />
+                                                <button type="button" onClick={() => addField(setEducationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                    +
                                                 </button>
-                                            )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+
+                                </div>
+                            </div>
+
+                            {/* Qualifications field */}
+                            <div>
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Qualifications</h1>
+                                <div className="bg-customgray mx-10 py-5 px-5 relative">
+                                    {qualificationFields.map((qualification, index) => (
+                                        <div key={index} className="pt-8 relative">
+                                            <input
+                                                type="text"
+                                                id={`year_${index}`}
+                                                name={`year_${index}`}
+                                                value={qualification.year}
+                                                onChange={(e) => handleChange(index, 'year', e.target.value, setQualificationFields)}
+                                                placeholder='Year'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`technicalSkills_${index}`}
+                                                name={`technicalSkills_${index}`}
+                                                value={qualification.technicalSkills}
+                                                onChange={(e) => handleChange(index, 'technicalSkills', e.target.value, setQualificationFields)}
+                                                placeholder='Technical skills'
+                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`additionalQualifications_${index}`}
+                                                name={`additionalQualifications_${index}`}
+                                                value={qualification.additionalQualifications}
+                                                onChange={(e) => handleChange(index, 'additionalQualifications', e.target.value, setQualificationFields)}
+                                                placeholder='Additional Qualifications'
+                                                className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+
+                                            <div>
+                                                <button type="button" onClick={() => removeField(index, setQualificationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={qualificationFields.length === 1}>
+                                                    -
+                                                </button>
+                                                <button type="button" onClick={() => addField(setQualificationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                </div>
                             </div>
 
                         </div>
