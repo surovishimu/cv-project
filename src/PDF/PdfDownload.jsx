@@ -41,9 +41,9 @@ const PdfDownload = () => {
 
     return (
         <div >
-            <div ref={targetRef} className="max-w-screen-lg mx-auto ">
+            <div ref={targetRef} className="max-w-screen-lg mx-auto " >
                 <div className="flex ">
-                    <div className='bg-customRed'>
+                    <div className="max-w-screen-lg mx-auto bg-customRed">
                         {/* image field */}
                         <div>
                             <img src={imageUrl} alt="Profile" className=" rounded-full object-cover w-44 h-44  mx-auto mt-20" />
@@ -118,10 +118,6 @@ const PdfDownload = () => {
                             </div>
                         </div>
 
-
-
-
-
                     </div>
 
                     <div className="w-4/6 ">
@@ -173,7 +169,7 @@ const PdfDownload = () => {
 
                                 <div className="absolute left-0 top-5 bottom-10 bg-green-500  w-0.5"></div>
                                 {education.map((educationItem, index) => (
-                                    <div key={index} className='mb-10 relative'>
+                                    <div key={index} className='mb-10 relative pl-6'>
                                         <div className="absolute -left-10 top-0 w-4 h-4 bg-white border border-green-500 rounded-full"></div>
 
                                         {educationItem.eduPassDate && (
@@ -206,7 +202,7 @@ const PdfDownload = () => {
                                 <div className="absolute left-0 top-5 bottom-10 bg-green-500  w-0.5"></div>
 
                                 {qualifications.map((qualification, index) => (
-                                    <div key={index} className='relative mb-10'>
+                                    <div key={index} className='relative mb-10 pl-6'>
                                         <div className="absolute -left-10 top-0 w-4 h-4 bg-white border border-green-500 rounded-full"></div>
                                         <p className="text-lg  font-bold">{qualification.year}</p>
                                         <p className="text-lg mb-8">{qualification.technicalSkills},{qualification.additionalQualifications}</p>

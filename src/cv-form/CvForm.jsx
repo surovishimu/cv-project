@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { LuPlus, LuPlusCircle } from "react-icons/lu";
-import { HiOutlineMinus, HiOutlineMinusCircle } from "react-icons/hi";
+import { LuPlus } from "react-icons/lu";
+import { HiOutlineMinus } from "react-icons/hi";
+import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { HiUser } from "react-icons/hi2";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiLocationMarker, HiPhone, HiMail } from "react-icons/hi";
@@ -344,7 +345,7 @@ const CvForm = () => {
                                             name={`experienceStart_${index}`}
                                             value={experience.experienceStart}
                                             onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
-                                            className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="py-2 px-4 mb-2  bg-customgray"
                                         />
                                         <input
                                             type="date"
@@ -352,7 +353,7 @@ const CvForm = () => {
                                             name={`experienceEnd_${index}`}
                                             value={experience.experienceEnd}
                                             onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
-                                            className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="py-2 px-4 mb-2  bg-customgray"
                                         />
                                         <input
                                             type="text"
@@ -361,7 +362,7 @@ const CvForm = () => {
                                             value={experience.jobTitle2}
                                             onChange={(e) => handleChange(index, 'jobTitle2', e.target.value, setExperienceFields)}
                                             placeholder='Job Title'
-                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray "
                                         />
                                         <input
                                             type="text"
@@ -370,7 +371,7 @@ const CvForm = () => {
                                             value={experience.companyName}
                                             onChange={(e) => handleChange(index, 'companyName', e.target.value, setExperienceFields)}
                                             placeholder='Company Name'
-                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
                                         <input
                                             type="text"
@@ -379,7 +380,7 @@ const CvForm = () => {
                                             value={experience.location}
                                             onChange={(e) => handleChange(index, 'location', e.target.value, setExperienceFields)}
                                             placeholder='Location'
-                                            className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
                                         <input
                                             type="text"
@@ -388,16 +389,16 @@ const CvForm = () => {
                                             value={experience.professionalSummary}
                                             onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
                                             placeholder='Professional Summary'
-                                            className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
                                         />
+                                        {/* buttons */}
+                                        <div className="flex justify-center items-center mt-5">
 
-                                        <div>
-
-                                            <button type="button" onClick={() => removeField(index, setExperienceFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={experienceFields.length === 1}>
-                                                -
+                                            <button type="button" onClick={() => removeField(index, setExperienceFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={experienceFields.length === 1}>
+                                                <CiCircleMinus className="w-10 h-10 " />
                                             </button>
-                                            <button type="button" onClick={() => addField(setExperienceFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                                +
+                                            <button type="button" onClick={() => addField(setExperienceFields)} className="cursor-pointer hover:text-customRed">
+                                                <CiCirclePlus className="w-10 h-10 " />
                                             </button>
                                         </div>
                                     </div>
@@ -419,7 +420,7 @@ const CvForm = () => {
                                                 name={`eduPassDate_${index}`}
                                                 value={education.eduPassDate}
                                                 onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
-                                                className="py-2 px-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="py-2 px-4 mb-2  bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -428,7 +429,7 @@ const CvForm = () => {
                                                 value={education.schoolName}
                                                 onChange={(e) => handleChange(index, 'schoolName', e.target.value, setEducationFields)}
                                                 placeholder='School/University Name'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -437,7 +438,7 @@ const CvForm = () => {
                                                 value={education.edulocation}
                                                 onChange={(e) => handleChange(index, 'edulocation', e.target.value, setEducationFields)}
                                                 placeholder='Location'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -446,7 +447,7 @@ const CvForm = () => {
                                                 value={education.degree}
                                                 onChange={(e) => handleChange(index, 'degree', e.target.value, setEducationFields)}
                                                 placeholder='Degree Obtained'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -455,7 +456,7 @@ const CvForm = () => {
                                                 value={education.major}
                                                 onChange={(e) => handleChange(index, 'major', e.target.value, setEducationFields)}
                                                 placeholder='Major/Field of Study'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -464,7 +465,7 @@ const CvForm = () => {
                                                 value={education.curricularActivity}
                                                 onChange={(e) => handleChange(index, 'curricularActivity', e.target.value, setEducationFields)}
                                                 placeholder='Extracurricular Activity'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -473,16 +474,17 @@ const CvForm = () => {
                                                 value={education.additionalNotes}
                                                 onChange={(e) => handleChange(index, 'additionalNotes', e.target.value, setEducationFields)}
                                                 placeholder='Additional Notes'
-                                                className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
 
-                                            <div>
+                                            {/* buttons */}
+                                            <div className="flex justify-center items-center mt-5">
 
-                                                <button type="button" onClick={() => removeField(index, setEducationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={educationFields.length === 1}>
-                                                    -
+                                                <button type="button" onClick={() => removeField(index, setEducationFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={educationFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
                                                 </button>
-                                                <button type="button" onClick={() => addField(setEducationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                                    +
+                                                <button type="button" onClick={() => addField(setEducationFields)} className="cursor-pointer hover:text-customRed">
+                                                    <CiCirclePlus className="w-10 h-10 " />
                                                 </button>
                                             </div>
                                         </div>
@@ -504,7 +506,7 @@ const CvForm = () => {
                                                 value={qualification.year}
                                                 onChange={(e) => handleChange(index, 'year', e.target.value, setQualificationFields)}
                                                 placeholder='Year'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -513,7 +515,7 @@ const CvForm = () => {
                                                 value={qualification.technicalSkills}
                                                 onChange={(e) => handleChange(index, 'technicalSkills', e.target.value, setQualificationFields)}
                                                 placeholder='Technical skills'
-                                                className="w-9/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
                                             <input
                                                 type="text"
@@ -522,15 +524,17 @@ const CvForm = () => {
                                                 value={qualification.additionalQualifications}
                                                 onChange={(e) => handleChange(index, 'additionalQualifications', e.target.value, setQualificationFields)}
                                                 placeholder='Additional Qualifications'
-                                                className="w-9/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
 
-                                            <div>
-                                                <button type="button" onClick={() => removeField(index, setQualificationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled={qualificationFields.length === 1}>
-                                                    -
+
+                                            <div className="flex justify-center items-center mt-5">
+
+                                                <button type="button" onClick={() => removeField(index, setQualificationFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={qualificationFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
                                                 </button>
-                                                <button type="button" onClick={() => addField(setQualificationFields)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                                    +
+                                                <button type="button" onClick={() => addField(setQualificationFields)} className="cursor-pointer hover:text-customRed">
+                                                    <CiCirclePlus className="w-10 h-10 " />
                                                 </button>
                                             </div>
                                         </div>
@@ -542,7 +546,7 @@ const CvForm = () => {
                         </div>
                     </div>
                     <div className="mt-4 flex justify-center">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate Pdf</button>
                     </div>
                 </form>
 
