@@ -93,7 +93,7 @@ const CvForm = () => {
         const imageUrl = await uploadImageToCloudinary();
         // Gather form data from state variables
         const name = e.target.name.value;
-        const jobtitle = e.target.jobtitle2.value;
+        const jobtitle = e.target.jobtitle.value;
         const profileDescription = value;
         const experiences = experienceFields.map(experience => ({ ...experience }));
         const education = educationFields.map(education => ({ ...education }));
@@ -152,15 +152,15 @@ const CvForm = () => {
 
                             {/* image field */}
                             <div>
-                                <div className="w-[129px] h-[128px] bg-white rounded-full relative mx-auto my-16">
-                                    <label htmlFor="image">
+                                <div className="w-[129px] h-[128px] bg-white rounded-full relative mx-auto my-16 ">
+                                    <label htmlFor="image" className="cursor-pointer">
                                         <input
                                             type="file"
                                             id="image"
                                             name="image"
                                             accept="image/*"
                                             onChange={handleImageUpload}
-                                            className="hidden"
+                                            className="hidden "
                                         />
 
                                         <div className="w-[129px] h-[128px] bg-white rounded-full flex items-center justify-center relative">
@@ -326,8 +326,8 @@ const CvForm = () => {
                                 />
                                 <input
                                     type="text"
-                                    id="jobtitle2"
-                                    name="jobtitle2"
+                                    id="jobtitle"
+                                    name="jobtitle"
                                     placeholder='Job Title'
                                     className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
                                 />
@@ -357,10 +357,10 @@ const CvForm = () => {
                                         />
                                         <input
                                             type="text"
-                                            id={`jobTitle2_${index}`}
-                                            name={`jobTitle2_${index}`}
+                                            id={`experienceJobTitle_${index}`}
+                                            name={`experienceJobTitle_${index}`}
                                             value={experience.jobTitle2}
-                                            onChange={(e) => handleChange(index, 'jobTitle2', e.target.value, setExperienceFields)}
+                                            onChange={(e) => handleChange(index, 'experienceJobTitle', e.target.value, setExperienceFields)}
                                             placeholder='Job Title'
                                             className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray "
                                         />
