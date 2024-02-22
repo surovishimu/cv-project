@@ -6,7 +6,7 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { HiLocationMarker, HiPhone, HiMail } from "react-icons/hi";
 import { GrLinkedinOption } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-
+import './range.css'
 
 const CvForm = () => {
     const navigate = useNavigate();
@@ -200,24 +200,32 @@ const CvForm = () => {
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
                                     Skills
                                 </h1>
-                                <div className="ml-10">
+                                <div className="px-4">
                                     {skills.map((skill, index) => (
-                                        <div key={index} className="mt-5">
-                                            <h1 className="text-white mb-2">{skill.name}</h1>
-                                            <button type="button" onClick={() => updateSkill(index, 'level', Math.max(skill.level - 10, 0))}>
-                                                <HiOutlineMinus className="text-customgray mr-1" />
-                                            </button>
-                                            <input
-                                                type="range"
-                                                min={0}
-                                                max="100"
-                                                value={skill.level}
-                                                className="range range-xs w-2/3"
-                                                onChange={(e) => updateSkill(index, 'level', parseInt(e.target.value))}
-                                            />
-                                            <button type="button" onClick={() => updateSkill(index, 'level', Math.min(skill.level + 10, 100))}>
-                                                <LuPlus className="text-customgray ml-1 " />
-                                            </button>
+                                        <div key={index} className="mt-5 ">
+                                            <h1 className="text-white ml-5 mb-2">{skill.name}</h1>
+                                            <div className="flex items-center justify-center">
+                                                <button type="button" onClick={() => updateSkill(index, 'level', Math.max(skill.level - 10, 0))}>
+                                                    <HiOutlineMinus className="text-customgray mr-1" />
+                                                </button>
+
+                                                <div className="w-full h-3 relative flex items-center rounded-full">
+                                                    <input
+                                                        type="range"
+                                                        value={skill.level}
+                                                        min={0}
+                                                        max="100"
+                                                        onChange={(e) => updateSkill(index, 'level', parseInt(e.target.value))}
+                                                    />
+                                                    <span
+                                                        style={{ width: `${(skill.level * 100) / 100}%` }}
+                                                        className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => updateSkill(index, 'level', Math.min(skill.level + 10, 100))}>
+                                                    <LuPlus className="text-customgray ml-1 " />
+                                                </button>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -228,40 +236,56 @@ const CvForm = () => {
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
                                     Language Skills
                                 </h1>
-                                <div className="ml-10">
+                                <div className="p-2">
                                     <div className="mt-5">
-                                        <h1 className="text-white mb-2">English</h1>
-                                        <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.max(englishSkill.level - 10, 0))}>
-                                            <HiOutlineMinus className="text-customgray mr-1" />
-                                        </button>
-                                        <input
-                                            type="range"
-                                            min={0}
-                                            max="100"
-                                            value={englishSkill.level}
-                                            className="range range-xs w-2/3"
-                                            onChange={(e) => updateLanguageSkill('English', 'level', parseInt(e.target.value))}
-                                        />
-                                        <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.min(englishSkill.level + 10, 100))}>
-                                            <LuPlus className="text-customgray ml-1" />
-                                        </button>
+                                        <h1 className="text-white mb-2 ml-5">English</h1>
+                                        <div className="flex justify-center items-center">
+                                            <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.max(englishSkill.level - 10, 0))}>
+                                                <HiOutlineMinus className="text-customgray mr-1" />
+                                            </button>
+
+                                            <div className="w-full h-3 relative flex items-center rounded-full">
+                                                <input
+                                                    type="range"
+                                                    value={englishSkill.level}
+                                                    min={0}
+                                                    max="100"
+                                                    onChange={(e) => updateLanguageSkill('English', 'level', parseInt(e.target.value))}
+                                                />
+                                                <span
+                                                    style={{ width: `${(englishSkill.level * 100) / 100}%` }}
+                                                    className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
+                                                />
+                                            </div>
+                                            <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.min(englishSkill.level + 10, 100))}>
+                                                <LuPlus className="text-customgray ml-1" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="mt-5">
                                         <h1 className="text-white mb-2">German</h1>
-                                        <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.max(germanSkill.level - 10, 0))}>
-                                            <HiOutlineMinus className="text-customgray mr-1" />
-                                        </button>
-                                        <input
-                                            type="range"
-                                            min={0}
-                                            max="100"
-                                            value={germanSkill.level}
-                                            className="range range-xs w-2/3"
-                                            onChange={(e) => updateLanguageSkill('German', 'level', parseInt(e.target.value))}
-                                        />
-                                        <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.min(germanSkill.level + 10, 100))}>
-                                            <LuPlus className="text-customgray ml-1" />
-                                        </button>
+                                        <div className="flex justify-center items-center">
+                                            <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.max(germanSkill.level - 10, 0))}>
+                                                <HiOutlineMinus className="text-customgray mr-1" />
+                                            </button>
+
+                                            <div className="w-full h-3 relative flex items-center rounded-full">
+                                                <input
+                                                    type="range"
+                                                    value={germanSkill.level}
+                                                    min={0}
+                                                    max="100"
+                                                    onChange={(e) => updateLanguageSkill('German', 'level', parseInt(e.target.value))}
+                                                />
+                                                <span
+                                                    style={{ width: `${(germanSkill.level * 100) / 100}%` }}
+                                                    className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
+                                                />
+                                            </div>
+                                            <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.min(germanSkill.level + 10, 100))}>
+                                                <LuPlus className="text-customgray ml-1" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -288,7 +312,7 @@ const CvForm = () => {
                             </div>
 
                         </div>
-
+                        {/* name and title field */}
                         <div className='w-4/6 '>
                             <div className="bg-customgray w-full mt-24 p-8">
                                 <input
