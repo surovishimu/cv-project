@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { LuPlus } from "react-icons/lu";
+import { useEffect, useState } from "react";
 import { HiOutlineMinus } from "react-icons/hi";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { HiUser } from "react-icons/hi2";
@@ -7,26 +6,46 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { HiLocationMarker, HiPhone, HiMail } from "react-icons/hi";
 import { GrLinkedinOption } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-import './range.css'
+import './style.css'
+import { LuPlus } from "react-icons/lu";
+import { useFormData } from "./FormDataProvider";
+
+
 
 const CvForm = () => {
     const navigate = useNavigate();
-    const [skills, setSkills] = useState([
-        { name: 'Communication Skill', level: 50 },
-        { name: 'Team Leading', level: 70 },
-        { name: 'Reasoning and Problem Solving', level: 60 },
-        { name: 'Navigation Skills', level: 80 }
-    ]);
+    const { formData, setFormData } = useFormData();
+    const [experienceTitle, setExperienceTitle] = useState('Qualifications');
+    const handleExperienceTitleChange = (e) => {
+        setExperienceTitle(e.target.value);
+    };
+    const [value, setValue] = useState(""); // State to store the input value
+
+    // function for skills
+    const [skills, setSkills] = useState([{ id: 1, name: '' }]);
+
+    const addSkillInput = () => {
+        const newId = skills.length + 1;
+        setSkills([...skills, { id: newId, name: '' }]);
+    };
+
+    const removeSkillInput = (idToRemove) => {
+        setSkills(prevSkills => prevSkills.filter(skill => skill.id !== idToRemove));
+    };
+
+    const handleSkillChange = (id, value) => {
+        const updatedSkills = skills.map(skill => {
+            if (skill.id === id) {
+                return { ...skill, name: value };
+            }
+            return skill;
+        });
+        setSkills(updatedSkills);
+    };
+    // function for language skill
     const [englishSkill, setEnglishSkill] = useState({ name: 'English', level: 50 });
     const [germanSkill, setGermanSkill] = useState({ name: 'German', level: 50 });
 
-
-    // Function to update skill name or level
-    const updateSkill = (index, field, value) => {
-        const updatedSkills = [...skills];
-        updatedSkills[index][field] = value;
-        setSkills(updatedSkills);
-    };
     const updateLanguageSkill = (language, field, value) => {
         if (language === 'English') {
             setEnglishSkill(prevSkill => ({ ...prevSkill, [field]: value }));
@@ -34,16 +53,28 @@ const CvForm = () => {
             setGermanSkill(prevSkill => ({ ...prevSkill, [field]: value }));
         }
     };
-    const [image, setImage] = useState(null);
+
+    // function for profile image
+
     const [imageUrl, setImageUrl] = useState(null);
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        setImage(file);
+        const reader = new FileReader(); // Create a new FileReader instance
+
+        // Define a function to execute when the file reading is completed
+        reader.onload = () => {
+            // Set the data URL of the uploaded image as the imageUrl state
+            setImageUrl(reader.result);
+        };
+
+        // Read the file as a data URL
+        reader.readAsDataURL(file);
     };
+
     const uploadImageToCloudinary = async () => {
         const formData = new FormData();
-        formData.append("file", image);
-        formData.append("upload_preset", "mycloud"); // Replace with your Cloudinary upload preset
+        formData.append("file", imageUrl);
+        formData.append("upload_preset", "mycloud");
 
         try {
             const response = await fetch("https://api.cloudinary.com/v1_1/dh7r22hsh/image/upload", {
@@ -61,14 +92,38 @@ const CvForm = () => {
             return null;
         }
     };
+    // achivement field function
+    const [achievementFields, setAchievementFields] = useState([
+        { achievement: '' } // Initial field
+    ]);
 
-    const [value, setValue] = useState(""); // State to store the input value
+    const addAchievementField = () => {
+        setAchievementFields(prevAchievementFields => [
+            ...prevAchievementFields,
+            { achievement: '' } // Add a new empty achievement field
+        ]);
+    };
+
+    const removeAchievementField = (index) => {
+        setAchievementFields(prevAchievementFields => {
+            if (prevAchievementFields.length === 1) {
+                return prevAchievementFields;
+            }
+            return prevAchievementFields.filter((_, idx) => idx !== index);
+        });
+    };
+
+
+
 
     const descriptionHandleChange = (event) => {
         setValue(event.target.value); // Update the state with the input value
     };
     const [experienceFields, setExperienceFields] = useState([{ experienceStart: '', experienceEnd: '', experienceJobTitle: '', companyName: '', location: '', professionalSummary: '' }]);
-    const [educationFields, setEducationFields] = useState([{ eduPassDate: '', schoolName: '', edulocation: '', degree: '', major: '', curricularActivity: '', additionalNotes: '' }]);
+
+    const [educationFields, setEducationFields] = useState([
+        { eduPassDate: '', eduEndDate: '', schoolName: '', edulocation: '', degree: '', major: '', curricularActivity: '', additionalNotes: '' }
+    ]);
     const [qualificationFields, setQualificationFields] = useState([{ year: '', technicalSkills: '', additionalQualifications: '' }]);
 
 
@@ -88,6 +143,34 @@ const CvForm = () => {
         });
     };
 
+    useEffect(() => {
+        // Populate form fields with existing form data when the component mounts
+        if (formData) {
+
+            setValue(formData.profileDescription);
+            setExperienceFields(formData.experiences.map(experience => ({
+                ...experience,
+                // Set the job title field if available in formData.experiences
+                experienceJobTitle: experience.experienceJobTitle || '', // Set to empty string if not available
+            })));
+            setEducationFields(formData.education);
+            setQualificationFields(formData.qualifications);
+            setImageUrl(formData.imageUrl);
+            setSkills(formData.skillsData.map((skill, index) => ({ id: index + 1, name: skill.name })));
+            setEnglishSkill(prevSkill => ({ ...prevSkill, level: formData.languageSkillsData.find(skill => skill.name === 'English').level }));
+            setGermanSkill(prevSkill => ({ ...prevSkill, level: formData.languageSkillsData.find(skill => skill.name === 'German').level }));
+
+            document.getElementById('name').value = formData.name;
+            document.getElementById('jobtitle').value = formData.jobtitle;
+            setAchievementFields(formData.achievementsAndAwards.map(achievement => ({ achievement })));
+            document.getElementById('location').value = formData.location;
+            document.getElementById('phoneNumber').value = formData.phoneNumber;
+            document.getElementById('emailAddress').value = formData.emailAddress;
+            document.getElementById('linkedinProfile').value = formData.linkedinProfile;
+
+        }
+    }, [formData]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const imageUrl = await uploadImageToCloudinary();
@@ -95,7 +178,11 @@ const CvForm = () => {
         const name = e.target.name.value;
         const jobtitle = e.target.jobtitle.value;
         const profileDescription = value;
-        const experiences = experienceFields.map(experience => ({ ...experience }));
+
+        const experiences = experienceFields.map(experience => ({
+            ...experience,
+            endDate: experience.present ? 'Present' : experience.experienceEnd
+        }));
         const education = educationFields.map(education => ({ ...education }));
         const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
         const location = e.target.location.value; // Get location from form input
@@ -104,8 +191,10 @@ const CvForm = () => {
         const linkedinProfile = e.target.linkedinProfile.value;
         const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
         const languageSkillsData = [{ name: 'English', level: englishSkill.level }, { name: 'German', level: germanSkill.level }];
+        const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
 
-        navigate('/pdf');
+
+
         const formData = {
             name,
             jobtitle,
@@ -119,12 +208,15 @@ const CvForm = () => {
             emailAddress,
             linkedinProfile,
             skillsData,
-            languageSkillsData
+            languageSkillsData,
+            achievementsAndAwards,
+            experienceTitle
         };
+
 
         // Send form data to the server
         try {
-            const response = await fetch('http://localhost:5000/userInfo', {
+            const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -136,11 +228,15 @@ const CvForm = () => {
             }
             // Handle successful response here
             console.log('Form data submitted successfully!');
+            setFormData(formData);
+            navigate('/pdf');
         } catch (error) {
             // Handle error here
             console.error('There was a problem with your fetch operation:', error);
         }
     };
+
+
 
     return (
         <>
@@ -148,11 +244,12 @@ const CvForm = () => {
             <div className='max-w-screen-lg mx-auto'>
                 <form onSubmit={handleSubmit}>
                     <div className='w-full flex'>
+                        {/* Left side */}
                         <div className='w-2/6 bg-customRed'>
 
                             {/* image field */}
                             <div>
-                                <div className="w-[129px] h-[128px] bg-white rounded-full relative mx-auto my-16 ">
+                                <div className={`w-[129px] h-[128px] bg-white relative mx-auto my-16 ${imageUrl ? 'rounded-full' : 'rounded-full'}`}>
                                     <label htmlFor="image" className="cursor-pointer">
                                         <input
                                             type="file"
@@ -160,77 +257,74 @@ const CvForm = () => {
                                             name="image"
                                             accept="image/*"
                                             onChange={handleImageUpload}
-                                            className="hidden "
+                                            className="hidden"
                                         />
-
                                         <div className="w-[129px] h-[128px] bg-white rounded-full flex items-center justify-center relative">
                                             {imageUrl ? (
-                                                <img src={imageUrl} alt="Selected" className="w-full h-full object-cover" />
+                                                <img src={imageUrl} alt="Selected" className="w-full h-full object-cover rounded-full" />
                                             ) : (
                                                 <HiUser className="w-24 h-24 mx-auto text-[#a3a3a3] mt-[43px]" />
                                             )}
                                             <div className="bg-[#F1F1F1] rounded-full absolute right-1 top-24">
-                                                <HiOutlinePlus className="m-2 text-[#525252] text-2xl " />
+                                                <HiOutlinePlus className="m-2 text-[#525252] text-2xl" />
                                             </div>
                                         </div>
                                     </label>
                                 </div>
                             </div>
 
+
+
                             {/* profile description */}
                             <div>
                                 <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-10">Profile</h1>
                                 <div className="relative">
                                     <textarea
+                                        required
 
                                         className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
+                                        placeholder="Profile Description"
                                         value={value}
                                         onChange={descriptionHandleChange}
                                         style={{ textIndent: "0" }} // Set text-indent to 0
                                     />
-                                    {/* Render placeholder text only if input value is empty */}
-                                    {value === "" && (
-                                        <div className="absolute bottom-0 left-0 text-gray-400 pl-12 pb-2"><small>Profile Description</small></div>
-                                    )}
+
                                 </div>
                             </div>
 
 
                             {/* skills field */}
-                            <div>
-                                <h1 className="text-2xl text-white font-semibold ml-10 mt-10">
-                                    Skills
-                                </h1>
-                                <div className="px-4">
-                                    {skills.map((skill, index) => (
-                                        <div key={index} className="mt-5 ">
-                                            <h1 className="text-white ml-5 mb-2">{skill.name}</h1>
-                                            <div className="flex items-center justify-center">
-                                                <button type="button" onClick={() => updateSkill(index, 'level', Math.max(skill.level - 10, 0))}>
-                                                    <HiOutlineMinus className="text-customgray mr-1" />
-                                                </button>
-
-                                                <div className="w-full h-3 relative flex items-center rounded-full">
-                                                    <input
-                                                        type="range"
-                                                        value={skill.level}
-                                                        min={0}
-                                                        max="100"
-                                                        onChange={(e) => updateSkill(index, 'level', parseInt(e.target.value))}
-                                                    />
-                                                    <span
-                                                        style={{ width: `${(skill.level * 100) / 100}%` }}
-                                                        className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
-                                                    />
-                                                </div>
-                                                <button type="button" onClick={() => updateSkill(index, 'level', Math.min(skill.level + 10, 100))}>
-                                                    <LuPlus className="text-customgray ml-1 " />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                            <div className="px-4">
+                                <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-6 mt-8">Skills</h1>
+                                {skills.map((skill, index) => (
+                                    <div key={skill.id} className="mt-5 flex items-center">
+                                        <input
+                                            type="text"
+                                            value={skill.name}
+                                            onChange={e => handleSkillChange(skill.id, e.target.value)}
+                                            placeholder="Add skill..."
+                                            className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-customRed text-customgray"
+                                        />
+                                        {index !== 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeSkillInput(skill.id)}
+                                                className="text-customgray ml-2"
+                                            >
+                                                <HiOutlineMinus />
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={addSkillInput}
+                                            className="ml-2 text-customgray"
+                                        >
+                                            <HiOutlinePlus />
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
+
 
                             {/* language skill field */}
                             <div>
@@ -291,32 +385,37 @@ const CvForm = () => {
                                 </div>
                             </div>
 
+
+
                             {/* contact info */}
                             <div>
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
+                                    <input required id="location" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                     <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
+                                    <input required id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                     <HiPhone className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
+                                    <input required id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                     <HiMail className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
+                                    <input required id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                     <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                                 </div>
                             </div>
 
                         </div>
-                        {/* name and title field */}
+
+                        {/* right side  */}
                         <div className='w-4/6 '>
+                            {/* name and title field */}
                             <div className="bg-customgray w-full mt-24 p-8">
                                 <input
+                                    required
                                     type="text"
                                     id="name"
                                     name="name"
@@ -325,6 +424,7 @@ const CvForm = () => {
                                     style={{ 'fontSize': '22px' }}
                                 />
                                 <input
+                                    required
                                     type="text"
                                     id="jobtitle"
                                     name="jobtitle"
@@ -332,80 +432,147 @@ const CvForm = () => {
                                     className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
                                 />
                             </div>
-                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
+
+
+                            {/* Achievements and Awards field */}
+                            <div className="">
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
+                                <div className="bg-customgray mx-10 py-5 px-5">
+                                    {achievementFields.map((achievement, index) => (
+                                        <div key={index} className="mb-4">
+                                            <input
+                                                type="text"
+                                                id={`achievement_${index}`}
+                                                name={`achievement_${index}`}
+                                                value={achievement.achievement}
+                                                onChange={(e) => handleChange(index, 'achievement', e.target.value, setAchievementFields)}
+                                                placeholder='Achievements and Awards'
+                                                className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            {/* buttons */}
+                                            <div className="flex justify-center items-center mt-5">
+                                                <button type="button" onClick={() => removeAchievementField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={achievementFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
+                                                </button>
+                                                <button type="button" onClick={() => addAchievementField()} className="cursor-pointer hover:text-customRed">
+                                                    <CiCirclePlus className="w-10 h-10 " />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                            </div>
 
                             {/* Professional experience fiels */}
-                            <div className="bg-customgray mx-10 py-5 px-5">
-                                {experienceFields.map((experience, index) => (
-                                    <div key={index} className="mb-4">
+                            <div>
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
 
-                                        <input
-                                            type="date"
-                                            id={`experienceStart_${index}`}
-                                            name={`experienceStart_${index}`}
-                                            value={experience.experienceStart}
-                                            onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
-                                            className="py-2 px-4 mb-2  bg-customgray"
-                                        />
-                                        <input
-                                            type="date"
-                                            id={`experienceEnd_${index}`}
-                                            name={`experienceEnd_${index}`}
-                                            value={experience.experienceEnd}
-                                            onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
-                                            className="py-2 px-4 mb-2  bg-customgray"
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`experienceJobTitle_${index}`}
-                                            name={`experienceJobTitle_${index}`}
-                                            value={experience.jobTitle2}
-                                            onChange={(e) => handleChange(index, 'experienceJobTitle', e.target.value, setExperienceFields)}
-                                            placeholder='Job Title'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray "
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`companyName_${index}`}
-                                            name={`companyName_${index}`}
-                                            value={experience.companyName}
-                                            onChange={(e) => handleChange(index, 'companyName', e.target.value, setExperienceFields)}
-                                            placeholder='Company Name'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`location_${index}`}
-                                            name={`location_${index}`}
-                                            value={experience.location}
-                                            onChange={(e) => handleChange(index, 'location', e.target.value, setExperienceFields)}
-                                            placeholder='Location'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
-                                        />
-                                        <input
-                                            type="text"
-                                            id={`professionalSummary_${index}`}
-                                            name={`professionalSummary_${index}`}
-                                            value={experience.professionalSummary}
-                                            onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
-                                            placeholder='Professional Summary'
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
-                                        />
-                                        {/* buttons */}
-                                        <div className="flex justify-center items-center mt-5">
 
-                                            <button type="button" onClick={() => removeField(index, setExperienceFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={experienceFields.length === 1}>
-                                                <CiCircleMinus className="w-10 h-10 " />
-                                            </button>
-                                            <button type="button" onClick={() => addField(setExperienceFields)} className="cursor-pointer hover:text-customRed">
-                                                <CiCirclePlus className="w-10 h-10 " />
-                                            </button>
+                                <div className="bg-customgray mx-10 py-5 px-5">
+                                    {experienceFields.map((experience, index) => (
+                                        <div key={index} className="mb-4">
+
+                                            <div className="flex items-center justify-between">
+                                                {/* Start Date */}
+
+                                                <div className="flex flex-col items-center justify-center">
+                                                    <label htmlFor={`experienceStart_${index}`} className="mr-2">
+                                                        Start Date:
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        id={`experienceStart_${index}`}
+                                                        name={`experienceStart_${index}`}
+                                                        value={experience.experienceStart}
+                                                        onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
+                                                        className="py-2 px-4 mb-2 mr-2 bg-customgray"
+                                                    />
+                                                </div>
+
+
+                                                {/* End Date */}
+                                                <div className="flex flex-col items-center justify-center">
+                                                    <label htmlFor={`experienceEnd_${index}`} className="mr-2">
+                                                        End Date:
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        id={`experienceEnd_${index}`}
+                                                        name={`experienceEnd_${index}`}
+                                                        value={experience.experienceEnd}
+                                                        onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
+                                                        className={`py-2 px-4 mb-2 mr-2 bg-customgray ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
+                                                    />
+                                                </div>
+
+                                                {/* Present Option */}
+                                                <label className="checkbox-container mr-1">
+                                                    Present
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={experience.present}
+                                                        onChange={(e) => handleChange(index, 'present', e.target.checked, setExperienceFields)}
+                                                    />
+                                                    <span className="checkmark"></span>
+                                                </label>
+                                            </div>
+
+
+
+
+                                            <input
+                                                type="text"
+                                                id={`experienceJobTitle_${index}`}
+                                                name={`experienceJobTitle_${index}`}
+                                                value={experience.experienceJobTitle}
+                                                onChange={(e) => handleChange(index, 'experienceJobTitle', e.target.value, setExperienceFields)}
+                                                placeholder='Job Title'
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray "
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`companyName_${index}`}
+                                                name={`companyName_${index}`}
+                                                value={experience.companyName}
+                                                onChange={(e) => handleChange(index, 'companyName', e.target.value, setExperienceFields)}
+                                                placeholder='Company Name'
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`location_${index}`}
+                                                name={`location_${index}`}
+                                                value={experience.location}
+                                                onChange={(e) => handleChange(index, 'location', e.target.value, setExperienceFields)}
+                                                placeholder='Location'
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`professionalSummary_${index}`}
+                                                name={`professionalSummary_${index}`}
+                                                value={experience.professionalSummary}
+                                                onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
+                                                placeholder='Professional Summary'
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            {/* buttons */}
+                                            <div className="flex justify-center items-center mt-5">
+
+                                                <button type="button" onClick={() => removeField(index, setExperienceFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={experienceFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
+                                                </button>
+                                                <button type="button" onClick={() => addField(setExperienceFields)} className="cursor-pointer hover:text-customRed">
+                                                    <CiCirclePlus className="w-10 h-10 " />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
 
 
-                                ))}
+                                    ))}
 
+                                </div>
                             </div>
 
                             {/* Education field */}
@@ -414,14 +581,25 @@ const CvForm = () => {
                                 <div className="bg-customgray mx-10 py-5 px-5">
                                     {educationFields.map((education, index) => (
                                         <div key={index} className="mb-4">
-                                            <input
-                                                type="date"
-                                                id={`eduPassDate_${index}`}
-                                                name={`eduPassDate_${index}`}
-                                                value={education.eduPassDate}
-                                                onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
-                                                className="py-2 px-4 mb-2  bg-customgray"
-                                            />
+                                            <div className="flex justify-between items-center">
+                                                <input
+                                                    type="date"
+                                                    id={`eduPassDate_${index}`}
+                                                    name={`eduPassDate_${index}`}
+                                                    value={education.eduPassDate}
+                                                    onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
+                                                    className="py-2 px-4 mb-2  bg-customgray"
+                                                />
+                                                <input
+                                                    type="date"
+                                                    id={`eduEndDate_${index}`}
+                                                    name={`eduEndDate_${index}`}
+                                                    value={education.eduEndDate}
+                                                    onChange={(e) => handleChange(index, 'eduEndDate', e.target.value, setEducationFields)}
+                                                    placeholder='End Date'
+                                                    className=" px-4 py-2 mb-2   outline-none bg-customgray"
+                                                />
+                                            </div>
                                             <input
                                                 type="text"
                                                 id={`schoolName_${index}`}
@@ -495,8 +673,20 @@ const CvForm = () => {
 
                             {/* Qualifications field */}
                             <div>
-                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Qualifications</h1>
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">
+                                    <select
+                                        className="border-none bg-transparent focus:outline-none"
+                                        onChange={handleExperienceTitleChange}
+                                        value={experienceTitle}
+                                    >
+                                        <option value="qualifications">Qualifications</option>
+                                        <option value="Work History">Work History</option>
+                                        <option value="projects">Projects</option>
+                                        {/* Add more options as needed */}
+                                    </select>
+                                </h1>
                                 <div className="bg-customgray mx-10 py-5 px-5 relative">
+
                                     {qualificationFields.map((qualification, index) => (
                                         <div key={index} className="pt-8 relative">
                                             <input
@@ -545,12 +735,16 @@ const CvForm = () => {
 
                         </div>
                     </div>
+
+
+                    {/* submit button */}
                     <div className="mt-4 flex justify-center">
+
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate Pdf</button>
                     </div>
-                </form>
+                </form >
 
-            </div>
+            </div >
 
         </>
     );
