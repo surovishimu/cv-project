@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect} from 'react';
 import { HiPhone } from "react-icons/hi";
 import { FaLinkedin } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
@@ -8,7 +8,7 @@ import blankImg from '../Image/blankProfile.png'
 
 const PdfDownload = () => {
     const [formData, setFormData] = useState(null);
-    const componentRef = useRef(null);
+    
     useEffect(() => {
         fetch('https://cv-server-iota.vercel.app/userInfo')
             .then(response => {
@@ -40,7 +40,7 @@ const PdfDownload = () => {
     }
 
 
-    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languageSkillsData, achievementsAndAwards, experienceTitle } = formData;
+    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = formData;
 
     const options = {
         filename: `${formData.name}.pdf`,
@@ -72,13 +72,13 @@ const PdfDownload = () => {
                         {/* profile description */}
                         <div className='w-full px-4'>
                             <h1 className='text-customgray font-semibold text-lg uppercase text-center mt-5'>Profile</h1>
-                            <p className="text-lg mt-4 text-customgray  mx-auto border-b border-customgray pb-4 text-center">{profileDescription}</p>
+                            <p className="text-lg mt-4 text-customgray  mx-auto border-b border-customgray pb-10 text-center">{profileDescription}</p>
                         </div>
 
                         {/* skills field */}
                         <div className='border-b border-customgray w-11/12 px-6 mx-auto pb-5'>
                             <h1 className='text-customgray font-semibold text-lg uppercase text-center mt-14 -mb-2'>Skills</h1>
-                            <ul className="mt-5 list-disc ml-4 text-lg">
+                            <ul className="mt-5 list-disc ml-4 text-lg mb-8">
                                 {skillsData.map((skill, index) => (
                                     <li key={index} className="text-white mb-2 flex items-center" style={{ wordWrap: 'break-word' }}>
                                         <span className="mr-2">&#8226;</span>
@@ -90,31 +90,26 @@ const PdfDownload = () => {
 
 
                         {/* language skills field */}
-                        <div className='border-b border-customgray w-11/12 px-6 mx-auto pb-5'>
-                            <h1 className='text-customgray font-semibold text-lg uppercase text-center mt-14 -mb-2'>Language Skills</h1>
-                            <div className="">
-                                {languageSkillsData.map((languageSkill, index) => (
-                                    <div key={index} className="mt-5">
-
-                                        <h1 className="text-white mb-2 text-start">{languageSkill.name}</h1>
-
-                                        <div className='bg-white rounded-full w-full '>
-                                            <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}>
-
+                        {languagesData && languagesData.length > 0 && (
+                            <div className='border-b border-customgray w-11/12 px-6 mx-auto pb-5'>
+                                <h1 className='text-customgray font-semibold text-lg uppercase text-center mt-14 -mb-2'>Language Skills</h1>
+                                <div className="mb-8">
+                                    {languagesData.map((languageSkill, index) => (
+                                        <div key={index} className="mt-5">
+                                            <h1 className="text-white mb-2 text-start">{languageSkill.name}</h1>
+                                            <div className='bg-white rounded-full w-full '>
+                                                <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}></div>
                                             </div>
                                         </div>
-
-
-
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
 
 
                         {/* contact Information */}
-                        <div className='flex justify-center items-center w-full px-6'>
+                        <div className='flex justify-center items-center w-full px-6 mb-10'>
                             <div className="text-center max-w-md">
                                 <h1 className='text-customgray font-semibold uppercase text-lg mt-14 mb-8'>Contact Information</h1>
                                 <div className='flex flex-col justify-center items-center mb-2'>
@@ -163,10 +158,10 @@ const PdfDownload = () => {
                                 <h1 className='text-lg font-bold uppercase ml-24 mt-10' style={{ letterSpacing: '3px' }}>Achievements and Awards</h1>
                                 <div className="mt-5 p-8 relative">
                                     <ul className="list-disc ml-24 text-lg">
-                                        <div className="absolute left-11 top-5 bottom-5 bg-green-500  w-0.5"></div>
+                                        <div className="absolute left-11 top-10 bottom-5 bg-green-500  w-0.5"></div>
                                         {achievementsAndAwards.map((achievement, index) => (
                                             <li key={index} className="text-lg flex items-center">
-                                                <div className="absolute  top-7 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '37px' }}></div>
+                                                <div className="absolute  top-8 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '37px' }}></div>
                                                 { }
                                                 <span className="mr-2 text-xl">&#8226;</span>
                                                 <span>{achievement}</span>
@@ -186,10 +181,10 @@ const PdfDownload = () => {
                         <div className=''>
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-10' style={{ letterSpacing: '3px' }}>Professional Experience</h1>
                             <div className="mx-10  p-8 relative">
-                                <div className="absolute left-0 top-5 bottom-10 bg-green-500  w-0.5"></div>
+                                <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
                                 {experiences.map((experience, index) => (
                                     <div key={index} className="relative pl-6">
-                                        <div className="absolute top-0 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
+                                        <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
 
                                         {experience.experienceStart && (
                                             <p className="text-lg mb-2 font-bold">
@@ -206,8 +201,9 @@ const PdfDownload = () => {
                                             <p className="text-lg">{experience.companyName}</p>
                                         )}
                                         {experience.professionalSummary && (
-                                            <p className="text-lg mb-10">{experience.professionalSummary}</p>
+                                            <div className="text-lg mb-10 ml-2 " dangerouslySetInnerHTML={{ __html: `<ul><li>${experience.professionalSummary.replace(/\n/g, '</li><li>')}</li></ul>` }} />
                                         )}
+
                                     </div>
                                 ))}
                             </div>
@@ -219,10 +215,10 @@ const PdfDownload = () => {
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-5' style={{ letterSpacing: '3px' }}>Education</h1>
                             <div className="mx-10  p-8 relative">
 
-                                <div className="absolute left-0 top-5 bottom-10 bg-green-500  w-0.5"></div>
+                                <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
                                 {education.map((educationItem, index) => (
                                     <div key={index} className='mb-10 relative pl-6'>
-                                        <div className="absolute top-0 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
+                                        <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
 
                                         {educationItem.eduPassDate && educationItem.eduEndDate && (
                                             <p className="text-lg font-bold">
@@ -253,11 +249,11 @@ const PdfDownload = () => {
                         <div>
                             <h1 className='text-lg font-bold uppercase  ml-24 my-5' style={{ letterSpacing: '3px' }}>{experienceTitle}</h1>
                             <div className=" mx-10 p-8 relative">
-                                <div className="absolute left-0 top-5 bottom-10 bg-green-500  w-0.5"></div>
+                                <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
 
                                 {qualifications.map((qualification, index) => (
                                     <div key={index} className='relative mb-10 pl-6'>
-                                        <div className="absolute  top-0 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
+                                        <div className="absolute  top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
                                         <p className="text-lg  font-bold">{qualification.year}</p>
                                         <p className="text-lg mb-8">{qualification.technicalSkills},{qualification.additionalQualifications}</p>
 

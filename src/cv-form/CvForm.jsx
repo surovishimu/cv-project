@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { HiOutlineMinus } from "react-icons/hi";
+import { HiOutlineMinus, HiOutlineTrash, HiPlus } from "react-icons/hi";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { HiUser } from "react-icons/hi2";
 import { HiOutlinePlus } from "react-icons/hi2";
@@ -43,16 +43,31 @@ const CvForm = () => {
         setSkills(updatedSkills);
     };
     // function for language skill
-    const [englishSkill, setEnglishSkill] = useState({ name: 'English', level: 50 });
-    const [germanSkill, setGermanSkill] = useState({ name: 'German', level: 50 });
+    const [languages, setLanguages] = useState([
+        { id: 1, name: 'English', level: 50 },
+        { id: 2, name: 'German', level: 30 }
+    ]);
+    const [newLanguage, setNewLanguage] = useState('');
 
-    const updateLanguageSkill = (language, field, value) => {
-        if (language === 'English') {
-            setEnglishSkill(prevSkill => ({ ...prevSkill, [field]: value }));
-        } else if (language === 'German') {
-            setGermanSkill(prevSkill => ({ ...prevSkill, [field]: value }));
+    const updateLanguageSkill = (id, field, value) => {
+        const updatedLanguages = languages.map(language =>
+            language.id === id ? { ...language, [field]: value } : language
+        );
+        setLanguages(updatedLanguages);
+    };
+
+    const handleAddLanguage = () => {
+        if (newLanguage.trim() !== '') {
+            setLanguages([...languages, { id: Date.now(), name: newLanguage, level: 0 }]);
+            setNewLanguage('');
         }
     };
+
+    const handleRemoveLanguage = (id) => {
+        const updatedLanguages = languages.filter(language => language.id !== id);
+        setLanguages(updatedLanguages);
+    };
+
 
     // function for profile image
 
@@ -142,6 +157,27 @@ const CvForm = () => {
             return updatedFields;
         });
     };
+    // professional experience textarea
+
+    const handleTextareaKeyDown = (e, index) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const { selectionStart, selectionEnd, value } = e.target;
+            const lines = value.split('\n');
+            const currentLine = lines.findIndex((line, i) => i * line.length <= selectionStart && (i + 1) * line.length >= selectionEnd);
+            const newLines = [
+                ...lines.slice(0, currentLine + 1),
+                '- ' + lines[currentLine].substring(selectionStart),
+                ...lines.slice(currentLine + 1)
+            ];
+            const newValue = newLines.join('\n');
+            handleChange(index, 'professionalSummary', newValue, setExperienceFields);
+        }
+    };
+
+
+
+
 
     useEffect(() => {
         // Populate form fields with existing form data when the component mounts
@@ -157,8 +193,7 @@ const CvForm = () => {
             setQualificationFields(formData.qualifications);
             setImageUrl(formData.imageUrl);
             setSkills(formData.skillsData.map((skill, index) => ({ id: index + 1, name: skill.name })));
-            setEnglishSkill(prevSkill => ({ ...prevSkill, level: formData.languageSkillsData.find(skill => skill.name === 'English').level }));
-            setGermanSkill(prevSkill => ({ ...prevSkill, level: formData.languageSkillsData.find(skill => skill.name === 'German').level }));
+
 
             document.getElementById('name').value = formData.name;
             document.getElementById('jobtitle').value = formData.jobtitle;
@@ -167,7 +202,12 @@ const CvForm = () => {
             document.getElementById('phoneNumber').value = formData.phoneNumber;
             document.getElementById('emailAddress').value = formData.emailAddress;
             document.getElementById('linkedinProfile').value = formData.linkedinProfile;
-
+            if (formData.languagesData) {
+                setLanguages(formData.languagesData.map((language, index) => ({
+                    ...language,
+                    id: index + 1 // Assign unique IDs to each language
+                })));
+            }
         }
     }, [formData]);
 
@@ -190,9 +230,9 @@ const CvForm = () => {
         const emailAddress = e.target.emailAddress.value; // Get email address from form input
         const linkedinProfile = e.target.linkedinProfile.value;
         const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
-        const languageSkillsData = [{ name: 'English', level: englishSkill.level }, { name: 'German', level: germanSkill.level }];
-        const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
 
+        const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
+        const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
 
 
         const formData = {
@@ -208,7 +248,7 @@ const CvForm = () => {
             emailAddress,
             linkedinProfile,
             skillsData,
-            languageSkillsData,
+            languagesData,
             achievementsAndAwards,
             experienceTitle
         };
@@ -332,55 +372,46 @@ const CvForm = () => {
                                     Language Skills
                                 </h1>
                                 <div className="p-2">
-                                    <div className="mt-5">
-                                        <h1 className="text-white mb-2 ml-5">English</h1>
-                                        <div className="flex justify-center items-center">
-                                            <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.max(englishSkill.level - 10, 0))}>
-                                                <HiOutlineMinus className="text-customgray mr-1" />
-                                            </button>
-
-                                            <div className="w-full h-3 relative flex items-center rounded-full">
-                                                <input
-                                                    type="range"
-                                                    value={englishSkill.level}
-                                                    min={0}
-                                                    max="100"
-                                                    onChange={(e) => updateLanguageSkill('English', 'level', parseInt(e.target.value))}
-                                                />
-                                                <span
-                                                    style={{ width: `${(englishSkill.level * 100) / 100}%` }}
-                                                    className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
-                                                />
+                                    {languages.map((language, index) => (
+                                        <div key={index} className="mt-5">
+                                            <h1 className="text-white mb-2 ml-5">{language.name}</h1>
+                                            <div className="flex justify-center items-center">
+                                                <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.max(language.level - 10, 0))}>
+                                                    <HiOutlineMinus className="text-customgray mr-1" />
+                                                </button>
+                                                <div className="w-full h-3 relative flex items-center rounded-full">
+                                                    <input
+                                                        type="range"
+                                                        value={language.level}
+                                                        min={0}
+                                                        max="100"
+                                                        onChange={(e) => updateLanguageSkill(language.id, 'level', parseInt(e.target.value))}
+                                                    />
+                                                    <span
+                                                        style={{ width: `${(language.level * 100) / 100}%` }}
+                                                        className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.min(language.level + 10, 100))}>
+                                                    <LuPlus className="text-customgray ml-1" />
+                                                </button>
+                                                <button type="button" onClick={() => handleRemoveLanguage(language.id)}>
+                                                    <HiOutlineTrash className="text-customgray ml-3" />
+                                                </button>
                                             </div>
-                                            <button type="button" onClick={() => updateLanguageSkill('English', 'level', Math.min(englishSkill.level + 10, 100))}>
-                                                <LuPlus className="text-customgray ml-1" />
-                                            </button>
                                         </div>
-                                    </div>
-                                    <div className="mt-5">
-                                        <h1 className="text-white mb-2">German</h1>
-                                        <div className="flex justify-center items-center">
-                                            <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.max(germanSkill.level - 10, 0))}>
-                                                <HiOutlineMinus className="text-customgray mr-1" />
-                                            </button>
-
-                                            <div className="w-full h-3 relative flex items-center rounded-full">
-                                                <input
-                                                    type="range"
-                                                    value={germanSkill.level}
-                                                    min={0}
-                                                    max="100"
-                                                    onChange={(e) => updateLanguageSkill('German', 'level', parseInt(e.target.value))}
-                                                />
-                                                <span
-                                                    style={{ width: `${(germanSkill.level * 100) / 100}%` }}
-                                                    className="h-3 bg-gray-400 absolute left-0 top-0 rounded-full"
-                                                />
-                                            </div>
-                                            <button type="button" onClick={() => updateLanguageSkill('German', 'level', Math.min(germanSkill.level + 10, 100))}>
-                                                <LuPlus className="text-customgray ml-1" />
-                                            </button>
-                                        </div>
+                                    ))}
+                                    <div className="mt-5 ml-5">
+                                        <input
+                                            type="text"
+                                            value={newLanguage}
+                                            onChange={(e) => setNewLanguage(e.target.value)}
+                                            placeholder="Enter language name"
+                                            className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-customRed text-customgray"
+                                        />
+                                        <button type="button" onClick={handleAddLanguage}>
+                                            <LuPlus className="text-customgray ml-1" />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -548,14 +579,14 @@ const CvForm = () => {
                                                 placeholder='Location'
                                                 className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
                                             />
-                                            <input
-                                                type="text"
+                                            <textarea
                                                 id={`professionalSummary_${index}`}
                                                 name={`professionalSummary_${index}`}
                                                 value={experience.professionalSummary}
                                                 onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
                                                 placeholder='Professional Summary'
                                                 className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                                onKeyDown={(e) => handleTextareaKeyDown(e, index)}
                                             />
                                             {/* buttons */}
                                             <div className="flex justify-center items-center mt-5">
