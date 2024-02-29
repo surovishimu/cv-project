@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 import './style.css'
 import { LuPlus } from "react-icons/lu";
 import { useFormData } from "./FormDataProvider";
+import swal from "sweetalert";
 
 
 
 const CvForm = () => {
     const navigate = useNavigate();
+    const [submitting, setSubmitting] = useState(false);
     const { formData, setFormData } = useFormData();
     const [experienceTitle, setExperienceTitle] = useState('Qualifications');
     const handleExperienceTitleChange = (e) => {
@@ -163,24 +165,24 @@ const CvForm = () => {
         if (e.key === 'Enter') {
             e.preventDefault(); // Prevent default behavior of textarea
             const { selectionStart, value } = e.target;
-    
+
             // Get the text before and after the cursor position
             const textBeforeCursor = value.slice(0, selectionStart);
             const textAfterCursor = value.slice(selectionStart);
-    
+
             // Insert a new line with a bullet point at the current cursor position
             const newLineWithBullet = '- ' + textAfterCursor;
             const newValue = textBeforeCursor + '\n' + newLineWithBullet;
-    
+
             // Set the new value of the textarea
             e.target.value = newValue;
-    
+
             // Move the cursor to the end of the newly inserted line
             const newPosition = selectionStart + 3 + 1; // Move cursor after the bullet point and the new line character
             e.target.setSelectionRange(newPosition, newPosition);
         }
     };
-    
+
 
 
 
@@ -219,69 +221,79 @@ const CvForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const imageUrl = await uploadImageToCloudinary();
-        // Gather form data from state variables
-        const name = e.target.name.value;
-        const jobtitle = e.target.jobtitle.value;
-        const profileDescription = value;
+        // Display confirmation dialog
+        swal({
+            title: "Are you sure?",
+            text: "You are about to submit the form.",
+            icon: "warning",
+            buttons: ["Cancel", "Submit"],
+            dangerMode: true,
+        })
+            .then(async (willSubmit) => {
+                if (willSubmit) {
+                    // Proceed with form submission
+                    const imageUrl = await uploadImageToCloudinary();
+                    // Gather form data from state variables
+                    const name = e.target.name.value;
+                    const jobtitle = e.target.jobtitle.value;
+                    const profileDescription = value;
 
-        const experiences = experienceFields.map(experience => ({
-            ...experience,
-            endDate: experience.present ? 'Present' : experience.experienceEnd
-        }));
-        const education = educationFields.map(education => ({ ...education }));
-        const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
-        const location = e.target.location.value; // Get location from form input
-        const phoneNumber = e.target.phoneNumber.value; // Get phone number from form input
-        const emailAddress = e.target.emailAddress.value; // Get email address from form input
-        const linkedinProfile = e.target.linkedinProfile.value;
-        const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
+                    const experiences = experienceFields.map(experience => ({
+                        ...experience,
+                        endDate: experience.present ? 'Present' : experience.experienceEnd
+                    }));
+                    const education = educationFields.map(education => ({ ...education }));
+                    const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
+                    const location = e.target.location.value; // Get location from form input
+                    const phoneNumber = e.target.phoneNumber.value; // Get phone number from form input
+                    const emailAddress = e.target.emailAddress.value; // Get email address from form input
+                    const linkedinProfile = e.target.linkedinProfile.value;
+                    const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
 
-        const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
-        const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
+                    const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
+                    const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
 
+                    const formData = {
+                        name,
+                        jobtitle,
+                        profileDescription,
+                        experiences,
+                        education,
+                        qualifications,
+                        imageUrl,
+                        location,
+                        phoneNumber,
+                        emailAddress,
+                        linkedinProfile,
+                        skillsData,
+                        languagesData,
+                        achievementsAndAwards,
+                        experienceTitle
+                    };
 
-        const formData = {
-            name,
-            jobtitle,
-            profileDescription,
-            experiences,
-            education,
-            qualifications,
-            imageUrl,
-            location,
-            phoneNumber,
-            emailAddress,
-            linkedinProfile,
-            skillsData,
-            languagesData,
-            achievementsAndAwards,
-            experienceTitle
-        };
-
-
-        // Send form data to the server
-        try {
-            const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+                    // Send form data to the server
+                    try {
+                        const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Handle successful response here
+                        console.log('Form data submitted successfully!');
+                        setFormData(formData);
+                        navigate('/pdf');
+                    } catch (error) {
+                        // Handle error here
+                        console.error('There was a problem with your fetch operation:', error);
+                    }
+                }
             });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            // Handle successful response here
-            console.log('Form data submitted successfully!');
-            setFormData(formData);
-            navigate('/pdf');
-        } catch (error) {
-            // Handle error here
-            console.error('There was a problem with your fetch operation:', error);
-        }
     };
-
 
 
     return (

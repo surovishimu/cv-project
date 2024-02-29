@@ -4,9 +4,11 @@ import { FaLinkedin } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
+import { ClipLoader, RingLoader } from 'react-spinners';
 
 const PdfDownload = () => {
     const [formData, setFormData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch('https://cv-server-iota.vercel.app/userInfo')
@@ -17,19 +19,23 @@ const PdfDownload = () => {
                 return response.json();
             })
             .then(data => {
-                // Assuming the data is an array of submitted form data and we want to display the most recent one
                 if (data.length > 0) {
                     setFormData(data[data.length - 1]);
                 }
+                setLoading(false); // Set loading to false when data is fetched
             })
             .catch(error => {
                 console.error('There was a problem fetching the data:', error);
+                setLoading(false); // Set loading to false on error
             });
-    }, [formData]);
+    }, []);
 
-
-    if (!formData) {
-        return <p className='flex justify-center items-center h-screen'> Loading...</p>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <RingLoader color={'#B0272E'} loading={loading} size={150} />
+            </div>
+        );
     }
     function formatDate(dateString) {
         const date = new Date(dateString);
