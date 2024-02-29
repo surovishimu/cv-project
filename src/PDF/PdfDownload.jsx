@@ -1,14 +1,13 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { HiPhone } from "react-icons/hi";
 import { FaLinkedin } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
-import generatePDF from 'react-to-pdf';
 import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
 
 const PdfDownload = () => {
     const [formData, setFormData] = useState(null);
-    
+
     useEffect(() => {
         fetch('https://cv-server-iota.vercel.app/userInfo')
             .then(response => {
@@ -28,7 +27,7 @@ const PdfDownload = () => {
             });
     }, [formData]);
 
-    const getTargetElement = () => document.getElementById('content-id');
+
     if (!formData) {
         return <p className='flex justify-center items-center h-screen'> Loading...</p>;
     }
@@ -41,18 +40,25 @@ const PdfDownload = () => {
 
 
     const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = formData;
+    const printPdf = () => {
+        const content = document.getElementById('content-id');
+        if (content) {
+            const originalBody = document.body.innerHTML;
+            const htmlContent = content.innerHTML;
 
-    const options = {
-        filename: `${formData.name}.pdf`,
-        method: 'open',
-        page: {
+            // Temporarily replace the body content with the content to print
+            document.body.innerHTML = htmlContent;
 
-            orientation: 'portrait',
+            // Print the content
+            window.print();
 
+            // Restore the original body content
+            document.body.innerHTML = originalBody;
         }
+    };
 
 
-    }
+
 
 
     return (
@@ -248,25 +254,25 @@ const PdfDownload = () => {
                         {/* qualification field */}
                         <div>
                             <h1 className='text-lg font-bold uppercase  ml-24 my-5' style={{ letterSpacing: '3px' }}>{experienceTitle}</h1>
-                            <div className=" mx-10 p-8 relative">
-                                <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
-
+                            <div className="mx-10 p-8 relative" style={{ width: '100%' }}>
+                                <div className="absolute left-0 top-10 bottom-10 bg-green-500 w-0.5"></div>
                                 {qualifications.map((qualification, index) => (
                                     <div key={index} className='relative mb-10 pl-6'>
-                                        <div className="absolute  top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
-                                        <p className="text-lg  font-bold">{qualification.year}</p>
-                                        <p className="text-lg mb-8">{qualification.technicalSkills},{qualification.additionalQualifications}</p>
-
+                                        <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
+                                        <p className="text-lg font-bold">{qualification.year}</p>
+                                        <p className="text-lg mb-8" style={{ maxWidth: '80%', wordWrap: 'break-word' }}>{qualification.technicalSkills}, {qualification.additionalQualifications}</p>
                                     </div>
                                 ))}
                             </div>
+
+
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="mt-4 flex justify-center">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => generatePDF(getTargetElement, options)}>Generate PDF</button>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={printPdf}>Generate PDF</button>
             </div>
 
         </div >

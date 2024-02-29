@@ -159,22 +159,28 @@ const CvForm = () => {
     };
     // professional experience textarea
 
-    const handleTextareaKeyDown = (e, index) => {
+    const handleTextareaKeyDown = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
-            const { selectionStart, selectionEnd, value } = e.target;
-            const lines = value.split('\n');
-            const currentLine = lines.findIndex((line, i) => i * line.length <= selectionStart && (i + 1) * line.length >= selectionEnd);
-            const newLines = [
-                ...lines.slice(0, currentLine + 1),
-                '- ' + lines[currentLine].substring(selectionStart),
-                ...lines.slice(currentLine + 1)
-            ];
-            const newValue = newLines.join('\n');
-            handleChange(index, 'professionalSummary', newValue, setExperienceFields);
+            e.preventDefault(); // Prevent default behavior of textarea
+            const { selectionStart, value } = e.target;
+    
+            // Get the text before and after the cursor position
+            const textBeforeCursor = value.slice(0, selectionStart);
+            const textAfterCursor = value.slice(selectionStart);
+    
+            // Insert a new line with a bullet point at the current cursor position
+            const newLineWithBullet = '- ' + textAfterCursor;
+            const newValue = textBeforeCursor + '\n' + newLineWithBullet;
+    
+            // Set the new value of the textarea
+            e.target.value = newValue;
+    
+            // Move the cursor to the end of the newly inserted line
+            const newPosition = selectionStart + 3 + 1; // Move cursor after the bullet point and the new line character
+            e.target.setSelectionRange(newPosition, newPosition);
         }
     };
-
+    
 
 
 
