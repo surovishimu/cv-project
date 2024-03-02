@@ -1,51 +1,29 @@
-import { useState, useEffect } from 'react';
+import { Link, useLoaderData } from "react-router-dom";
 import { HiPhone } from "react-icons/hi";
-import { FaLinkedin } from "react-icons/fa";
+import { FaEdit, FaLinkedin } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
-import { ClipLoader, RingLoader } from 'react-spinners';
+import { FaDownload } from "react-icons/fa";
 
-const PdfDownload = () => {
-    const [formData, setFormData] = useState(null);
-    const [loading, setLoading] = useState(true);
+const PdfDetails = () => {
 
-    useEffect(() => {
-        fetch('http://localhost:5000/userInfo')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.length > 0) {
-                    setFormData(data[data.length - 1]);
-                }
-                setLoading(false); // Set loading to false when data is fetched
-            })
-            .catch(error => {
-                console.error('There was a problem fetching the data:', error);
-                setLoading(false); // Set loading to false on error
-            });
-    }, []);
+    const PdfInfo = useLoaderData();
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center w-30 mx-auto h-screen">
-                <RingLoader color={'#B0272E'} loading={loading} size={150} />
-            </div>
-        );
-    }
+    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = PdfInfo;
+
+
     function formatDate(dateString) {
+        if (dateString === 'Present') {
+            return 'Present';
+        }
+
         const date = new Date(dateString);
         const month = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1);
         const formattedDate = `${month}/${date.getFullYear()}`;
         return formattedDate;
     }
 
-
-    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = formData;
     const printPdf = () => {
         const content = document.getElementById('content-id');
         if (content) {
@@ -64,14 +42,11 @@ const PdfDownload = () => {
     };
 
 
-
-
-
     return (
-        <div className='w-4/5'>
-            <div id="content-id" className=" pdf-container  bg-slate-50" >
-                <div className="flex ">
-                    <div className="w-2/6  pb-10 mx-auto bg-customRed">
+        <div className='w-4/5 flex justify-center items-start'>
+            <div id="content-id" className="pdf-container w-full  bg-slate-50" > {/* Set a fixed width for the container */}
+                <div className="flex">
+                    <div className="w-2/6 pb-10 mx-auto bg-customRed">
                         {/* image field */}
                         <div>
                             {imageUrl ? (
@@ -84,7 +59,7 @@ const PdfDownload = () => {
                         {/* profile description */}
                         <div className='w-full px-4'>
                             <h1 className='text-customgray font-semibold text-lg uppercase text-center mt-5'>Profile</h1>
-                            <p className="text-lg mt-4 text-customgray  mx-auto border-b border-customgray pb-10 text-center">{profileDescription}</p>
+                            <p className="text-lg mt-4 text-customgray mx-auto border-b border-customgray pb-10 text-center">{profileDescription}</p>
                         </div>
 
                         {/* skills field */}
@@ -118,8 +93,6 @@ const PdfDownload = () => {
                             </div>
                         )}
 
-
-
                         {/* contact Information */}
                         <div className='flex justify-center items-center w-full px-6 mb-10'>
                             <div className="text-center max-w-md">
@@ -150,9 +123,6 @@ const PdfDownload = () => {
                                 <hr />
                             </div>
                         </div>
-
-
-
                     </div>
 
                     <div className="w-4/6 min-h-screen ">
@@ -162,7 +132,6 @@ const PdfDownload = () => {
                             <p className="text-4xl mb-4 font-semibold">{name}</p>
                             <p className="text-xl font-semibold mb-4">{jobtitle}</p>
                         </div>
-
 
                         {achievementsAndAwards && achievementsAndAwards.length > 0 && achievementsAndAwards.some(achievement => achievement && typeof achievement === 'string' && achievement.trim() !== '') && (
                             <div>
@@ -186,14 +155,6 @@ const PdfDownload = () => {
                         )}
 
 
-
-
-
-
-
-
-
-
                         {/* professional experience */}
                         <div className=''>
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-10' style={{ letterSpacing: '3px' }}>Professional Experience</h1>
@@ -202,7 +163,6 @@ const PdfDownload = () => {
                                 {experiences.map((experience, index) => (
                                     <div key={index} className="relative pl-6">
                                         <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
-
                                         {experience.experienceStart && (
                                             <p className="text-lg mb-2 font-bold">
                                                 {formatDate(experience.experienceStart)} - {experience.present ? 'Present' : formatDate(experience.experienceEnd)}
@@ -220,23 +180,19 @@ const PdfDownload = () => {
                                         {experience.professionalSummary && (
                                             <div className="text-lg mb-10 ml-2 " dangerouslySetInnerHTML={{ __html: `<ul><li>${experience.professionalSummary.replace(/\n/g, '</li><li>')}</li></ul>` }} />
                                         )}
-
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-
                         {/* education field */}
                         <div>
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-5' style={{ letterSpacing: '3px' }}>Education</h1>
                             <div className="mx-10  p-8 relative">
-
                                 <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
                                 {education.map((educationItem, index) => (
                                     <div key={index} className='mb-10 relative pl-6'>
                                         <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
-
                                         {educationItem.eduPassDate && educationItem.eduEndDate && (
                                             <p className="text-lg font-bold">
                                                 {formatDate(educationItem.eduPassDate)} - {formatDate(educationItem.eduEndDate)}
@@ -275,19 +231,22 @@ const PdfDownload = () => {
                                     </div>
                                 ))}
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="mt-4 flex justify-center">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={printPdf}>Generate PDF</button>
+            <div>
+                <div className="mt-4 flex justify-center">
+                    <button className="bg-customRed  text-white font-bold py-2 px-4 rounded" onClick={printPdf}><FaDownload /></button>
+                </div>
+                <div className="mt-4 flex justify-center">
+                    <Link to={`/updatePdf/${PdfInfo._id}`}>
+                        <button className="bg-customRed  text-white font-bold py-2 px-4 rounded" ><FaEdit /></button></Link>
+                </div>
             </div>
-
         </div >
     );
 };
 
-export default PdfDownload;
+export default PdfDetails;

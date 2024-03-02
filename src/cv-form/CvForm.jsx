@@ -15,8 +15,9 @@ import swal from "sweetalert";
 
 const CvForm = () => {
     const navigate = useNavigate();
-    const [submitting, setSubmitting] = useState(false);
+
     const { formData, setFormData } = useFormData();
+     // qualification title change
     const [experienceTitle, setExperienceTitle] = useState('Qualifications');
     const handleExperienceTitleChange = (e) => {
         setExperienceTitle(e.target.value);
@@ -131,8 +132,6 @@ const CvForm = () => {
     };
 
 
-
-
     const descriptionHandleChange = (event) => {
         setValue(event.target.value); // Update the state with the input value
     };
@@ -221,6 +220,17 @@ const CvForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Check if there are any language skills entered
+        if (languages.length === 0) {
+            // Display error message indicating that at least one language skill is required
+            swal({
+                title: "Error!",
+                text: "Please enter at least one language skill.",
+                icon: "error",
+            });
+            return; // Exit the function without proceeding to form submission
+        }
+
         // Display confirmation dialog
         swal({
             title: "Are you sure?",
@@ -236,7 +246,7 @@ const CvForm = () => {
                     // Gather form data from state variables
                     const name = e.target.name.value;
                     const jobtitle = e.target.jobtitle.value;
-                    const profileDescription = value;
+                    const profileDescription = e.target.profileDescription ? e.target.profileDescription.value : '';// Get profile description from form input
 
                     const experiences = experienceFields.map(experience => ({
                         ...experience,
@@ -273,7 +283,7 @@ const CvForm = () => {
 
                     // Send form data to the server
                     try {
-                        const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
+                        const response = await fetch('http://localhost:5000/userInfo', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -299,7 +309,7 @@ const CvForm = () => {
     return (
         <>
 
-            <div className='max-w-screen-lg mx-auto'>
+            <div className='w-4/5 '>
                 <form onSubmit={handleSubmit}>
                     <div className='w-full flex'>
                         {/* Left side */}
@@ -339,7 +349,7 @@ const CvForm = () => {
                                 <div className="relative">
                                     <textarea
                                         required
-
+                                        name="profileDescription"
                                         className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
                                         placeholder="Profile Description"
                                         value={value}
@@ -399,6 +409,7 @@ const CvForm = () => {
                                                 </button>
                                                 <div className="w-full h-3 relative flex items-center rounded-full">
                                                     <input
+
                                                         type="range"
                                                         value={language.level}
                                                         min={0}
@@ -731,6 +742,7 @@ const CvForm = () => {
                                         <option value="qualifications">Qualifications</option>
                                         <option value="Work History">Work History</option>
                                         <option value="projects">Projects</option>
+                                        <option value="certifications">Certifications</option>
                                         {/* Add more options as needed */}
                                     </select>
                                 </h1>
