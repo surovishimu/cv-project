@@ -11,7 +11,7 @@ const PdfDownload = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:5000/userInfo')
+        fetch('https://cv-server-iota.vercel.app/userInfo')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

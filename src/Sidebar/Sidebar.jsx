@@ -18,13 +18,13 @@ const Sidebar = () => {
             >
                 All CV
             </NavLink>
-            <NavLink
+            {/* <NavLink
                 to="pdf"
                 activeClassName="active"
                 className="flex items-center text-white px-7 py-3 mt-2 text-sm font-semibold"
             >
                 Download Last pdf
-            </NavLink>
+            </NavLink> */}
         </div>
     );
 };

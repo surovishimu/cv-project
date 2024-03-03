@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { GrLinkedinOption } from "react-icons/gr";
 import { HiLocationMarker, HiMail, HiOutlineMinus, HiOutlinePlus, HiOutlineTrash, HiPhone, HiUser } from "react-icons/hi";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
 
 
 const UpdatePdf = () => {
-
+    const navigate = useNavigate();
     const updatePdf = useLoaderData();
     const { _id, name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = updatePdf;
 
@@ -137,37 +137,33 @@ const UpdatePdf = () => {
 
 
     // function for professional experience ---------------------------
-
     const [experienceFields, setExperienceFields] = useState([]);
     useEffect(() => {
-        setExperienceFields(experiences || []);
-        const hasPresentExperience = experiences.some(experience => experience.experienceEnd === 'Present');
-        if (hasPresentExperience) {
-            setExperienceFields(prevExperienceFields =>
-                prevExperienceFields.map(experience => ({
-                    ...experience,
-                    present: experience.experienceEnd === 'Present'
-                }))
-            );
+        if (experiences && experiences.length > 0) {
+            setExperienceFields(experiences.map((experience, index) => ({
+                ...experience,
+                id: index, // Assign a unique ID for each experience field
+                present: experience.experienceEnd === 'Present'
+            })));
+        } else {
+            // If experiences data is not available, initialize with an empty array
+            setExperienceFields([]);
         }
     }, [experiences]);
 
     const addExperienceField = () => {
-        setExperienceFields((prevExperienceFields) => [
+        setExperienceFields(prevExperienceFields => [
             ...prevExperienceFields,
             { id: Date.now(), experienceStart: '', experienceEnd: '', experienceJobTitle: '', companyName: '', location: '', professionalSummary: '' }
         ]);
     };
 
-    // Function to remove a professional experience field by index
     const removeExperienceField = (index) => {
         setExperienceFields(prevExperienceFields => prevExperienceFields.filter((_, i) => i !== index));
     };
 
-
-
     const handleExperienceChange = (index, fieldKey, value) => {
-        setExperienceFields((prevExperienceFields) => {
+        setExperienceFields(prevExperienceFields => {
             const updatedFields = [...prevExperienceFields];
             if (fieldKey === 'present') {
                 updatedFields[index][fieldKey] = value;
@@ -178,6 +174,9 @@ const UpdatePdf = () => {
             return updatedFields;
         });
     };
+
+
+
 
     const handleTextareaKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -264,16 +263,18 @@ const UpdatePdf = () => {
         const emailAddress = e.target.emailAddress.value;
         const linkedinProfile = e.target.linkedinProfile.value;
         const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
+
+        const education = educationFields.map(education => ({ ...education }));
+        const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
         const experiences = experienceFields.map(experience => ({
             experienceStart: experience.experienceStart,
             experienceEnd: experience.present ? 'Present' : experience.experienceEnd,
             experienceJobTitle: experience.experienceJobTitle,
             companyName: experience.companyName,
             location: experience.location,
-            professionalSummary: experience.professionalSummary
+            professionalSummary: experience.professionalSummary,
+            present: experience.present
         }));
-        const education = educationFields.map(education => ({ ...education }));
-        const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
 
         const formData = {
             name,
@@ -294,7 +295,7 @@ const UpdatePdf = () => {
 
 
         };
-        fetch(`http://localhost:5000/userInfo/${_id}`, {
+        fetch(`https://cv-server-iota.vercel.app/userInfo/${_id}`, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
@@ -305,6 +306,7 @@ const UpdatePdf = () => {
             .then(data => {
                 console.log(data);
                 if (data.modifiedCount > 0) {
+                    navigate('/allpdf');
                     swal({
                         title: 'Success!',
                         text: 'Product updated successfully',
@@ -354,7 +356,7 @@ const UpdatePdf = () => {
                             <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-10">Profile</h1>
                             <div className="relative">
                                 <textarea
-                                    required
+
                                     name="profileDescription"
                                     className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none"
                                     placeholder="Profile Description"
@@ -452,19 +454,19 @@ const UpdatePdf = () => {
                         <div>
                             <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                             <div className="ml-10 mt-5 relative">
-                                <input required id="location" defaultValue={location} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
+                                <input id="location" defaultValue={location} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                 <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input required id="phoneNumber" defaultValue={phoneNumber} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
+                                <input id="phoneNumber" defaultValue={phoneNumber} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                 <HiPhone className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input required id="emailAddress" defaultValue={emailAddress} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
+                                <input id="emailAddress" defaultValue={emailAddress} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                 <HiMail className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input required id="linkedinProfile" defaultValue={linkedinProfile} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
+                                <input id="linkedinProfile" defaultValue={linkedinProfile} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                 <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                             </div>
                         </div>
@@ -543,30 +545,33 @@ const UpdatePdf = () => {
                                         <div className="flex items-center justify-between">
                                             {/* Start Date */}
                                             <div className="flex flex-col items-center justify-center">
-                                                <label htmlFor={`experienceStart_${experience.id}`} className="mr-2">
+                                                <label htmlFor={`experienceStart_${index}`} className="mr-2">
                                                     Start Date:
                                                 </label>
                                                 <input
-                                                    type="date"
+                                                    type="text"
                                                     id={`experienceStart_${experience.id}`}
                                                     name={`experienceStart_${experience.id}`}
                                                     value={experience.experienceStart}
                                                     onChange={(e) => handleExperienceChange(index, 'experienceStart', e.target.value)}
                                                     className="py-2 px-4 mb-2 mr-2 bg-customgray"
+                                                    placeholder="M/Y(09/2024)"
                                                 />
                                             </div>
                                             {/* End Date */}
                                             <div className="flex flex-col items-center justify-center">
-                                                <label htmlFor={`experienceEnd_${experience.id}`} className="mr-2">
+                                                <label htmlFor={`experienceEnd_${index}`} className="mr-2">
                                                     End Date:
                                                 </label>
                                                 <input
-                                                    type="date"
+                                                    type="text"
                                                     id={`experienceEnd_${experience.id}`}
                                                     name={`experienceEnd_${experience.id}`}
                                                     value={experience.experienceEnd}
                                                     onChange={(e) => handleExperienceChange(index, 'experienceEnd', e.target.value)}
                                                     className={`py-2 px-4 mb-2 mr-2 bg-customgray ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
+                                                    placeholder="M/Y(09/2024)"
+                                                    disabled={experience.present}
                                                 />
                                             </div>
                                             {/* Present Option */}
@@ -577,7 +582,6 @@ const UpdatePdf = () => {
                                                     checked={experience.present}
                                                     onChange={(e) => handleExperienceChange(index, 'present', e.target.checked)}
                                                 />
-
                                                 <span className="checkmark"></span>
                                             </label>
                                         </div>
@@ -641,20 +645,21 @@ const UpdatePdf = () => {
                                     <div key={index} className="mb-4">
                                         <div className="flex justify-between items-center">
                                             <input
-                                                type="date"
+                                                type="text"
                                                 id={`eduPassDate_${index}`}
                                                 name={`eduPassDate_${index}`}
                                                 value={education.eduPassDate}
                                                 onChange={(e) => handleChange(index, 'eduPassDate', e.target.value)}
                                                 className="py-2 px-4 mb-2  bg-customgray"
+                                                placeholder='M/Y(09/2024)'
                                             />
                                             <input
-                                                type="date"
+                                                type="text"
                                                 id={`eduEndDate_${index}`}
                                                 name={`eduEndDate_${index}`}
                                                 value={education.eduEndDate}
                                                 onChange={(e) => handleChange(index, 'eduEndDate', e.target.value)}
-                                                placeholder='End Date'
+                                                placeholder='M/Y(09/2024)'
                                                 className=" px-4 py-2 mb-2   outline-none bg-customgray"
                                             />
                                         </div>
@@ -802,7 +807,7 @@ const UpdatePdf = () => {
 
                 {/* Submit Button */}
                 <div className="mt-4 flex justify-center">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate Pdf</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update CV</button>
                 </div>
             </form>
         </div>

@@ -5,6 +5,7 @@ import PdfDownload from "../PDF/PdfDownload";
 import AllPdf from "../AllPdf/AllPdf";
 import PdfDetails from "../AllPdf/PdfDetails";
 import UpdatePdf from "../AllPdf/UpdatePdf";
+import CensoredCV from "../AllPdf/CensoredCV";
 
 export const router = createBrowserRouter([
     {
@@ -22,20 +23,25 @@ export const router = createBrowserRouter([
             {
                 path: 'allpdf',
                 element: <AllPdf></AllPdf>,
-                loader: () => fetch('http://localhost:5000/userInfo')
+                loader: () => fetch('https://cv-server-iota.vercel.app/userInfo')
             },
             {
                 path: 'pdfDetails/:id',
                 element: <PdfDetails></PdfDetails>,
-                loader: ({ params }) => fetch(`http://localhost:5000/userInfo/${params.id}`)
+                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
             },
             {
                 path: '/updatePdf/:id',
                 element: <UpdatePdf></UpdatePdf>,
-                loader: ({ params }) => fetch(`http://localhost:5000/userInfo/${params.id}`)
+                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
 
 
-            }
+            },
+            {
+                path: 'censoredCv/:id',
+                element: <CensoredCV></CensoredCV>,
+                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
+            },
 
         ]
     },

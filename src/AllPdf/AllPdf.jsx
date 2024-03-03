@@ -18,7 +18,7 @@ const AllPdf = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    fetch(`http://localhost:5000/userInfo/${id}`, {
+                    fetch(`https://cv-server-iota.vercel.app/userInfo/${id}`, {
                         method: 'DELETE',
                     })
                         .then((res) => res.json())
@@ -82,13 +82,13 @@ const AllPdf = () => {
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{index + 1}</td>
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{cv.name}</td>
                                     <td className="px-4 py-2 flex justify-center gap-5 items-center border border-white">
-                                        {/* Sensor View Button */}
-                                        <Link to={`/pdfDetails/${cv._id}`}>
-                                            <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center">
+                                        {/* censor View Button */}
+                                        <Link to={`/censoredCv/${cv._id}`}>
+                                            <button  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center">
                                                 Censored <FaEye className="ml-1" />
                                             </button>
                                         </Link>
-                                        <Link to={`/uncensoredpdfDetails/${cv._id}`}>
+                                        <Link to={`/pdfDetails/${cv._id}`}>
                                             <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center">
                                                 Uncensored <FaEye className="ml-1" />
                                             </button>

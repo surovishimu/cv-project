@@ -5,19 +5,26 @@ import { HiLocationMarker } from "react-icons/hi";
 import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
 import { FaDownload } from "react-icons/fa";
+import { useState } from "react";
 
-const PdfDetails = () => {
+const CensoredCV = () => {
 
     const PdfInfo = useLoaderData();
 
     const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = PdfInfo;
 
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const month = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1);
-        const formattedDate = `${month}/${date.getFullYear()}`;
-        return formattedDate;
-    }
+
+
+    const getInitials = (name) => {
+        // Split the name into individual parts
+        const parts = name.split(' ');
+
+        // Extract the first letter of each part and capitalize it
+        const initials = parts.map(part => part.charAt(0).toUpperCase());
+
+        // Join the initials with periods and return
+        return initials.join('. ') + '.';
+    };
 
 
     const printPdf = () => {
@@ -46,11 +53,22 @@ const PdfDetails = () => {
                         {/* image field */}
                         <div>
                             {imageUrl ? (
-                                <img src={imageUrl} alt="Profile" className="rounded-full object-cover w-44 h-44 mx-auto mt-20" />
+                                <img
+                                    src={imageUrl}
+                                    alt="Profile"
+                                    className="rounded-full object-cover w-44 h-44 mx-auto mt-20"
+                                    style={{ filter: 'blur(5px)' }} // Apply inline CSS for blur effect
+                                />
                             ) : (
-                                <img src={blankImg} alt="Profile" className="rounded-full object-cover w-52 h-52 mx-auto mt-8" />
+                                <img
+                                    src={blankImg}
+                                    alt="Profile"
+                                    className="rounded-full object-cover w-52 h-52 mx-auto mt-8"
+                                />
                             )}
                         </div>
+
+
 
                         {/* profile description */}
                         <div className='w-full px-4'>
@@ -90,60 +108,6 @@ const PdfDetails = () => {
                         )}
 
 
-                        {/* contact Information */}
-                        <div className='flex justify-center items-center w-full px-6 mb-10'>
-                            <div className="text-center max-w-md">
-                                {/* Check if any of the fields has a value before rendering the header and sections */}
-                                {(location || phoneNumber || emailAddress || linkedinProfile) && (
-                                    <>
-                                        <h1 className='text-customgray font-semibold uppercase text-lg mt-14 mb-8'>Contact Information</h1>
-
-                                        {location && (
-                                            <>
-                                                <div className='flex flex-col justify-center items-center mb-2'>
-                                                    <HiLocationMarker className="text-customgray text-3xl -mb-1" />
-                                                    <p className="text-customgray text-xl">{location}</p>
-                                                </div>
-                                                <hr />
-                                            </>
-                                        )}
-
-                                        {phoneNumber && (
-                                            <>
-                                                <div className='flex flex-col justify-center items-center mt-5 mb-2'>
-                                                    <HiPhone className="text-customgray text-3xl -mb-1" />
-                                                    <p className="text-customgray text-xl">{phoneNumber}</p>
-                                                </div>
-                                                <hr />
-                                            </>
-                                        )}
-
-                                        {emailAddress && (
-                                            <>
-                                                <div className='flex flex-col justify-center items-center mt-5 mb-2'>
-                                                    <IoIosMail className="text-customgray text-3xl -mb-1" />
-                                                    <p className="text-customgray text-xl">{emailAddress}</p>
-                                                </div>
-                                                <hr />
-                                            </>
-                                        )}
-
-                                        {linkedinProfile && (
-                                            <>
-                                                <div className='flex flex-col justify-center items-center mt-5 mb-2'>
-                                                    <FaLinkedin className="text-customgray text-3xl -mb-1" />
-                                                    <p className="text-customgray text-xl">{linkedinProfile}</p>
-                                                </div>
-                                                <hr />
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-
-
 
                     </div>
 
@@ -151,9 +115,10 @@ const PdfDetails = () => {
 
                         {/* name and title */}
                         <div className="bg-customgray mt-24 p-8 flex flex-col -space-y-2">
-                            <p className="text-4xl mb-4 font-semibold">{name}</p>
+                            <p className="text-4xl mb-4 font-semibold">{getInitials(name)}</p>
                             <p className="text-xl font-semibold mb-4">{jobtitle}</p>
                         </div>
+
 
                         {/* achivement  */}
                         {achievementsAndAwards && achievementsAndAwards.length > 0 && achievementsAndAwards.some(achievement => achievement && typeof achievement === 'string' && achievement.trim() !== '') && (
@@ -181,36 +146,44 @@ const PdfDetails = () => {
                         {/* professional experience */}
                         <div className=''>
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-10' style={{ letterSpacing: '3px' }}>Professional Experience</h1>
-                            <div className="mx-10  p-8 relative">
-                                <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
+                            <div className="mx-10 p-8 relative">
+                                <div className="absolute left-0 top-10 bottom-10 bg-green-500 w-0.5"></div>
                                 {experiences.map((experience, index) => (
                                     <div key={index} className="relative pl-6">
                                         <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
-                                        {/* Display start and end dates as plain text */}
                                         {experience.experienceStart && (
                                             <p className="text-lg mb-2 font-bold">
                                                 {experience.experienceStart} - {experience.present ? 'Present' : experience.experienceEnd}
                                             </p>
                                         )}
-
-                                        {/* Display other details */}
-                                        {experience.location && (
-                                            <p className="text-lg font-bold">
-                                                {experience.companyName && `${experience.companyName}${experience.location ? ', ' : ''}`}
-                                                {experience.location}
+                                        {/* Display company name and location if end date is not "Present" */}
+                                        {!experience.present && (
+                                            <p className="text-lg">
+                                                <span className="font-bold">{experience.companyName},</span> {experience.location}
                                             </p>
+                                        )}
+                                        {/* Display location if end date is "Present" */}
+                                        {experience.present && (
+                                            <p className="text-lg font-bold">{experience.location}</p>
                                         )}
                                         {experience.experienceJobTitle && (
                                             <p className="text-lg">{experience.experienceJobTitle}</p>
                                         )}
                                         {experience.professionalSummary && (
-                                            <div className="text-lg mb-10 ml-2 " dangerouslySetInnerHTML={{ __html: `<ul><li>${experience.professionalSummary.replace(/\n/g, '</li><li>')}</li></ul>` }} />
+                                            <div className="text-lg mb-10 ml-2" dangerouslySetInnerHTML={{ __html: `<ul><li>${experience.professionalSummary.replace(/\n/g, '</li><li>')}</li></ul>` }} />
                                         )}
                                     </div>
                                 ))}
-
                             </div>
                         </div>
+
+
+
+
+
+
+
+
 
 
                         {/* education field */}
@@ -218,7 +191,6 @@ const PdfDetails = () => {
                             <h1 className='text-lg font-bold uppercase mb-5 ml-24 mt-5' style={{ letterSpacing: '3px' }}>Education</h1>
                             <div className="mx-10  p-8 relative">
                                 <div className="absolute left-0 top-10 bottom-10 bg-green-500  w-0.5"></div>
-
                                 {education.map((educationItem, index) => (
                                     <div key={index} className='mb-10 relative pl-6'>
                                         <div className="absolute top-1 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
@@ -246,7 +218,6 @@ const PdfDetails = () => {
                                         )}
                                     </div>
                                 ))}
-
                             </div>
                         </div>
 
@@ -277,13 +248,10 @@ const PdfDetails = () => {
                 <div className="mt-4 flex justify-center">
                     <button className="bg-customRed  text-white font-bold py-2 px-4 rounded" onClick={printPdf}><FaDownload /></button>
                 </div>
-                <div className="mt-4 flex justify-center">
-                    <Link to={`/updatePdf/${PdfInfo._id}`}>
-                        <button className="bg-customRed  text-white font-bold py-2 px-4 rounded" ><FaEdit /></button></Link>
-                </div>
+
             </div>
         </div >
     );
 };
 
-export default PdfDetails;
+export default CensoredCV;

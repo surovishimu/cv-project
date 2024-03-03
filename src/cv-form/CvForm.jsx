@@ -10,14 +10,15 @@ import './style.css'
 import { LuPlus } from "react-icons/lu";
 import { useFormData } from "./FormDataProvider";
 import swal from "sweetalert";
-
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
 
 const CvForm = () => {
     const navigate = useNavigate();
 
     const { formData, setFormData } = useFormData();
-     // qualification title change
+    // qualification title change
     const [experienceTitle, setExperienceTitle] = useState('Qualifications');
     const handleExperienceTitleChange = (e) => {
         setExperienceTitle(e.target.value);
@@ -75,17 +76,15 @@ const CvForm = () => {
     // function for profile image
 
     const [imageUrl, setImageUrl] = useState(null);
+
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader(); // Create a new FileReader instance
+        const reader = new FileReader();
 
-        // Define a function to execute when the file reading is completed
         reader.onload = () => {
-            // Set the data URL of the uploaded image as the imageUrl state
             setImageUrl(reader.result);
         };
 
-        // Read the file as a data URL
         reader.readAsDataURL(file);
     };
 
@@ -184,40 +183,6 @@ const CvForm = () => {
 
 
 
-
-
-    useEffect(() => {
-        // Populate form fields with existing form data when the component mounts
-        if (formData) {
-
-            setValue(formData.profileDescription);
-            setExperienceFields(formData.experiences.map(experience => ({
-                ...experience,
-                // Set the job title field if available in formData.experiences
-                experienceJobTitle: experience.experienceJobTitle || '', // Set to empty string if not available
-            })));
-            setEducationFields(formData.education);
-            setQualificationFields(formData.qualifications);
-            setImageUrl(formData.imageUrl);
-            setSkills(formData.skillsData.map((skill, index) => ({ id: index + 1, name: skill.name })));
-
-
-            document.getElementById('name').value = formData.name;
-            document.getElementById('jobtitle').value = formData.jobtitle;
-            setAchievementFields(formData.achievementsAndAwards.map(achievement => ({ achievement })));
-            document.getElementById('location').value = formData.location;
-            document.getElementById('phoneNumber').value = formData.phoneNumber;
-            document.getElementById('emailAddress').value = formData.emailAddress;
-            document.getElementById('linkedinProfile').value = formData.linkedinProfile;
-            if (formData.languagesData) {
-                setLanguages(formData.languagesData.map((language, index) => ({
-                    ...language,
-                    id: index + 1 // Assign unique IDs to each language
-                })));
-            }
-        }
-    }, [formData]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Check if there are any language skills entered
@@ -250,7 +215,8 @@ const CvForm = () => {
 
                     const experiences = experienceFields.map(experience => ({
                         ...experience,
-                        endDate: experience.present ? 'Present' : experience.experienceEnd
+                        // Set the end date to "Present" if the "Present" status is selected
+                        experienceEnd: experience.present ? 'Present' : experience.experienceEnd
                     }));
                     const education = educationFields.map(education => ({ ...education }));
                     const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
@@ -283,7 +249,7 @@ const CvForm = () => {
 
                     // Send form data to the server
                     try {
-                        const response = await fetch('http://localhost:5000/userInfo', {
+                        const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -296,7 +262,12 @@ const CvForm = () => {
                         // Handle successful response here
                         console.log('Form data submitted successfully!');
                         setFormData(formData);
-                        navigate('/pdf');
+                        navigate('/allpdf');
+                        swal({
+                            title: "Success!",
+                            text: "Your CV has been created successfully.",
+                            icon: "success",
+                        });
                     } catch (error) {
                         // Handle error here
                         console.error('There was a problem with your fetch operation:', error);
@@ -348,7 +319,7 @@ const CvForm = () => {
                                 <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-10">Profile</h1>
                                 <div className="relative">
                                     <textarea
-                                        required
+
                                         name="profileDescription"
                                         className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
                                         placeholder="Profile Description"
@@ -451,19 +422,19 @@ const CvForm = () => {
                             <div>
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                                 <div className="ml-10 mt-5 relative">
-                                    <input required id="location" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
+                                    <input id="location" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                     <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input required id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
+                                    <input id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                     <HiPhone className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input required id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
+                                    <input id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                     <HiMail className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input required id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
+                                    <input id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                     <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                                 </div>
                             </div>
@@ -527,45 +498,41 @@ const CvForm = () => {
                             {/* Professional experience fiels */}
                             <div>
                                 <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
-
-
                                 <div className="bg-customgray mx-10 py-5 px-5">
                                     {experienceFields.map((experience, index) => (
                                         <div key={index} className="mb-4">
-
                                             <div className="flex items-center justify-between">
                                                 {/* Start Date */}
-
                                                 <div className="flex flex-col items-center justify-center">
                                                     <label htmlFor={`experienceStart_${index}`} className="mr-2">
                                                         Start Date:
                                                     </label>
                                                     <input
-                                                        type="date"
+                                                        type="text"
                                                         id={`experienceStart_${index}`}
                                                         name={`experienceStart_${index}`}
                                                         value={experience.experienceStart}
                                                         onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
                                                         className="py-2 px-4 mb-2 mr-2 bg-customgray"
+                                                        placeholder="M/Y(09/2024)"
                                                     />
                                                 </div>
-
-
                                                 {/* End Date */}
                                                 <div className="flex flex-col items-center justify-center">
                                                     <label htmlFor={`experienceEnd_${index}`} className="mr-2">
                                                         End Date:
                                                     </label>
                                                     <input
-                                                        type="date"
+                                                        type="text"
                                                         id={`experienceEnd_${index}`}
                                                         name={`experienceEnd_${index}`}
                                                         value={experience.experienceEnd}
                                                         onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
                                                         className={`py-2 px-4 mb-2 mr-2 bg-customgray ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
+                                                        placeholder="M/Y(09/2024)"
+                                                        disabled={experience.present}
                                                     />
                                                 </div>
-
                                                 {/* Present Option */}
                                                 <label className="checkbox-container mr-1">
                                                     Present
@@ -577,10 +544,6 @@ const CvForm = () => {
                                                     <span className="checkmark"></span>
                                                 </label>
                                             </div>
-
-
-
-
                                             <input
                                                 type="text"
                                                 id={`experienceJobTitle_${index}`}
@@ -619,21 +582,27 @@ const CvForm = () => {
                                             />
                                             {/* buttons */}
                                             <div className="flex justify-center items-center mt-5">
-
-                                                <button type="button" onClick={() => removeField(index, setExperienceFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={experienceFields.length === 1}>
-                                                    <CiCircleMinus className="w-10 h-10 " />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeField(index, setExperienceFields)}
+                                                    className="cursor-pointer mr-2 hover:text-customRed"
+                                                    disabled={experienceFields.length === 1}
+                                                >
+                                                    <CiCircleMinus className="w-10 h-10" />
                                                 </button>
-                                                <button type="button" onClick={() => addField(setExperienceFields)} className="cursor-pointer hover:text-customRed">
-                                                    <CiCirclePlus className="w-10 h-10 " />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => addField(setExperienceFields)}
+                                                    className="cursor-pointer hover:text-customRed"
+                                                >
+                                                    <CiCirclePlus className="w-10 h-10" />
                                                 </button>
                                             </div>
                                         </div>
-
-
                                     ))}
-
                                 </div>
                             </div>
+
 
                             {/* Education field */}
                             <div>
@@ -643,20 +612,21 @@ const CvForm = () => {
                                         <div key={index} className="mb-4">
                                             <div className="flex justify-between items-center">
                                                 <input
-                                                    type="date"
+                                                    type="text"
                                                     id={`eduPassDate_${index}`}
                                                     name={`eduPassDate_${index}`}
                                                     value={education.eduPassDate}
                                                     onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
+                                                    placeholder='M/Y(09/2024)'
                                                     className="py-2 px-4 mb-2  bg-customgray"
                                                 />
                                                 <input
-                                                    type="date"
+                                                    type="text"
                                                     id={`eduEndDate_${index}`}
                                                     name={`eduEndDate_${index}`}
                                                     value={education.eduEndDate}
                                                     onChange={(e) => handleChange(index, 'eduEndDate', e.target.value, setEducationFields)}
-                                                    placeholder='End Date'
+                                                    placeholder='M/Y(09/2024)'
                                                     className=" px-4 py-2 mb-2   outline-none bg-customgray"
                                                 />
                                             </div>
@@ -801,7 +771,7 @@ const CvForm = () => {
                     {/* submit button */}
                     <div className="mt-4 flex justify-center">
 
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate Pdf</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate CV</button>
                     </div>
                 </form >
 
