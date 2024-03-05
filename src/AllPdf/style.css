@@ -1,0 +1,10 @@
+.hr-short {
+    position: absolute; /* Position the <hr> tags absolutely within the container */
+    bottom: 0; /* Align the <hr> tags to the bottom of the container */
+    left: 50%; /* Adjust as needed to center the <hr> tags */
+    transform: translateX(-50%); /* Center the <hr> tags horizontally */
+    width: 50px; /* Adjust the width as needed */
+    border: none; /* Remove the default border */
+    height: 1px; /* Set the height to your desired thickness */
+    background-color: #ccc; /* Set the background color */
+}

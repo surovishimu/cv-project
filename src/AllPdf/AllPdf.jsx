@@ -1,12 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { FaEye, FaSearch, FaTrash } from "react-icons/fa";
 import swal from "sweetalert";
+import { RingLoader } from "react-spinners";
 
 const AllPdf = () => {
-    const [pdfList, setPdfList] = useState(useLoaderData());
+    const [pdfList, setPdfList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        // Fetch data from the given URL
+        fetch('https://cv-server-iota.vercel.app/userInfo')
+            .then((response) => response.json())
+            .then((data) => {
+                setPdfList(data); 
+                setLoading(false); 
+            })
+            .catch((error) => {
+                console.error("Failed to fetch data:", error);
+                setLoading(false); 
+            });
+    }, []); 
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen">
+                <RingLoader color={'#B0272E'} loading={loading} size={150} />
+            </div>
+        );
+    }
     // Function to handle delete action
     const handleDelete = (id) => {
         swal({

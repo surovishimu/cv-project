@@ -23,7 +23,7 @@ const CvForm = () => {
     const handleExperienceTitleChange = (e) => {
         setExperienceTitle(e.target.value);
     };
-    const [value, setValue] = useState(""); // State to store the input value
+
 
     // function for skills
     const [skills, setSkills] = useState([{ id: 1, name: '' }]);
@@ -130,10 +130,17 @@ const CvForm = () => {
         });
     };
 
-
+    // function for profile description
+    const [value, setValue] = useState("");
+    const [value2, setValue2] = useState("");
     const descriptionHandleChange = (event) => {
         setValue(event.target.value); // Update the state with the input value
     };
+    const descriptionHandleChange2 = (event) => {
+        setValue2(event.target.value); // Update the state with the input value
+    };
+
+
     const [experienceFields, setExperienceFields] = useState([{ experienceStart: '', experienceEnd: '', experienceJobTitle: '', companyName: '', location: '', professionalSummary: '' }]);
 
     const [educationFields, setEducationFields] = useState([
@@ -181,6 +188,26 @@ const CvForm = () => {
         }
     };
 
+    // function for custom field
+
+    const [customFields, setCustomFields] = useState([{ name: "", value: "" }]);
+
+    const handleCustomFieldChange = (index, field, value) => {
+        const updatedCustomFields = [...customFields];
+        updatedCustomFields[index][field] = value;
+        setCustomFields(updatedCustomFields);
+    };
+
+    const addCustomField = () => {
+        setCustomFields([...customFields, { title: "", date: "", subtitle: "" }]);
+    };
+
+    const removeCustomField = (index) => {
+        const updatedCustomFields = [...customFields];
+        updatedCustomFields.splice(index, 1);
+        setCustomFields(updatedCustomFields);
+    };
+
 
 
     const handleSubmit = async (e) => {
@@ -211,7 +238,8 @@ const CvForm = () => {
                     // Gather form data from state variables
                     const name = e.target.name.value;
                     const jobtitle = e.target.jobtitle.value;
-                    const profileDescription = e.target.profileDescription ? e.target.profileDescription.value : '';// Get profile description from form input
+                    const profileDescription = e.target.profileDescription ? e.target.profileDescription.value : '';
+                    const profileDescription2 = e.target.profileDescription2 ? e.target.profileDescription2.value : '';
 
                     const experiences = experienceFields.map(experience => ({
                         ...experience,
@@ -228,7 +256,11 @@ const CvForm = () => {
 
                     const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
                     const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
-
+                    const customData = customFields.map(field => ({
+                        title: field.title,
+                        date: field.date,
+                        subtitle: field.subtitle
+                    }));
                     const formData = {
                         name,
                         jobtitle,
@@ -244,7 +276,9 @@ const CvForm = () => {
                         skillsData,
                         languagesData,
                         achievementsAndAwards,
-                        experienceTitle
+                        experienceTitle,
+                        profileDescription2,
+                        customData
                     };
 
                     // Send form data to the server
@@ -464,36 +498,20 @@ const CvForm = () => {
                                 />
                             </div>
 
-
-                            {/* Achievements and Awards field */}
-                            <div className="">
-                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
-                                <div className="bg-customgray mx-10 py-5 px-5">
-                                    {achievementFields.map((achievement, index) => (
-                                        <div key={index} className="mb-4">
-                                            <input
-                                                type="text"
-                                                id={`achievement_${index}`}
-                                                name={`achievement_${index}`}
-                                                value={achievement.achievement}
-                                                onChange={(e) => handleChange(index, 'achievement', e.target.value, setAchievementFields)}
-                                                placeholder='Achievements and Awards'
-                                                className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
-                                            />
-                                            {/* buttons */}
-                                            <div className="flex justify-center items-center mt-5">
-                                                <button type="button" onClick={() => removeAchievementField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={achievementFields.length === 1}>
-                                                    <CiCircleMinus className="w-10 h-10 " />
-                                                </button>
-                                                <button type="button" onClick={() => addAchievementField()} className="cursor-pointer hover:text-customRed">
-                                                    <CiCirclePlus className="w-10 h-10 " />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
+                            {/*right side  profile description */}
+                            <div>
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Profile</h1>
+                                <textarea
+                                    name="profileDescription2"
+                                    className="bg-customgray border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
+                                    placeholder="Profile Description"
+                                    value={value2}
+                                    onChange={descriptionHandleChange2}
+                                    style={{ width: 'calc(95% - 40px)' }} // Adjust width to match professional summary field
+                                />
                             </div>
+
+
 
                             {/* Professional experience fiels */}
                             <div>
@@ -601,6 +619,36 @@ const CvForm = () => {
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+
+                            {/* Achievements and Awards field */}
+                            <div className="">
+                                <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
+                                <div className="bg-customgray mx-10 py-5 px-5">
+                                    {achievementFields.map((achievement, index) => (
+                                        <div key={index} className="mb-4">
+                                            <input
+                                                type="text"
+                                                id={`achievement_${index}`}
+                                                name={`achievement_${index}`}
+                                                value={achievement.achievement}
+                                                onChange={(e) => handleChange(index, 'achievement', e.target.value, setAchievementFields)}
+                                                placeholder='Achievements and Awards'
+                                                className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            />
+                                            {/* buttons */}
+                                            <div className="flex justify-center items-center mt-5">
+                                                <button type="button" onClick={() => removeAchievementField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={achievementFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
+                                                </button>
+                                                <button type="button" onClick={() => addAchievementField()} className="cursor-pointer hover:text-customRed">
+                                                    <CiCirclePlus className="w-10 h-10 " />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
                             </div>
 
 
@@ -713,6 +761,7 @@ const CvForm = () => {
                                         <option value="Work History">Work History</option>
                                         <option value="projects">Projects</option>
                                         <option value="certifications">Certifications</option>
+                                        <option value="Network and Memberships">Network and Memberships</option>
                                         {/* Add more options as needed */}
                                     </select>
                                 </h1>
@@ -763,6 +812,57 @@ const CvForm = () => {
 
                                 </div>
                             </div>
+
+                            {/* Custom Fields */}
+                            <div className="bg-customgray mx-10 py-5 px-5 relative mt-20">
+
+                                {customFields.map((customField, index) => (
+                                    <div key={index} className="pt-8 relative">
+                                        <input
+                                            type="text"
+                                            id={`title_${index}`}
+                                            name={`title_${index}`}
+                                            placeholder="Title"
+                                            value={customField.title}
+                                            onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+
+                                        <input
+                                            type="text"
+                                            id={`date_${index}`}
+                                            name={`date_${index}`}
+                                            placeholder="Date"
+                                            value={customField.date}
+                                            onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+
+                                        <input
+                                            type="text"
+                                            id={`subtitle_${index}`}
+                                            name={`subtitle_${index}`}
+                                            placeholder="Subtitle"
+                                            value={customField.subtitle}
+                                            onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+
+                                        <div className="flex justify-center items-center mt-5">
+                                            <button type="button" onClick={() => removeCustomField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={customFields.length === 1}>
+                                                <CiCircleMinus className="w-10 h-10 " />
+                                            </button>
+                                            <button type="button" onClick={() => addCustomField()} className="cursor-pointer hover:text-customRed">
+                                                <CiCirclePlus className="w-10 h-10 " />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+
+                            </div>
+
+
+
 
                         </div>
                     </div>

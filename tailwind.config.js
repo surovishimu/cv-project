@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        customRed: '#B0272E',
+        customRed: '#b5050e',
         customgray: '#D9D9D9'
       },
     },
   },
-  
+
 }

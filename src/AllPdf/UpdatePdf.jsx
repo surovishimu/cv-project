@@ -9,8 +9,11 @@ import swal from "sweetalert";
 
 const UpdatePdf = () => {
     const navigate = useNavigate();
+
     const updatePdf = useLoaderData();
-    const { _id, name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle } = updatePdf;
+    const { _id, name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customData } = updatePdf;
+
+
 
 
     // image upload function---------------------
@@ -218,9 +221,11 @@ const UpdatePdf = () => {
         });
     };
 
-    // function for qualification field --------------------
+
+    // function for qualification field
+
     const [qualificationFields, setQualificationFields] = useState([]);
-    const [experienceHeader, setExperienceHeader] = useState('Qualifications');
+    const [selectedQualificationTitle, setSelectedQualificationTitle] = useState(experienceTitle);
     const addQualificationField = () => {
         setQualificationFields(prevQualificationFields => [
             ...prevQualificationFields,
@@ -243,11 +248,51 @@ const UpdatePdf = () => {
             return updatedFields;
         });
     };
-    const handleExperienceTitleChange = (e) => {
-        console.log("Selected value:", e.target.value);
-        setExperienceHeader(e.target.value);
+    const handleQualificationTitleChange = (e) => {
+        setSelectedQualificationTitle(e.target.value);
     };
-    console.log("Experience Header:", experienceHeader);
+
+    // function for custom field
+    const [customFields, setCustomFields] = useState([]);
+
+    // Function to add a new custom field
+    const addCustomField = () => {
+        setCustomFields(prevCustomFields => [
+            ...prevCustomFields,
+            { title: '', date: '', subtitle: '' }
+        ]);
+    };
+
+    // Function to remove a custom field by index
+    const removeCustomField = (index) => {
+        setCustomFields(prevCustomFields => prevCustomFields.filter((_, i) => i !== index));
+    };
+
+    // Function to handle changes in custom field values
+    const handleCustomFieldChange = (index, field, value) => {
+        setCustomFields(prevCustomFields => {
+            const updatedFields = [...prevCustomFields];
+            updatedFields[index][field] = value;
+            return updatedFields;
+        });
+    };
+
+    useEffect(() => {
+        // Check if updatePdf.customData exists and is an array
+        if (Array.isArray(updatePdf.customData) && updatePdf.customData.length > 0) {
+            // Map each custom data object to a custom field
+            setCustomFields(updatePdf.customData.map(data => ({
+                title: data.title || '',
+                date: data.date || '',
+                subtitle: data.subtitle || ''
+            })));
+        } else {
+            // If custom data is not available or is not an array, initialize with an empty array
+            setCustomFields([]);
+        }
+    }, [updatePdf.customData]);
+
+
 
     // form submit
     const handleSubmit = async (e) => {
@@ -255,6 +300,7 @@ const UpdatePdf = () => {
         const name = e.target.name.value;
         const jobtitle = e.target.jobtitle.value;
         const profileDescription = e.target.profileDescription.value;
+        const profileDescription2 = e.target.profileDescription2.value;
         const imageUrl = await uploadImageToCloudinary();
         const skillsData = skills.map(skill => ({ name: skill.name, level: skill.level }));
         const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
@@ -275,11 +321,17 @@ const UpdatePdf = () => {
             professionalSummary: experience.professionalSummary,
             present: experience.present
         }));
+        const customData = customFields.map(customField => ({
+            title: customField.title,
+            date: customField.date,
+            subtitle: customField.subtitle
+        }));
 
         const formData = {
             name,
             jobtitle,
             profileDescription,
+            profileDescription2,
             imageUrl,
             skillsData,
             languagesData,
@@ -291,7 +343,10 @@ const UpdatePdf = () => {
             experiences,
             education,
             qualifications,
-            experienceHeader
+            customData,
+            experienceTitle: selectedQualificationTitle
+
+
 
 
         };
@@ -501,40 +556,19 @@ const UpdatePdf = () => {
                             />
                         </div>
 
-                        {/* Achievements and Awards field */}
-                        <div className="">
-                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
-                            <div className="bg-customgray mx-10 py-5 px-5">
-                                {achievementFields.map((field, index) => (
-                                    <div key={field.id} className="mb-4">
-                                        <input
-                                            type="text"
-                                            value={field.achievement}
-                                            onChange={e => handleAchievementChange(field.id, e.target.value)}
-                                            placeholder="Achievements and Awards"
-                                            className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
-                                        />
-                                        {/* Buttons for adding and removing achievement fields */}
-                                        <div className="flex justify-center items-center mt-5">
-                                            <button
-                                                type="button"
-                                                onClick={() => removeAchievementField(field.id)}
-                                                className="cursor-pointer mr-2 hover:text-customRed"
-                                                disabled={achievementFields.length === 1}
-                                            >
-                                                <CiCircleMinus className="w-10 h-10 " />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={addAchievementField}
-                                                className="cursor-pointer hover:text-customRed"
-                                            >
-                                                <CiCirclePlus className="w-10 h-10 " />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+
+
+                        {/*right side  profile description */}
+                        <div>
+                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Profile</h1>
+                            <textarea
+                                name="profileDescription2"
+                                className="bg-customgray border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
+                                placeholder="Profile Description "
+                                defaultValue={profileDescription2}
+
+                                style={{ width: 'calc(93% - 40px)' }} // Adjust width to match professional summary field
+                            />
                         </div>
                         {/* professional experience */}
                         <div>
@@ -637,6 +671,44 @@ const UpdatePdf = () => {
                             </div>
                         </div>
 
+
+                        {/* Achievements and Awards field */}
+                        <div className="">
+                            <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
+                            <div className="bg-customgray mx-10 py-5 px-5">
+                                {achievementFields.map((field, index) => (
+                                    <div key={field.id} className="mb-4">
+                                        <input
+                                            type="text"
+                                            value={field.achievement}
+                                            onChange={e => handleAchievementChange(field.id, e.target.value)}
+                                            placeholder="Achievements and Awards"
+                                            className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        />
+                                        {/* Buttons for adding and removing achievement fields */}
+                                        <div className="flex justify-center items-center mt-5">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeAchievementField(field.id)}
+                                                className="cursor-pointer mr-2 hover:text-customRed"
+                                                disabled={achievementFields.length === 1}
+                                            >
+                                                <CiCircleMinus className="w-10 h-10 " />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={addAchievementField}
+                                                className="cursor-pointer hover:text-customRed"
+                                            >
+                                                <CiCirclePlus className="w-10 h-10 " />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+
                         {/* Education field */}
                         <div>
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Education</h1>
@@ -731,13 +803,15 @@ const UpdatePdf = () => {
                                 ))}
                             </div>
                         </div>
+
+
                         {/* Qualifications field */}
                         <div>
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">
                                 <select
                                     className="border-none bg-transparent focus:outline-none"
-                                    onChange={handleExperienceTitleChange} // Update the experienceHeader state when the value changes
-                                    value={experienceHeader} // Set the value of the select element to the experienceHeader state variable
+                                    value={selectedQualificationTitle} // Set the selected value of the dropdown
+                                    onChange={handleQualificationTitleChange} // Handle change event
                                 >
                                     <option value="Qualifications">Qualifications</option>
                                     <option value="Work History">Work History</option>
@@ -794,6 +868,53 @@ const UpdatePdf = () => {
 
 
 
+                        {/* Custom Fields */}
+                        <div className="bg-customgray mx-10 py-5 px-5 relative mt-20">
+
+                            {customFields.map((customField, index) => (
+                                <div key={index} className="pt-8 relative">
+                                    <input
+                                        type="text"
+                                        id={`title_${index}`}
+                                        name={`title_${index}`}
+                                        placeholder="Title"
+                                        value={customField.title}
+                                        onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
+                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                    />
+
+                                    <input
+                                        type="text"
+                                        id={`date_${index}`}
+                                        name={`date_${index}`}
+                                        placeholder="Date"
+                                        value={customField.date}
+                                        onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
+                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                    />
+
+                                    <input
+                                        type="text"
+                                        id={`subtitle_${index}`}
+                                        name={`subtitle_${index}`}
+                                        placeholder="Subtitle"
+                                        value={customField.subtitle}
+                                        onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
+                                        className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                    />
+
+                                    <div className="flex justify-center items-center mt-5">
+                                        <button type="button" onClick={() => removeCustomField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={customFields.length === 1}>
+                                            <CiCircleMinus className="w-10 h-10 " />
+                                        </button>
+                                        <button type="button" onClick={() => addCustomField()} className="cursor-pointer hover:text-customRed">
+                                            <CiCirclePlus className="w-10 h-10 " />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+
+                        </div>
 
 
 

@@ -22,8 +22,8 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'allpdf',
-                element: <AllPdf></AllPdf>,
-                loader: () => fetch('https://cv-server-iota.vercel.app/userInfo')
+                element: <AllPdf></AllPdf>
+               
             },
             {
                 path: 'pdfDetails/:id',
