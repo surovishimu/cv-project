@@ -377,7 +377,7 @@ const UpdatePdf = () => {
             <form onSubmit={handleSubmit}>
                 <div className='w-full flex'>
                     {/* Left Section */}
-                    <div className='w-2/6 bg-customRed'>
+                    <div className='w-2/6 bg-[#bd0811]'>
                         {/* Image Upload */}
                         <div>
                             <div className={`w-[129px] h-[128px] bg-white relative mx-auto my-16 ${imgUrl ? 'rounded-full' : 'rounded-full'}`}>
@@ -413,7 +413,7 @@ const UpdatePdf = () => {
                                 <textarea
 
                                     name="profileDescription"
-                                    className="bg-customRed border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none"
+                                    className="bg-[#bd0811] border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none"
                                     placeholder="Profile Description"
                                     defaultValue={profileDescription}
                                     style={{ textIndent: "0" }} // Set text-indent to 0
@@ -430,7 +430,7 @@ const UpdatePdf = () => {
                                         value={skill.name}
                                         onChange={e => handleSkillChange(skill.id, e.target.value)}
                                         placeholder="Add skill..."
-                                        className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-customRed text-customgray"
+                                        className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#bd0811] text-customgray"
                                     />
                                     {index !== 0 && (
                                         <button
@@ -494,7 +494,7 @@ const UpdatePdf = () => {
                                                 value={newLanguage}
                                                 onChange={(e) => setNewLanguage(e.target.value)}
                                                 placeholder="Enter language name"
-                                                className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-customRed text-customgray"
+                                                className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#bd0811] text-customgray"
                                             />
                                             <button type="button" onClick={handleAddLanguage}>
                                                 <HiOutlinePlus className="text-customgray ml-1" />
@@ -509,19 +509,19 @@ const UpdatePdf = () => {
                         <div>
                             <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                             <div className="ml-10 mt-5 relative">
-                                <input id="location" defaultValue={location} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
+                                <input id="location" defaultValue={location} className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                 <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input id="phoneNumber" defaultValue={phoneNumber} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
+                                <input id="phoneNumber" defaultValue={phoneNumber} className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                 <HiPhone className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input id="emailAddress" defaultValue={emailAddress} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
+                                <input id="emailAddress" defaultValue={emailAddress} className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                 <HiMail className="absolute top-2 left-2 text-customgray" />
                             </div>
                             <div className="ml-10 mt-5 relative">
-                                <input id="linkedinProfile" defaultValue={linkedinProfile} className="h-8 w-56 p-2 pl-8 bg-customRed border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
+                                <input id="linkedinProfile" defaultValue={linkedinProfile} className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                 <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                             </div>
                         </div>
@@ -532,7 +532,7 @@ const UpdatePdf = () => {
                     {/* Right Section */}
                     <div className='w-4/6'>
                         {/* name and job title */}
-                        <div className="bg-customgray w-full mt-24 p-8">
+                        <div className="bg-slate-300 w-full mt-24 p-8">
                             {/* Name Input */}
                             <input
                                 defaultValue={name}
@@ -541,7 +541,7 @@ const UpdatePdf = () => {
                                 id="name"
                                 name="name"
                                 placeholder='Full Name'
-                                className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
+                                className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-slate-300"
                                 style={{ 'fontSize': '22px' }}
                             />
                             {/* Job Title Input */}
@@ -552,7 +552,7 @@ const UpdatePdf = () => {
                                 id="jobtitle"
                                 name="jobtitle"
                                 placeholder='Job Title'
-                                className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-customgray"
+                                className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-slate-300"
                             />
                         </div>
 
@@ -563,7 +563,7 @@ const UpdatePdf = () => {
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Profile</h1>
                             <textarea
                                 name="profileDescription2"
-                                className="bg-customgray border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
+                                className="bg-slate-300 border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
                                 placeholder="Profile Description "
                                 defaultValue={profileDescription2}
 
@@ -573,7 +573,7 @@ const UpdatePdf = () => {
                         {/* professional experience */}
                         <div>
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
-                            <div className="bg-customgray mx-10 py-5 px-5">
+                            <div className="bg-slate-300 mx-10 py-5 px-5">
                                 {experienceFields.map((experience, index) => (
                                     <div key={experience.id} className="mb-4">
                                         <div className="flex items-center justify-between">
@@ -588,7 +588,7 @@ const UpdatePdf = () => {
                                                     name={`experienceStart_${experience.id}`}
                                                     value={experience.experienceStart}
                                                     onChange={(e) => handleExperienceChange(index, 'experienceStart', e.target.value)}
-                                                    className="py-2 px-4 mb-2 mr-2 bg-customgray"
+                                                    className="py-2 px-4 mb-2 mr-2 bg-slate-300"
                                                     placeholder="M/Y(09/2024)"
                                                 />
                                             </div>
@@ -603,7 +603,7 @@ const UpdatePdf = () => {
                                                     name={`experienceEnd_${experience.id}`}
                                                     value={experience.experienceEnd}
                                                     onChange={(e) => handleExperienceChange(index, 'experienceEnd', e.target.value)}
-                                                    className={`py-2 px-4 mb-2 mr-2 bg-customgray ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
+                                                    className={`py-2 px-4 mb-2 mr-2 bg-slate-300 ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
                                                     placeholder="M/Y(09/2024)"
                                                     disabled={experience.present}
                                                 />
@@ -626,7 +626,7 @@ const UpdatePdf = () => {
                                             value={experience.experienceJobTitle}
                                             onChange={(e) => handleExperienceChange(index, 'experienceJobTitle', e.target.value)}
                                             placeholder='Job Title'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray "
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300 "
                                         />
 
                                         <input
@@ -636,7 +636,7 @@ const UpdatePdf = () => {
                                             value={experience.companyName}
                                             onChange={(e) => handleExperienceChange(index, 'companyName', e.target.value)}
                                             placeholder='Company Name'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -645,7 +645,7 @@ const UpdatePdf = () => {
                                             value={experience.location}
                                             onChange={(e) => handleExperienceChange(index, 'location', e.target.value)}
                                             placeholder='Location'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <textarea
                                             id={`professionalSummary_${experience.id}`}
@@ -653,7 +653,7 @@ const UpdatePdf = () => {
                                             value={experience.professionalSummary}
                                             onChange={(e) => handleExperienceChange(index, 'professionalSummary', e.target.value)}
                                             placeholder='Professional Summary'
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
                                             onKeyDown={(e) => handleTextareaKeyDown(e, index)}
                                         />
                                         {/* buttons */}
@@ -675,7 +675,7 @@ const UpdatePdf = () => {
                         {/* Achievements and Awards field */}
                         <div className="">
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
-                            <div className="bg-customgray mx-10 py-5 px-5">
+                            <div className="bg-slate-300 mx-10 py-5 px-5">
                                 {achievementFields.map((field, index) => (
                                     <div key={field.id} className="mb-4">
                                         <input
@@ -683,7 +683,7 @@ const UpdatePdf = () => {
                                             value={field.achievement}
                                             onChange={e => handleAchievementChange(field.id, e.target.value)}
                                             placeholder="Achievements and Awards"
-                                            className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         {/* Buttons for adding and removing achievement fields */}
                                         <div className="flex justify-center items-center mt-5">
@@ -712,7 +712,7 @@ const UpdatePdf = () => {
                         {/* Education field */}
                         <div>
                             <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Education</h1>
-                            <div className="bg-customgray mx-10 py-5 px-5">
+                            <div className="bg-slate-300 mx-10 py-5 px-5">
                                 {educationFields.map((education, index) => (
                                     <div key={index} className="mb-4">
                                         <div className="flex justify-between items-center">
@@ -722,7 +722,7 @@ const UpdatePdf = () => {
                                                 name={`eduPassDate_${index}`}
                                                 value={education.eduPassDate}
                                                 onChange={(e) => handleChange(index, 'eduPassDate', e.target.value)}
-                                                className="py-2 px-4 mb-2  bg-customgray"
+                                                className="py-2 px-4 mb-2  bg-slate-300"
                                                 placeholder='M/Y(09/2024)'
                                             />
                                             <input
@@ -732,7 +732,7 @@ const UpdatePdf = () => {
                                                 value={education.eduEndDate}
                                                 onChange={(e) => handleChange(index, 'eduEndDate', e.target.value)}
                                                 placeholder='M/Y(09/2024)'
-                                                className=" px-4 py-2 mb-2   outline-none bg-customgray"
+                                                className=" px-4 py-2 mb-2   outline-none bg-slate-300"
                                             />
                                         </div>
                                         <input
@@ -742,7 +742,7 @@ const UpdatePdf = () => {
                                             value={education.schoolName}
                                             onChange={(e) => handleChange(index, 'schoolName', e.target.value)}
                                             placeholder='School/University Name'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -751,7 +751,7 @@ const UpdatePdf = () => {
                                             value={education.edulocation}
                                             onChange={(e) => handleChange(index, 'edulocation', e.target.value)}
                                             placeholder='Location'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -760,7 +760,7 @@ const UpdatePdf = () => {
                                             value={education.degree}
                                             onChange={(e) => handleChange(index, 'degree', e.target.value)}
                                             placeholder='Degree Obtained'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -769,7 +769,7 @@ const UpdatePdf = () => {
                                             value={education.major}
                                             onChange={(e) => handleChange(index, 'major', e.target.value)}
                                             placeholder='Major/Field of Study'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -778,7 +778,7 @@ const UpdatePdf = () => {
                                             value={education.curricularActivity}
                                             onChange={(e) => handleChange(index, 'curricularActivity', e.target.value)}
                                             placeholder='Extracurricular Activity'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -787,7 +787,7 @@ const UpdatePdf = () => {
                                             value={education.additionalNotes}
                                             onChange={(e) => handleChange(index, 'additionalNotes', e.target.value)}
                                             placeholder='Additional Notes'
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
 
                                         {/* buttons */}
@@ -820,7 +820,7 @@ const UpdatePdf = () => {
                                     {/* Add more options as needed */}
                                 </select>
                             </h1>
-                            <div className="bg-customgray mx-10 py-5 px-5 relative">
+                            <div className="bg-slate-300 mx-10 py-5 px-5 relative">
                                 {qualificationFields.map((qualification, index) => (
                                     <div key={index} className="pt-8 relative">
                                         {/* Inputs for each qualification field */}
@@ -831,7 +831,7 @@ const UpdatePdf = () => {
                                             value={qualification.year}
                                             onChange={(e) => handleQualificationChange(index, 'year', e.target.value)}
                                             placeholder='Year'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -840,7 +840,7 @@ const UpdatePdf = () => {
                                             value={qualification.technicalSkills}
                                             onChange={(e) => handleQualificationChange(index, 'technicalSkills', e.target.value)}
                                             placeholder='Technical Skills'
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <input
                                             type="text"
@@ -849,7 +849,7 @@ const UpdatePdf = () => {
                                             value={qualification.additionalQualifications}
                                             onChange={(e) => handleQualificationChange(index, 'additionalQualifications', e.target.value)}
                                             placeholder='Additional Qualifications'
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
                                         />
                                         <div className="flex justify-center items-center mt-5">
                                             {/* Button to remove the qualification field */}
@@ -869,7 +869,7 @@ const UpdatePdf = () => {
 
 
                         {/* Custom Fields */}
-                        <div className="bg-customgray mx-10 py-5 px-5 relative mt-20">
+                        <div className="bg-slate-300 mx-10 py-5 px-5 relative mt-20">
 
                             {customFields.map((customField, index) => (
                                 <div key={index} className="pt-8 relative">
@@ -880,7 +880,7 @@ const UpdatePdf = () => {
                                         placeholder="Title"
                                         value={customField.title}
                                         onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                     />
 
                                     <input
@@ -890,7 +890,7 @@ const UpdatePdf = () => {
                                         placeholder="Date"
                                         value={customField.date}
                                         onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
                                     />
 
                                     <input
@@ -900,7 +900,7 @@ const UpdatePdf = () => {
                                         placeholder="Subtitle"
                                         value={customField.subtitle}
                                         onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-customgray"
+                                        className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
                                     />
 
                                     <div className="flex justify-center items-center mt-5">

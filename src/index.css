@@ -1,22 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* Define Font Face for Normal */
 @font-face {
     font-family: 'CustomFont';
     src: url('/src/Font/DK-Normal.woff') format('woff');
-   
-  }
-  
-  /* Define Font Face for Bold */
-  @font-face {
+
+}
+
+/* Define Font Face for Bold */
+@font-face {
     font-family: 'CustomFont';
     src: url('/src/Font/DK-Bold.woff') format('woff');
     font-weight: bold;
-    
-  }
-  
-  /* Apply the Custom Font */
-  body {
+
+}
+
+/* Apply the Custom Font */
+body {
     font-family: 'CustomFont', sans-serif;
-  }
+}

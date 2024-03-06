@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
 import CvForm from "../cv-form/CvForm";
-import PdfDownload from "../PDF/PdfDownload";
+
 import AllPdf from "../AllPdf/AllPdf";
 import PdfDetails from "../AllPdf/PdfDetails";
 import UpdatePdf from "../AllPdf/UpdatePdf";
@@ -16,14 +16,11 @@ export const router = createBrowserRouter([
                 path: '/',
                 element: <CvForm />
             },
-            {
-                path: 'pdf',
-                element: <PdfDownload />
-            },
+
             {
                 path: 'allpdf',
                 element: <AllPdf></AllPdf>
-               
+
             },
             {
                 path: 'pdfDetails/:id',
