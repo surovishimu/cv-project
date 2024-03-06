@@ -71,7 +71,7 @@ const AllPdf = () => {
         .reverse();
 
     return (
-        <div className="w-4/5 bg-[#bd0811] min-h-screen">
+        <div className="w-4/5 bg-[#C3202B] min-h-screen">
             <div className="flex justify-between items-center ">
                 <h2 className="text-2xl mb-4 ml-5 font-bold text-white">Browse CV Collection</h2>
                 <div className="flex items-center mb-4 ml-2 mt-2">
@@ -117,7 +117,7 @@ const AllPdf = () => {
                                             </button>
                                         </Link>
                                         {/* Delete Button */}
-                                        <button onClick={() => handleDelete(cv._id)} className="px-4 py-2 bg-red-500 hover:bg-[#bd0811] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center">
+                                        <button onClick={() => handleDelete(cv._id)} className="px-4 py-2 bg-red-500 hover:bg-[#C3202B] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center">
                                             <FaTrash className="mr-1" />
                                             Delete
                                         </button>

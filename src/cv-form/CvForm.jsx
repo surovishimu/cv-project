@@ -318,7 +318,7 @@ const CvForm = () => {
                 <form onSubmit={handleSubmit}>
                     <div className='w-full flex'>
                         {/* Left side */}
-                        <div className='w-2/6 bg-[#bd0811]'>
+                        <div className='w-2/6 bg-[#C3202B]'>
 
                             {/* image field */}
                             <div>
@@ -355,7 +355,7 @@ const CvForm = () => {
                                     <textarea
 
                                         name="profileDescription"
-                                        className="bg-[#bd0811] border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
+                                        className="bg-[#C3202B] border border-[#d4d4d8] text-white h-20 w-56 mx-auto pl-4 outline-none text-left ml-10 resize-none" // Added resize-none to prevent resizing
                                         placeholder="Profile Description"
                                         value={value}
                                         onChange={descriptionHandleChange}
@@ -376,7 +376,7 @@ const CvForm = () => {
                                             value={skill.name}
                                             onChange={e => handleSkillChange(skill.id, e.target.value)}
                                             placeholder="Add skill..."
-                                            className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#bd0811] text-customgray"
+                                            className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#C3202B] text-customgray"
                                         />
                                         {index !== 0 && (
                                             <button
@@ -441,7 +441,7 @@ const CvForm = () => {
                                             value={newLanguage}
                                             onChange={(e) => setNewLanguage(e.target.value)}
                                             placeholder="Enter language name"
-                                            className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#bd0811] text-customgray"
+                                            className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#C3202B] text-customgray"
                                         />
                                         <button type="button" onClick={handleAddLanguage}>
                                             <LuPlus className="text-customgray ml-1" />
@@ -456,19 +456,19 @@ const CvForm = () => {
                             <div>
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                                 <div className="ml-10 mt-5 relative">
-                                    <input id="location" className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
+                                    <input id="location" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
                                     <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
+                                    <input id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
                                     <HiPhone className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
+                                    <input id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
                                     <HiMail className="absolute top-2 left-2 text-customgray" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
-                                    <input id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-[#bd0811] border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
+                                    <input id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
                                     <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
                                 </div>
                             </div>
@@ -478,14 +478,14 @@ const CvForm = () => {
                         {/* right side  */}
                         <div className='w-4/6 '>
                             {/* name and title field */}
-                            <div className="bg-slate-300 w-full mt-24 p-8">
+                            <div className="bg-[#EFF0F2] w-full mt-24 p-8">
                                 <input
                                     required
                                     type="text"
                                     id="name"
                                     name="name"
                                     placeholder='Full Name'
-                                    className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-slate-300"
+                                    className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-[#EFF0F2]"
                                     style={{ 'fontSize': '22px' }}
                                 />
                                 <input
@@ -494,7 +494,7 @@ const CvForm = () => {
                                     id="jobtitle"
                                     name="jobtitle"
                                     placeholder='Job Title'
-                                    className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-slate-300"
+                                    className="w-2/3 px-4 py-2 border-b-2 border-gray-400 outline-none ml-20 bg-[#EFF0F2]"
                                 />
                             </div>
 
@@ -503,7 +503,7 @@ const CvForm = () => {
                                 <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Profile</h1>
                                 <textarea
                                     name="profileDescription2"
-                                    className="bg-slate-300 border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
+                                    className="bg-[#EFF0F2] border border-[#d4d4d8] mx-10 px-4 py-2 outline-none text-left resize-vertical"
                                     placeholder="Profile Description"
                                     value={value2}
                                     onChange={descriptionHandleChange2}
@@ -516,7 +516,7 @@ const CvForm = () => {
                             {/* Professional experience fiels */}
                             <div>
                                 <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Professional experience</h1>
-                                <div className="bg-slate-300 mx-10 py-5 px-5">
+                                <div className="bg-[#EFF0F2] mx-10 py-5 px-5">
                                     {experienceFields.map((experience, index) => (
                                         <div key={index} className="mb-4">
                                             <div className="flex items-center justify-between">
@@ -531,7 +531,7 @@ const CvForm = () => {
                                                         name={`experienceStart_${index}`}
                                                         value={experience.experienceStart}
                                                         onChange={(e) => handleChange(index, 'experienceStart', e.target.value, setExperienceFields)}
-                                                        className="py-2 px-4 mb-2 mr-2 bg-slate-300"
+                                                        className="py-2 px-4 mb-2 mr-2 bg-[#EFF0F2]"
                                                         placeholder="M/Y(09/2024)"
                                                     />
                                                 </div>
@@ -546,7 +546,7 @@ const CvForm = () => {
                                                         name={`experienceEnd_${index}`}
                                                         value={experience.experienceEnd}
                                                         onChange={(e) => handleChange(index, 'experienceEnd', e.target.value, setExperienceFields)}
-                                                        className={`py-2 px-4 mb-2 mr-2 bg-slate-300 ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
+                                                        className={`py-2 px-4 mb-2 mr-2 bg-[#EFF0F2] ${experience.present ? 'opacity-50 pointer-events-none' : ''}`}
                                                         placeholder="M/Y(09/2024)"
                                                         disabled={experience.present}
                                                     />
@@ -569,7 +569,7 @@ const CvForm = () => {
                                                 value={experience.experienceJobTitle}
                                                 onChange={(e) => handleChange(index, 'experienceJobTitle', e.target.value, setExperienceFields)}
                                                 placeholder='Job Title'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300 "
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2] "
                                             />
                                             <input
                                                 type="text"
@@ -578,7 +578,7 @@ const CvForm = () => {
                                                 value={experience.companyName}
                                                 onChange={(e) => handleChange(index, 'companyName', e.target.value, setExperienceFields)}
                                                 placeholder='Company Name'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -587,7 +587,7 @@ const CvForm = () => {
                                                 value={experience.location}
                                                 onChange={(e) => handleChange(index, 'location', e.target.value, setExperienceFields)}
                                                 placeholder='Location'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <textarea
                                                 id={`professionalSummary_${index}`}
@@ -595,7 +595,7 @@ const CvForm = () => {
                                                 value={experience.professionalSummary}
                                                 onChange={(e) => handleChange(index, 'professionalSummary', e.target.value, setExperienceFields)}
                                                 placeholder='Professional Summary'
-                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                                 onKeyDown={(e) => handleTextareaKeyDown(e, index)}
                                             />
                                             {/* buttons */}
@@ -624,7 +624,7 @@ const CvForm = () => {
                             {/* Achievements and Awards field */}
                             <div className="">
                                 <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Achievements and Awards (If Any)</h1>
-                                <div className="bg-slate-300 mx-10 py-5 px-5">
+                                <div className="bg-[#EFF0F2] mx-10 py-5 px-5">
                                     {achievementFields.map((achievement, index) => (
                                         <div key={index} className="mb-4">
                                             <input
@@ -634,7 +634,7 @@ const CvForm = () => {
                                                 value={achievement.achievement}
                                                 onChange={(e) => handleChange(index, 'achievement', e.target.value, setAchievementFields)}
                                                 placeholder='Achievements and Awards'
-                                                className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-4 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             {/* buttons */}
                                             <div className="flex justify-center items-center mt-5">
@@ -655,7 +655,7 @@ const CvForm = () => {
                             {/* Education field */}
                             <div>
                                 <h1 className="text-xl font-bold mt-20 ml-10 mb-5">Education</h1>
-                                <div className="bg-slate-300 mx-10 py-5 px-5">
+                                <div className="bg-[#EFF0F2] mx-10 py-5 px-5">
                                     {educationFields.map((education, index) => (
                                         <div key={index} className="mb-4">
                                             <div className="flex justify-between items-center">
@@ -666,7 +666,7 @@ const CvForm = () => {
                                                     value={education.eduPassDate}
                                                     onChange={(e) => handleChange(index, 'eduPassDate', e.target.value, setEducationFields)}
                                                     placeholder='M/Y(09/2024)'
-                                                    className="py-2 px-4 mb-2  bg-slate-300"
+                                                    className="py-2 px-4 mb-2  bg-[#EFF0F2]"
                                                 />
                                                 <input
                                                     type="text"
@@ -675,7 +675,7 @@ const CvForm = () => {
                                                     value={education.eduEndDate}
                                                     onChange={(e) => handleChange(index, 'eduEndDate', e.target.value, setEducationFields)}
                                                     placeholder='M/Y(09/2024)'
-                                                    className=" px-4 py-2 mb-2   outline-none bg-slate-300"
+                                                    className=" px-4 py-2 mb-2   outline-none bg-[#EFF0F2]"
                                                 />
                                             </div>
                                             <input
@@ -685,7 +685,7 @@ const CvForm = () => {
                                                 value={education.schoolName}
                                                 onChange={(e) => handleChange(index, 'schoolName', e.target.value, setEducationFields)}
                                                 placeholder='School/University Name'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -694,7 +694,7 @@ const CvForm = () => {
                                                 value={education.edulocation}
                                                 onChange={(e) => handleChange(index, 'edulocation', e.target.value, setEducationFields)}
                                                 placeholder='Location'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -703,7 +703,7 @@ const CvForm = () => {
                                                 value={education.degree}
                                                 onChange={(e) => handleChange(index, 'degree', e.target.value, setEducationFields)}
                                                 placeholder='Degree Obtained'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -712,7 +712,7 @@ const CvForm = () => {
                                                 value={education.major}
                                                 onChange={(e) => handleChange(index, 'major', e.target.value, setEducationFields)}
                                                 placeholder='Major/Field of Study'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -721,7 +721,7 @@ const CvForm = () => {
                                                 value={education.curricularActivity}
                                                 onChange={(e) => handleChange(index, 'curricularActivity', e.target.value, setEducationFields)}
                                                 placeholder='Extracurricular Activity'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -730,7 +730,7 @@ const CvForm = () => {
                                                 value={education.additionalNotes}
                                                 onChange={(e) => handleChange(index, 'additionalNotes', e.target.value, setEducationFields)}
                                                 placeholder='Additional Notes'
-                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
 
                                             {/* buttons */}
@@ -765,7 +765,7 @@ const CvForm = () => {
                                         {/* Add more options as needed */}
                                     </select>
                                 </h1>
-                                <div className="bg-slate-300 mx-10 py-5 px-5 relative">
+                                <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative">
 
                                     {qualificationFields.map((qualification, index) => (
                                         <div key={index} className="pt-8 relative">
@@ -776,7 +776,7 @@ const CvForm = () => {
                                                 value={qualification.year}
                                                 onChange={(e) => handleChange(index, 'year', e.target.value, setQualificationFields)}
                                                 placeholder='Year'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -785,7 +785,7 @@ const CvForm = () => {
                                                 value={qualification.technicalSkills}
                                                 onChange={(e) => handleChange(index, 'technicalSkills', e.target.value, setQualificationFields)}
                                                 placeholder='Technical skills'
-                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
                                             <input
                                                 type="text"
@@ -794,7 +794,7 @@ const CvForm = () => {
                                                 value={qualification.additionalQualifications}
                                                 onChange={(e) => handleChange(index, 'additionalQualifications', e.target.value, setQualificationFields)}
                                                 placeholder='Additional Qualifications'
-                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                             />
 
 
@@ -814,7 +814,7 @@ const CvForm = () => {
                             </div>
 
                             {/* Custom Fields */}
-                            <div className="bg-slate-300 mx-10 py-5 px-5 relative mt-20">
+                            <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative mt-20">
 
                                 {customFields.map((customField, index) => (
                                     <div key={index} className="pt-8 relative">
@@ -825,7 +825,7 @@ const CvForm = () => {
                                             placeholder="Title"
                                             value={customField.title}
                                             onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                         />
 
                                         <input
@@ -835,7 +835,7 @@ const CvForm = () => {
                                             placeholder="Date"
                                             value={customField.date}
                                             onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                         />
 
                                         <input
@@ -845,7 +845,7 @@ const CvForm = () => {
                                             placeholder="Subtitle"
                                             value={customField.subtitle}
                                             onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-slate-300"
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
                                         />
 
                                         <div className="flex justify-center items-center mt-5">

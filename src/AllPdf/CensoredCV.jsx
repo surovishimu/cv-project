@@ -52,7 +52,7 @@ const CensoredCV = () => {
 
 
                     {/* left side content */}
-                    <div className="w-2/5 mx-auto bg-[#bd0811]">
+                    <div className="w-2/5 mx-auto bg-[#C3202B]">
                         {/* image field */}
                         <div>
                             {imageUrl ? (
@@ -107,7 +107,7 @@ const CensoredCV = () => {
                                 <h1 className='text-white font-semibold  uppercase text-center mt-9 mb-10' style={{ letterSpacing: '4px', fontSize: '18px' }}>Language Skills</h1>
                                 <div className="mb-12">
                                     {languagesData.map((languageSkill, index) => (
-                                        <div key={index} className="mt-3 flex justify-around items-center ">
+                                        <div key={index} className="mt-3 flex justify-between px-5 items-center ">
                                             <h1 className="text-white font-thin mb-2" style={{ fontSize: '17px' }}>{languageSkill.name}</h1>
                                             <div className='bg-white rounded-full w-1/2 '>
                                                 <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}></div>
@@ -131,7 +131,7 @@ const CensoredCV = () => {
                     <div className="w-3/5 min-h-screen ">
 
                         {/* name and title */}
-                        <div className="bg-slate-300 mt-24 p-8 flex flex-col -space-y-2">
+                        <div className="bg-[#EFF0F2] mt-24 p-8 flex flex-col -space-y-2">
                             <p className="mb-4 text-zinc-900" style={{ fontWeight: 'bold', fontSize: '45px' }}>{getInitials(name)}</p>
                             <p className="text-2xl mb-4 ">{jobtitle}</p>
                         </div>
@@ -304,7 +304,7 @@ const CensoredCV = () => {
 
             <div>
                 <div className="mt-4 flex justify-center">
-                    <button className="bg-[#bd0811]  text-white font-bold py-2 px-4 rounded" onClick={printPdf}><FaDownload /></button>
+                    <button className="bg-[#C3202B]  text-white font-bold py-2 px-4 rounded" onClick={printPdf}><FaDownload /></button>
                 </div>
 
             </div>

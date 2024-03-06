@@ -5,6 +5,9 @@ import { HiLocationMarker } from "react-icons/hi";
 import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
 import { FaDownload } from "react-icons/fa";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 const PdfDetails = () => {
 
@@ -17,31 +20,54 @@ const PdfDetails = () => {
         return str.length > maxLength ? str.match(new RegExp('.{1,' + maxLength + '}', 'g')).join('\n') : str;
     };
 
-    const printPdf = () => {
-        const content = document.getElementById('content-id');
-        if (content) {
-            const originalBody = document.body.innerHTML;
-            const htmlContent = content.innerHTML;
 
-            // Temporarily replace the body content with the content to print
-            document.body.innerHTML = htmlContent;
+    const generatePdf = async () => {
+        const content = document.getElementById('pdf-content');
+        const contentHeight = content.scrollHeight;
+        const contentWidth = content.clientWidth;
+        const pdf = new jsPDF({
+            orientation: 'portrait', // Set the orientation to portrait
+            unit: 'px', // Use pixels as the unit
+            format: [contentWidth, contentHeight] // A4 page size in pixels (approximately)
+        });
 
-            // Print the content
-            window.print();
+        try {
+            // Convert content to canvas using html2canvas
+            const canvas = await html2canvas(document.getElementById('pdf-content'), {
+                 // Adjust scale as needed for better quality
+                useCORS: true, // Enable CORS support for images
+                scrollX: 0,
+                scrollY: -window.scrollY,
+                logging: false
+            });
 
-            // Restore the original body content
-            document.body.innerHTML = originalBody;
+            // Convert canvas to image data URL
+            const imgData = canvas.toDataURL('image/png');
+
+            // Add image to PDF
+            pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+
+            // Save PDF
+            pdf.save(`${name}.pdf`);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
         }
     };
 
 
+
+
+
+
+
+
     return (
         <div className='w-4/5 flex justify-center items-start'>
-            <div id="content-id" className="pdf-container w-full  bg-slate-50" > {/* Set a fixed width for the container */}
+            <div id="pdf-content" className="pdf-container w-full  bg-slate-50" > {/* Set a fixed width for the container */}
                 <div className="flex">
 
                     {/* left side content */}
-                    <div className="w-2/5 pb-10 mx-auto bg-[#bd0811]">
+                    <div className="w-2/5 pb-10 mx-auto bg-[#C3202B]">
                         {/* image field */}
                         <div>
                             {imageUrl ? (
@@ -54,29 +80,30 @@ const PdfDetails = () => {
                         {/* profile description */}
                         {profileDescription && (
                             <div className='w-11/12 mx-auto px-4'>
-                                <h1 className='text-white font-semibold uppercase text-center mt-5 ' style={{ letterSpacing: '4px', fontSize: '18px' }}>Profile</h1>
-                                <div className=" mt-5 text-white mx-auto position-relative " style={{ width: 'fit-content', fontSize: '15px' }}>
-                                    <p className="pb-12 text-center ">{profileDescription}</p>
-                                    <div className="border-b-2 w-1/2 mx-auto"></div>
+                                <h1 className='text-white font-semibold uppercase text-center mt-5' style={{ letterSpacing: '4px', fontSize: '18px' }}>Profile</h1>
+                                <div className="mt-5 text-white mx-auto position-relative" style={{ width: 'fit-content', fontSize: '15px' }}>
+                                    <p className="pb-12 text-center">{profileDescription}</p>
+                                    {profileDescription && <hr className="w-1/2  mx-auto " />}
                                 </div>
                             </div>
                         )}
 
 
+
                         {/* skills field */}
-                        <div className=' w-11/12 px-6 mx-auto pb-5'>
-                            <h1 className=' font-semibold  uppercase text-center mt-14 -mb-2 text-white' style={{ letterSpacing: '4px', fontSize: '18px' }}>Relevant Skills</h1>
-                            <ul className="mt-10 list-disc  text-lg mb-14" style={{ width: 'fit-content', fontSize: '16px' }}>
+                        <div className='w-11/12 px-6 mx-auto pb-5'>
+                            <h1 className='font-semibold uppercase text-center mt-14 -mb-2 text-white' style={{ letterSpacing: '4px', fontSize: '18px' }}>Relevant Skills</h1>
+                            <ul className="mt-10 list-disc text-lg mb-14" style={{ width: 'fit-content', fontSize: '16px' }}>
                                 {skillsData.map((skill, index) => (
                                     <li key={index} className="text-white flex items-center" style={{ wordWrap: 'break-word' }}>
                                         <span className="mr-2">&#8226;</span>
                                         <span>{skill.name}</span>
                                     </li>
-
                                 ))}
                             </ul>
-                            <div className="border-b-2 w-1/2 mx-auto"></div>
+                            {skillsData.length > 0 && <hr className="w-1/2 mx-auto " />}
                         </div>
+
 
 
                         {/* language skills field */}
@@ -85,7 +112,7 @@ const PdfDetails = () => {
                                 <h1 className='text-white font-semibold  uppercase text-center mt-10 mb-10' style={{ letterSpacing: '4px', fontSize: '18px' }}>Language Skills</h1>
                                 <div className="mb-14">
                                     {languagesData.map((languageSkill, index) => (
-                                        <div key={index} className="mt-3 flex justify-around items-center ">
+                                        <div key={index} className="mt-3 flex justify-between items-center px-5">
                                             <h1 className="text-white font-thin mb-2" style={{ fontSize: '17px' }}>{languageSkill.name}</h1>
                                             <div className='bg-white rounded-full w-1/2 '>
                                                 <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}></div>
@@ -96,7 +123,7 @@ const PdfDetails = () => {
                                     ))}
 
                                 </div>
-                                <div className="border-b-2 w-1/2 mx-auto"></div>
+                                <hr className="w-1/2 mx-auto " />
                             </div>
                         )}
 
@@ -156,10 +183,10 @@ const PdfDetails = () => {
 
 
                     {/* right side content */}
-                    <div className="w-3/5 min-h-screen ">
+                    <div className="w-3/5 ">
 
                         {/* name and title */}
-                        <div className="bg-slate-300 mt-24 p-8 flex flex-col -space-y-2">
+                        <div className="bg-[#EFF0F2] mt-24 p-8 flex flex-col -space-y-2">
                             <p className="mb-4 text-zinc-900" style={{ fontWeight: 'bold', fontSize: '45px' }}>{name}</p>
                             <p className="text-2xl mb-4">{jobtitle}</p>
                         </div>
@@ -335,11 +362,11 @@ const PdfDetails = () => {
 
             <div>
                 <div className="mt-4 flex justify-center">
-                    <button className="bg-[#bd0811]  text-white font-bold py-2 px-4 rounded" onClick={printPdf}><FaDownload /></button>
+                    <button className="bg-[#C3202B]  text-white font-bold py-2 px-4 rounded" onClick={generatePdf}><FaDownload /></button>
                 </div>
                 <div className="mt-4 flex justify-center">
                     <Link to={`/updatePdf/${PdfInfo._id}`}>
-                        <button className="bg-[#bd0811]  text-white font-bold py-2 px-4 rounded" ><FaEdit /></button></Link>
+                        <button className="bg-[#C3202B]  text-white font-bold py-2 px-4 rounded" ><FaEdit /></button></Link>
                 </div>
             </div>
         </div >
