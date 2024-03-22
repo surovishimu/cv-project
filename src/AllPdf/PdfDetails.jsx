@@ -9,11 +9,12 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 
+
 const PdfDetails = () => {
 
     const PdfInfo = useLoaderData();
 
-    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customData } = PdfInfo;
+    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customFieldTitle, customData } = PdfInfo;
 
 
     const breakString = (str, maxLength) => {
@@ -34,7 +35,7 @@ const PdfDetails = () => {
         try {
             // Convert content to canvas using html2canvas
             const canvas = await html2canvas(document.getElementById('pdf-content'), {
-                 // Adjust scale as needed for better quality
+                // Adjust scale as needed for better quality
                 useCORS: true, // Enable CORS support for images
                 scrollX: 0,
                 scrollY: -window.scrollY,
@@ -42,10 +43,10 @@ const PdfDetails = () => {
             });
 
             // Convert canvas to image data URL
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
             // Add image to PDF
-            pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
 
             // Save PDF
             pdf.save(`${name}.pdf`);
@@ -53,11 +54,6 @@ const PdfDetails = () => {
             console.error('Error generating PDF:', error);
         }
     };
-
-
-
-
-
 
 
 
@@ -112,9 +108,9 @@ const PdfDetails = () => {
                                 <h1 className='text-white font-semibold  uppercase text-center mt-10 mb-10' style={{ letterSpacing: '4px', fontSize: '18px' }}>Language Skills</h1>
                                 <div className="mb-14">
                                     {languagesData.map((languageSkill, index) => (
-                                        <div key={index} className="mt-3 flex justify-between items-center px-5">
+                                        <div key={index} className="mt-3 flex justify-between items-center px-14">
                                             <h1 className="text-white font-thin mb-2" style={{ fontSize: '17px' }}>{languageSkill.name}</h1>
-                                            <div className='bg-white rounded-full w-1/2 '>
+                                            <div className='bg-white rounded-full w-1/2 mt-4'>
                                                 <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}></div>
                                             </div>
 
@@ -196,10 +192,10 @@ const PdfDetails = () => {
                             <div className='w-full px-4'>
                                 <h1 className=' uppercase  mt-10 ml-5 ' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Profile summary</h1>
                                 <div className="relative ">
-                                    <div className="absolute left-6 top-1 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}> </div>
-                                    <div>  <p className="mt-7 text-[#0c0a09]  pb-10 w-10/12 ml-11 " style={{ fontSize: '15px' }}>{profileDescription2}</p>
+                                    <div className="absolute left-7 top-3 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}> </div>
+                                    <div>  <p className="mt-7 text-[#0c0a09]  pb-10 w-10/12 ml-12 " style={{ fontSize: '15px' }}>{profileDescription2}</p>
                                     </div>
-                                    <div className="absolute top-0 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full " style={{ left: '15px' }}></div>
+                                    <div className="absolute top-2 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full " style={{ left: '19px' }}></div>
                                 </div>
                             </div>
                         )}
@@ -209,118 +205,153 @@ const PdfDetails = () => {
                         <div className=''>
                             <h1 className='uppercase ml-10 mt-10' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Professional Experience</h1>
                             <div className="mx-10  p-8 relative">
-                                <div className="absolute left-1 top-10 bottom-10 bg-[#0d9488]  " style={{ width: '2px' }}></div>
+                                <div className="absolute left-2 top-16 bottom-10 bg-[#0d9488]  " style={{ width: '2px' }}></div>
                                 {experiences.map((experience, index) => (
                                     <div key={index} className="relative pl-0">
-                                        <div className="absolute top-1 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-37.7px' }}></div>
+                                        <div className="absolute top-4 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
                                         {/* Display start and end dates as plain text */}
                                         {experience.experienceStart && (
-                                            <p className=" pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
+                                            <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
                                                 {experience.experienceStart} - {experience.present ? 'Present' : experience.experienceEnd}
                                             </p>
                                         )}
 
                                         {/* Display other details */}
                                         {experience.location && (
-                                            <p className=" font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '15px' }}>
+                                            <p className="font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '15px' }}>
                                                 {experience.companyName && `${experience.companyName}${experience.location ? ', ' : ''}`}
                                                 {experience.location}
                                             </p>
                                         )}
                                         {experience.experienceJobTitle && (
-                                            <p className='-ml-2 ' style={{ fontSize: '15px' }}>{experience.experienceJobTitle}</p>
+                                            <p className='-ml-2' style={{ fontSize: '15px' }}>{experience.experienceJobTitle}</p>
+                                        )}
+                                        {/* If there's no professional summary, add margin */}
+                                        {!experience.professionalSummary && (
+                                            <div style={{ marginBottom: '30px' }}></div>
                                         )}
                                         {experience.professionalSummary && (
                                             <div className="mt-2 mb-10 -ml-2 text-gray-500 " style={{ fontSize: '15px' }} dangerouslySetInnerHTML={{ __html: `<ul><li>${experience.professionalSummary.replace(/\n/g, '</li><li>')}</li></ul>` }} />
                                         )}
                                     </div>
                                 ))}
-
                             </div>
                         </div>
 
-                        {/* achivement  */}
+
+                        {/* Achievements */}
                         {achievementsAndAwards && achievementsAndAwards.length > 0 && achievementsAndAwards.some(achievement => achievement && typeof achievement === 'string' && achievement.trim() !== '') && (
                             <div>
                                 <h1 className='text-lg font-bold uppercase ml-10 mt-5 -mb-3' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Achievements and Awards</h1>
                                 <div className="mt-5 p-8 relative">
-                                    <ul className="list-disc ml-8 text-lg">
-                                        <div className="absolute left-12 top-10 bottom-5 bg-[#0d9488]" style={{ width: '2px' }}> </div>
+                                    <div className="ml-8 text-lg">
+                                        <div className="absolute left-12 top-16 bottom-5 bg-[#0d9488]" style={{ width: '2px' }}> </div>
                                         {achievementsAndAwards.map((achievement, index) => (
-                                            // Add a conditional check to ensure achievement is a string and not null or undefined
                                             achievement && typeof achievement === 'string' && achievement.trim() !== '' && (
-                                                <li key={index} className=" flex " style={{ fontSize: '16px' }}>
-                                                    <div className="absolute  top-8 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '39px' }}></div>
-                                                    <span className="mr-2 text-xl">&#8226;</span>
-                                                    <span>{achievement}</span>
-                                                </li>
+                                                <div key={index} className="flex items-center mt-4" style={{ fontSize: '16px' }}>
+                                                    {/* Circle before each achievement */}
+                                                    <div className="w-5 h-5 bg-white absolute  border-2 border-[#0d9488] rounded-full" style={{ left: '39px' }}></div>
+                                                    <span className="mb-5 font-semibold">{achievement}</span>
+                                                </div>
                                             )
                                         ))}
-                                    </ul>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
 
+
                         {/* education field */}
-                        <div className="">
-                            <h1 className='uppercase mb-1 ml-12 mt-10' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Educational path</h1>
-                            <div className="mx-10  p-8 relative">
-                                <div className="absolute left-2 top-10 bottom-10 bg-[#0d9488]  w-0.5"></div>
 
-                                {education.map((educationItem, index) => (
-                                    <div key={index} className='mb-10 relative pl-1'>
-                                        <div className="absolute top-1 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
-                                        {/* Display start and end dates as plain text */}
-                                        {educationItem.eduPassDate && educationItem.eduEndDate && (
-                                            <p className=" pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
-                                                {educationItem.eduPassDate} - {educationItem.eduEndDate}
-                                            </p>
-                                        )}
-                                        {/* Render other education details */}
-                                        {(educationItem.schoolName || educationItem.edulocation) && (
-                                            <p className=" font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '16px' }}>{educationItem.schoolName}{educationItem.edulocation ? `, ${educationItem.edulocation}` : ''}</p>
-                                        )}
-                                        {educationItem.degree && educationItem.major && (
-                                            <p className="-ml-2 " style={{ fontSize: '16px' }}> {educationItem.degree},  {educationItem.major}</p>
-                                        )}
-
-                                        {educationItem.degree && !educationItem.major && (
-                                            <p className="-ml-2" style={{ fontSize: '16px' }}> {educationItem.degree}</p>
-                                        )}
-
-                                        {!educationItem.degree && educationItem.major && (
-                                            <p className="-ml-2" style={{ fontSize: '16px' }}>{educationItem.major}</p>
-                                        )}
-
-
-                                        {educationItem.curricularActivity && (
-                                            <p className="mt-2 mb-10 -ml-2 text-gray-500 " style={{ fontSize: '15px' }}>{educationItem.curricularActivity}</p>
-                                        )}
-                                        {educationItem.additionalNotes && (
-                                            <p className="mt-2 mb-10 -ml-2 text-gray-500 " style={{ fontSize: '15px' }}>{educationItem.additionalNotes}</p>
-                                        )}
+                        {education.some(item => {
+                            for (const key in item) {
+                                if (item[key] !== '') {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }) && (
+                                <div className="">
+                                    <h1 className='uppercase mb-1 ml-12 mt-10' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Educational path</h1>
+                                    <div className="mx-10  p-8 relative">
+                                        <div className="absolute left-2 top-12 bottom-10 bg-[#0d9488]  w-0.5"></div>
+                                        {education.map((educationItem, index) => {
+                                            let hasData = false;
+                                            for (const key in educationItem) {
+                                                if (educationItem[key] !== '') {
+                                                    hasData = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (hasData) {
+                                                return (
+                                                    <div key={index} className='mb-10 relative pl-1'>
+                                                        {/* Green circle */}
+                                                        <div className="absolute top-3 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
+                                                        {/* Display start and end dates as plain text */}
+                                                        {educationItem.eduPassDate && educationItem.eduEndDate && (
+                                                            <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
+                                                                {educationItem.eduPassDate} - {educationItem.eduEndDate}
+                                                            </p>
+                                                        )}
+                                                        {!educationItem.eduPassDate && educationItem.eduEndDate && (
+                                                            <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
+                                                                {educationItem.eduEndDate}
+                                                            </p>
+                                                        )}
+                                                        {educationItem.eduPassDate && !educationItem.eduEndDate && (
+                                                            <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
+                                                                {educationItem.eduPassDate}
+                                                            </p>
+                                                        )}
+                                                        {/* Render other education details */}
+                                                        {(educationItem.schoolName || educationItem.edulocation) && (
+                                                            <p className="font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '16px' }}>{educationItem.schoolName}{educationItem.edulocation ? `, ${educationItem.edulocation}` : ''}</p>
+                                                        )}
+                                                        {educationItem.degree && educationItem.major && (
+                                                            <p className="-ml-2 " style={{ fontSize: '16px' }}> {educationItem.degree},  {educationItem.major}</p>
+                                                        )}
+                                                        {educationItem.degree && !educationItem.major && (
+                                                            <p className="-ml-2" style={{ fontSize: '16px' }}> {educationItem.degree}</p>
+                                                        )}
+                                                        {!educationItem.degree && educationItem.major && (
+                                                            <p className="-ml-2" style={{ fontSize: '16px' }}>{educationItem.major}</p>
+                                                        )}
+                                                        {educationItem.curricularActivity && (
+                                                            <p className="mt-2  -ml-2 text-gray-500 " style={{ fontSize: '15px' }}>{educationItem.curricularActivity}</p>
+                                                        )}
+                                                        {educationItem.additionalNotes && (
+                                                            <p className="mt-2 mb-10 -ml-2 text-gray-500 " style={{ fontSize: '15px' }}>{educationItem.additionalNotes}</p>
+                                                        )}
+                                                    </div>
+                                                );
+                                            } else {
+                                                return null;
+                                            }
+                                        })}
                                     </div>
-                                ))}
+                                </div>
+                            )}
 
-                            </div>
-                        </div>
+
+
 
                         {/* qualification field */}
                         {qualifications.some(qualification => qualification && Object.values(qualification).some(value => value !== '')) && (
                             <div>
                                 <h1 className='uppercase mt-10 ml-12' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>{experienceTitle}</h1>
                                 <div className="mx-10 p-8 relative" style={{ width: '100%' }}>
-                                    <div className="absolute left-2 top-10 bottom-10 bg-[#0d9488] w-0.5"></div>
+                                    <div className="absolute left-2 top-12 bottom-10 bg-[#0d9488] w-0.5"></div>
                                     {qualifications.map((qualification, index) => (
                                         Object.values(qualification).some(value => value !== '') && (
                                             <div key={index} className='relative mb-10 pl-1'>
-                                                <div className="absolute top-1 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
+                                                <div className="absolute top-4 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
                                                 {qualification.year && (
                                                     <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>{qualification.year}</p>
                                                 )}
                                                 {qualification.technicalSkills && (
-                                                    <p className="text-lg mb-8 font-bold -ml-2" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '16px' }}>{qualification.technicalSkills}</p>
+                                                    <p className="text-lg  font-bold -ml-2" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '16px' }}>{qualification.technicalSkills}</p>
                                                 )}
                                                 {qualification.additionalQualifications && (
                                                     <p className="-ml-2 text-gray-500 mb-8" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '15px' }}>{qualification.additionalQualifications}</p>
@@ -332,27 +363,35 @@ const PdfDetails = () => {
                             </div>
                         )}
 
+                        {/* custom field */}
 
-
-                        {/* Custom field section */}
-                        {customData && customData.length > 0 && (
+                        {customData && customData.length > 0 && customFieldTitle && (
                             <div>
-                                {customData.map((field, index) => (
-                                    Object.values(field).some(value => value !== '') && (
-                                        <div key={index} className="mx-10 p-8 relative" style={{ width: '100%' }}>
-                                            <div className="absolute left-0 top-28 bottom-14 bg-green-500 w-0.5"></div>
-                                            {field.title && <h1 className="text-lg font-bold uppercase ml-24 my-5" style={{ letterSpacing: '3px' }}>{field.title}</h1>}
-
-                                            <div className='relative mb-10 pl-6'>
-                                                <div className="absolute top-0 w-4 h-4 bg-white border border-green-500 rounded-full" style={{ left: '-38.7px' }}></div>
-                                                <p className="text-lg " style={{ maxWidth: '80%', wordWrap: 'break-word' }}>{field.date}</p>
-                                                <p className="text-lg mb-8" style={{ maxWidth: '80%', wordWrap: 'break-word' }}>{field.subtitle}</p>
-                                            </div>
+                                <h1 className='uppercase mt-10 ml-12' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>{customFieldTitle}</h1>
+                                <div className="mx-10 py-5 px-5 relative" style={{ width: '100%' }}>
+                                    <div className="absolute left-2 top-20 bottom-4 bg-[#0d9488] w-0.5"></div>
+                                    {customData.map((data, index) => (
+                                        <div key={index} className="pt-8 relative pl-2">
+                                            <div className="absolute top-12 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-20.7px' }}></div>
+                                            {data.date && (
+                                                <p className="pt-1 mb-2 uppercase" style={{ fontSize: '17px', fontWeight: 'bold' }}>{data.date}</p>
+                                            )}
+                                            {data.title && (
+                                                <p className="text-lg font-bold" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '16px' }}>{data.title}</p>
+                                            )}
+                                            {data.subtitle && (
+                                                <p>{data.subtitle}</p>
+                                            )}
+                                            {/* Add more fields as needed */}
                                         </div>
-                                    )
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         )}
+
+
+
+
 
 
 

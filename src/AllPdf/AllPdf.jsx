@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaEye, FaSearch, FaTrash } from "react-icons/fa";
 import swal from "sweetalert";
 import { RingLoader } from "react-spinners";
+
 
 const AllPdf = () => {
     const [pdfList, setPdfList] = useState([]);
@@ -11,7 +12,7 @@ const AllPdf = () => {
 
     useEffect(() => {
         // Fetch data from the given URL
-        fetch('https://cv-server-iota.vercel.app/userInfo')
+        fetch('http://localhost:5000/userInfo')
             .then((response) => response.json())
             .then((data) => {
                 setPdfList(data);
@@ -25,7 +26,7 @@ const AllPdf = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center w-full h-screen">
+            <div className="flex justify-center items-center w-4/5 h-screen">
                 <RingLoader color={'#B0272E'} loading={loading} size={150} />
             </div>
         );
@@ -41,7 +42,7 @@ const AllPdf = () => {
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    fetch(`https://cv-server-iota.vercel.app/userInfo/${id}`, {
+                    fetch(`http://localhost:5000/userInfo/${id}`, {
                         method: 'DELETE',
                     })
                         .then((res) => res.json())
@@ -77,9 +78,10 @@ const AllPdf = () => {
                 <div className="flex items-center mb-4 ml-2 mt-2">
                     <div className="relative">
                         <input
+
                             type="text"
                             placeholder="Search by name"
-                            className="px-4 py-2 pl-10 pr-4 rounded-md outline-none"
+                            className="px-4 py-2 pl-10 pr-4 mr-2 rounded-md outline-none"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -96,6 +98,7 @@ const AllPdf = () => {
                             <tr>
                                 <th className="px-4 py-2 border border-white">#</th>
                                 <th className="px-4 py-2 border border-white">Name</th>
+                                <th className="px-4 py-2 border border-white">CV Creator</th>
                                 <th className="px-4 py-2 border border-white">Actions</th>
                             </tr>
                         </thead>
@@ -104,6 +107,10 @@ const AllPdf = () => {
                                 <tr key={index}>
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{index + 1}</td>
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{cv.name}</td>
+                                    <td className="px-4 py-2 border border-white text-xl font-semibold text-center">
+                                        {cv.user ? cv.user.username : ''}
+                                    </td>
+
                                     <td className="px-4 py-2 flex justify-center gap-5 items-center border border-white">
                                         {/* censor View Button */}
                                         <Link to={`/censoredCv/${cv._id}`}>

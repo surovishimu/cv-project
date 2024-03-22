@@ -11,7 +11,7 @@ const UpdatePdf = () => {
     const navigate = useNavigate();
 
     const updatePdf = useLoaderData();
-    const { _id, name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customData } = updatePdf;
+    const { _id, name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customFieldTitle, customData } = updatePdf;
 
 
 
@@ -252,45 +252,42 @@ const UpdatePdf = () => {
         setSelectedQualificationTitle(e.target.value);
     };
 
-    // function for custom field
-    const [customFields, setCustomFields] = useState([]);
 
-    // Function to add a new custom field
-    const addCustomField = () => {
-        setCustomFields(prevCustomFields => [
-            ...prevCustomFields,
-            { title: '', date: '', subtitle: '' }
+    // custom field function
+
+    const [customFields, setCustomFields] = useState([]);
+    const [customizeFieldTitle, setCustomizeFieldTitle] = useState(customFieldTitle);
+    const addcustomField = () => {
+        setCustomFields(prevcustomFields => [
+            ...prevcustomFields,
+            { date: '', title: '', subtitle: '' }
         ]);
     };
+    useEffect(() => {
+        if (customData && customData.length > 0) {
+            setCustomFields(customData);
+        } else {
+            // If custom field data is not available, initialize with an empty field
+            setCustomFields([{ date: '', title: '', subtitle: '' }]);
+        }
+    }, [customData]);
 
-    // Function to remove a custom field by index
     const removeCustomField = (index) => {
-        setCustomFields(prevCustomFields => prevCustomFields.filter((_, i) => i !== index));
+        setCustomFields(prevcustomFields => prevcustomFields.filter((_, i) => i !== index));
     };
 
-    // Function to handle changes in custom field values
     const handleCustomFieldChange = (index, field, value) => {
-        setCustomFields(prevCustomFields => {
-            const updatedFields = [...prevCustomFields];
+        setCustomFields(prevcustomFields => {
+            const updatedFields = [...prevcustomFields];
             updatedFields[index][field] = value;
             return updatedFields;
         });
     };
+    const handleCustomTitleChange = (e) => {
+        setCustomizeFieldTitle(e.target.value);
+    };
 
-    useEffect(() => {
-        // Check if updatePdf.customData exists and is an array
-        if (Array.isArray(updatePdf.customData) && updatePdf.customData.length > 0) {
-            // Map each custom data object to a custom field
-            setCustomFields(updatePdf.customData.map(data => ({
-                title: data.title || '',
-                date: data.date || '',
-                subtitle: data.subtitle || ''
-            })));
-        } else {
-            // If custom data is not available or is not an array, initialize with an empty array
-            setCustomFields([]);
-        }
-    }, [updatePdf.customData]);
+
 
 
 
@@ -312,6 +309,7 @@ const UpdatePdf = () => {
 
         const education = educationFields.map(education => ({ ...education }));
         const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
+        const customData = customFields.map(data => ({ ...data }));
         const experiences = experienceFields.map(experience => ({
             experienceStart: experience.experienceStart,
             experienceEnd: experience.present ? 'Present' : experience.experienceEnd,
@@ -321,11 +319,7 @@ const UpdatePdf = () => {
             professionalSummary: experience.professionalSummary,
             present: experience.present
         }));
-        const customData = customFields.map(customField => ({
-            title: customField.title,
-            date: customField.date,
-            subtitle: customField.subtitle
-        }));
+
 
         const formData = {
             name,
@@ -343,14 +337,14 @@ const UpdatePdf = () => {
             experiences,
             education,
             qualifications,
+            experienceTitle: selectedQualificationTitle,
             customData,
-            experienceTitle: selectedQualificationTitle
-
+            customFieldTitle: customizeFieldTitle
 
 
 
         };
-        fetch(`https://cv-server-iota.vercel.app/userInfo/${_id}`, {
+        fetch(`http://localhost:5000/userInfo/${_id}`, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
@@ -430,13 +424,13 @@ const UpdatePdf = () => {
                                         value={skill.name}
                                         onChange={e => handleSkillChange(skill.id, e.target.value)}
                                         placeholder="Add skill..."
-                                        className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#C3202B] text-customgray"
+                                        className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#C3202B] text-white"
                                     />
                                     {index !== 0 && (
                                         <button
                                             type="button"
                                             onClick={() => removeSkillInput(skill.id)}
-                                            className="text-customgray ml-2"
+                                            className="text-white ml-2"
                                         >
                                             <HiOutlineMinus />
                                         </button>
@@ -444,7 +438,7 @@ const UpdatePdf = () => {
                                     <button
                                         type="button"
                                         onClick={addSkillInput}
-                                        className="ml-2 text-customgray"
+                                        className="ml-2 text-white"
                                     >
                                         <HiOutlinePlus />
                                     </button>
@@ -464,7 +458,7 @@ const UpdatePdf = () => {
                                                 <h1 className="text-white mb-2 ml-5">{language.name}</h1>
                                                 <div className="flex justify-center items-center">
                                                     <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.max(language.level - 10, 0))}>
-                                                        <HiOutlineMinus className="text-customgray mr-1" />
+                                                        <HiOutlineMinus className="text-white mr-1" />
                                                     </button>
                                                     <div className="w-full h-3 relative flex items-center rounded-full">
                                                         <input
@@ -480,10 +474,10 @@ const UpdatePdf = () => {
                                                         />
                                                     </div>
                                                     <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.min(language.level + 10, 100))}>
-                                                        <HiOutlinePlus className="text-customgray ml-1" />
+                                                        <HiOutlinePlus className="text-white ml-1" />
                                                     </button>
                                                     <button type="button" onClick={() => handleRemoveLanguage(language.id)}>
-                                                        <HiOutlineTrash className="text-customgray ml-3" />
+                                                        <HiOutlineTrash className="text-white ml-3" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -494,10 +488,10 @@ const UpdatePdf = () => {
                                                 value={newLanguage}
                                                 onChange={(e) => setNewLanguage(e.target.value)}
                                                 placeholder="Enter language name"
-                                                className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#C3202B] text-customgray"
+                                                className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#C3202B] text-white"
                                             />
                                             <button type="button" onClick={handleAddLanguage}>
-                                                <HiOutlinePlus className="text-customgray ml-1" />
+                                                <HiOutlinePlus className="text-white ml-1" />
                                             </button>
                                         </div>
                                     </div>
@@ -510,19 +504,19 @@ const UpdatePdf = () => {
                             <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                             <div className="ml-10 mt-5 relative">
                                 <input id="location" defaultValue={location} className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
-                                <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
+                                <HiLocationMarker className="absolute top-2 left-2 text-white" />
                             </div>
                             <div className="ml-10 mt-5 relative">
                                 <input id="phoneNumber" defaultValue={phoneNumber} className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
-                                <HiPhone className="absolute top-2 left-2 text-customgray" />
+                                <HiPhone className="absolute top-2 left-2 text-white" />
                             </div>
                             <div className="ml-10 mt-5 relative">
                                 <input id="emailAddress" defaultValue={emailAddress} className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
-                                <HiMail className="absolute top-2 left-2 text-customgray" />
+                                <HiMail className="absolute top-2 left-2 text-white" />
                             </div>
                             <div className="ml-10 mt-5 relative">
                                 <input id="linkedinProfile" defaultValue={linkedinProfile} className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
-                                <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
+                                <GrLinkedinOption className="absolute top-2 left-2 text-white" />
                             </div>
                         </div>
 
@@ -658,11 +652,11 @@ const UpdatePdf = () => {
                                         />
                                         {/* buttons */}
                                         <div className="flex justify-center items-center mt-5">
-                                            <button type="button" onClick={() => removeExperienceField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={experienceFields.length === 1}>
+                                            <button type="button" onClick={() => removeExperienceField(index)} className="cursor-pointer mr-2 hover:text-red-700" disabled={experienceFields.length === 1}>
                                                 <CiCircleMinus className="w-10 h-10" />
                                             </button>
 
-                                            <button type="button" onClick={addExperienceField} className="cursor-pointer hover:text-customRed">
+                                            <button type="button" onClick={addExperienceField} className="cursor-pointer hover:text-red-700">
                                                 <CiCirclePlus className="w-10 h-10" />
                                             </button>
                                         </div>
@@ -690,7 +684,7 @@ const UpdatePdf = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => removeAchievementField(field.id)}
-                                                className="cursor-pointer mr-2 hover:text-customRed"
+                                                className="cursor-pointer mr-2 hover:text-red-700"
                                                 disabled={achievementFields.length === 1}
                                             >
                                                 <CiCircleMinus className="w-10 h-10 " />
@@ -698,7 +692,7 @@ const UpdatePdf = () => {
                                             <button
                                                 type="button"
                                                 onClick={addAchievementField}
-                                                className="cursor-pointer hover:text-customRed"
+                                                className="cursor-pointer hover:text-red-700"
                                             >
                                                 <CiCirclePlus className="w-10 h-10 " />
                                             </button>
@@ -792,10 +786,10 @@ const UpdatePdf = () => {
 
                                         {/* buttons */}
                                         <div className="flex justify-center items-center mt-5">
-                                            <button type="button" onClick={() => removeEducationField(index)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={educationFields.length === 1}>
+                                            <button type="button" onClick={() => removeEducationField(index)} className=" cursor-pointer mr-2 hover:text-red-700" disabled={educationFields.length === 1}>
                                                 <CiCircleMinus className="w-10 h-10 " />
                                             </button>
-                                            <button type="button" onClick={() => addEducationField()} className="cursor-pointer hover:text-customRed">
+                                            <button type="button" onClick={() => addEducationField()} className="cursor-pointer hover:text-red-700">
                                                 <CiCirclePlus className="w-10 h-10 " />
                                             </button>
                                         </div>
@@ -853,11 +847,11 @@ const UpdatePdf = () => {
                                         />
                                         <div className="flex justify-center items-center mt-5">
                                             {/* Button to remove the qualification field */}
-                                            <button type="button" onClick={() => removeQualificationField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={qualificationFields.length === 1}>
+                                            <button type="button" onClick={() => removeQualificationField(index)} className="cursor-pointer mr-2 hover:text-red-700" disabled={qualificationFields.length === 1}>
                                                 <CiCircleMinus className="w-10 h-10 " />
                                             </button>
                                             {/* Button to add a new qualification field */}
-                                            <button type="button" onClick={addQualificationField} className="cursor-pointer hover:text-customRed">
+                                            <button type="button" onClick={addQualificationField} className="cursor-pointer hover:text-red-700">
                                                 <CiCirclePlus className="w-10 h-10 " />
                                             </button>
                                         </div>
@@ -868,52 +862,61 @@ const UpdatePdf = () => {
 
 
 
-                        {/* Custom Fields */}
-                        <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative mt-20">
+                        <div>
+                            <div className="text-xl font-bold mt-20 ml-10 mb-5">
+                                <input type="text"
+                                    placeholder="Heading...."
+                                    onChange={handleCustomTitleChange}
+                                    value={customizeFieldTitle}
+                                    className="border-2 outline-none w-11/12 pl-2 h-10" />
 
-                            {customFields.map((customField, index) => (
-                                <div key={index} className="pt-8 relative">
-                                    <input
-                                        type="text"
-                                        id={`title_${index}`}
-                                        name={`title_${index}`}
-                                        placeholder="Title"
-                                        value={customField.title}
-                                        onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                    />
+                            </div>
+                            <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative">
 
-                                    <input
-                                        type="text"
-                                        id={`date_${index}`}
-                                        name={`date_${index}`}
-                                        placeholder="Date"
-                                        value={customField.date}
-                                        onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                    />
+                                {customFields.map((data, index) => (
+                                    <div key={index} className="pt-8 relative">
+                                        <input
+                                            type="text"
+                                            id={`date_${index}`}
+                                            name={`date_${index}`}
+                                            value={data.date}
+                                            onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
+                                            placeholder='Date'
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                        />
+                                        <input
+                                            type="text"
+                                            id={`title_${index}`}
+                                            name={`title_${index}`}
+                                            value={data.title}
+                                            onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
+                                            placeholder='Title'
+                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                        />
+                                        <input
+                                            type="text"
+                                            id={`subtitle_${index}`}
+                                            name={`subtitle_${index}`}
+                                            value={data.subtitle}
+                                            onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
+                                            placeholder='Subtitle'
+                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                        />
 
-                                    <input
-                                        type="text"
-                                        id={`subtitle_${index}`}
-                                        name={`subtitle_${index}`}
-                                        placeholder="Subtitle"
-                                        value={customField.subtitle}
-                                        onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
-                                        className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                    />
 
-                                    <div className="flex justify-center items-center mt-5">
-                                        <button type="button" onClick={() => removeCustomField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={customFields.length === 1}>
-                                            <CiCircleMinus className="w-10 h-10 " />
-                                        </button>
-                                        <button type="button" onClick={() => addCustomField()} className="cursor-pointer hover:text-customRed">
-                                            <CiCirclePlus className="w-10 h-10 " />
-                                        </button>
+                                        <div className="flex justify-center items-center mt-5">
+
+                                            <button type="button" onClick={() => removeCustomField(index, setCustomFields)} className=" cursor-pointer mr-2 hover:text-red-700" disabled={customFields.length === 1}>
+                                                <CiCircleMinus className="w-10 h-10 " />
+                                            </button>
+                                            <button type="button" onClick={() => addcustomField(setCustomFields)} className="cursor-pointer hover:text-red-700">
+                                                <CiCirclePlus className="w-10 h-10 " />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
 
+                            </div>
                         </div>
 
 

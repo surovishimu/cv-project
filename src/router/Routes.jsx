@@ -6,6 +6,10 @@ import AllPdf from "../AllPdf/AllPdf";
 import PdfDetails from "../AllPdf/PdfDetails";
 import UpdatePdf from "../AllPdf/UpdatePdf";
 import CensoredCV from "../AllPdf/CensoredCV";
+import Login from "../Login/Login";
+import PrivateRoute from "./PrivateRoute";
+
+
 
 export const router = createBrowserRouter([
     {
@@ -14,31 +18,36 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <CvForm />
+                element: <PrivateRoute><CvForm /></PrivateRoute>
             },
 
             {
                 path: 'allpdf',
-                element: <AllPdf></AllPdf>
+                element: <PrivateRoute> <AllPdf></AllPdf></PrivateRoute>
 
             },
             {
                 path: 'pdfDetails/:id',
                 element: <PdfDetails></PdfDetails>,
-                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
+                loader: ({ params }) => fetch(`http://localhost:5000/userInfo/${params.id}`)
             },
             {
                 path: '/updatePdf/:id',
                 element: <UpdatePdf></UpdatePdf>,
-                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
+                loader: ({ params }) => fetch(`http://localhost:5000/userInfo/${params.id}`)
 
 
             },
             {
                 path: 'censoredCv/:id',
                 element: <CensoredCV></CensoredCV>,
-                loader: ({ params }) => fetch(`https://cv-server-iota.vercel.app/userInfo/${params.id}`)
+                loader: ({ params }) => fetch(`http://localhost:5000/userInfo/${params.id}`)
             },
+            {
+                path: 'login',
+                element: <Login></Login>
+            }
+
 
         ]
     },

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { HiOutlineMinus, HiOutlineTrash, HiPlus } from "react-icons/hi";
+import { useState } from "react";
+import { HiOutlineMinus, HiOutlineTrash } from "react-icons/hi";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { HiUser } from "react-icons/hi2";
 import { HiOutlinePlus } from "react-icons/hi2";
@@ -8,20 +8,26 @@ import { GrLinkedinOption } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import './style.css'
 import { LuPlus } from "react-icons/lu";
-import { useFormData } from "./FormDataProvider";
+
 import swal from "sweetalert";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
+import useAuth from "../hooks/useAuth";
+
 
 
 const CvForm = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    console.log(user)
 
-    const { formData, setFormData } = useFormData();
     // qualification title change
     const [experienceTitle, setExperienceTitle] = useState('Qualifications');
     const handleExperienceTitleChange = (e) => {
         setExperienceTitle(e.target.value);
+    };
+
+    const [customFieldTitle, setCustomFieldTitle] = useState('')
+    const handleCustomTitleChange = (e) => {
+        setCustomFieldTitle(e.target.value);
     };
 
 
@@ -73,8 +79,8 @@ const CvForm = () => {
     };
 
 
-    // function for profile image
 
+    // function for profile image
     const [imageUrl, setImageUrl] = useState(null);
 
     const handleImageUpload = (e) => {
@@ -109,6 +115,7 @@ const CvForm = () => {
             return null;
         }
     };
+
     // achivement field function
     const [achievementFields, setAchievementFields] = useState([
         { achievement: '' } // Initial field
@@ -147,6 +154,8 @@ const CvForm = () => {
         { eduPassDate: '', eduEndDate: '', schoolName: '', edulocation: '', degree: '', major: '', curricularActivity: '', additionalNotes: '' }
     ]);
     const [qualificationFields, setQualificationFields] = useState([{ year: '', technicalSkills: '', additionalQualifications: '' }]);
+
+    const [customFields, setCustomFields] = useState([{ date: '', title: '', subTitle: '' }]);
 
 
     const addField = (setter) => {
@@ -190,23 +199,6 @@ const CvForm = () => {
 
     // function for custom field
 
-    const [customFields, setCustomFields] = useState([{ name: "", value: "" }]);
-
-    const handleCustomFieldChange = (index, field, value) => {
-        const updatedCustomFields = [...customFields];
-        updatedCustomFields[index][field] = value;
-        setCustomFields(updatedCustomFields);
-    };
-
-    const addCustomField = () => {
-        setCustomFields([...customFields, { title: "", date: "", subtitle: "" }]);
-    };
-
-    const removeCustomField = (index) => {
-        const updatedCustomFields = [...customFields];
-        updatedCustomFields.splice(index, 1);
-        setCustomFields(updatedCustomFields);
-    };
 
 
 
@@ -248,6 +240,7 @@ const CvForm = () => {
                     }));
                     const education = educationFields.map(education => ({ ...education }));
                     const qualifications = qualificationFields.map(qualification => ({ ...qualification }));
+                    const customData = customFields.map(data => ({ ...data }));
                     const location = e.target.location.value; // Get location from form input
                     const phoneNumber = e.target.phoneNumber.value; // Get phone number from form input
                     const emailAddress = e.target.emailAddress.value; // Get email address from form input
@@ -256,11 +249,7 @@ const CvForm = () => {
 
                     const achievementsAndAwards = achievementFields.map(achievement => achievement.achievement);
                     const languagesData = languages.map(language => ({ name: language.name, level: language.level }));
-                    const customData = customFields.map(field => ({
-                        title: field.title,
-                        date: field.date,
-                        subtitle: field.subtitle
-                    }));
+
                     const formData = {
                         name,
                         jobtitle,
@@ -268,6 +257,7 @@ const CvForm = () => {
                         experiences,
                         education,
                         qualifications,
+                        customData,
                         imageUrl,
                         location,
                         phoneNumber,
@@ -277,13 +267,15 @@ const CvForm = () => {
                         languagesData,
                         achievementsAndAwards,
                         experienceTitle,
+                        customFieldTitle,
                         profileDescription2,
-                        customData
+                        user
+
                     };
 
                     // Send form data to the server
                     try {
-                        const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
+                        const response = await fetch('http://localhost:5000/userInfo', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -295,7 +287,7 @@ const CvForm = () => {
                         }
                         // Handle successful response here
                         console.log('Form data submitted successfully!');
-                        setFormData(formData);
+
                         navigate('/allpdf');
                         swal({
                             title: "Success!",
@@ -348,6 +340,9 @@ const CvForm = () => {
 
 
 
+
+
+
                             {/* profile description */}
                             <div>
                                 <h1 className="text-start font-semibold mb-3 text-2xl text-white ml-10">Profile</h1>
@@ -376,13 +371,13 @@ const CvForm = () => {
                                             value={skill.name}
                                             onChange={e => handleSkillChange(skill.id, e.target.value)}
                                             placeholder="Add skill..."
-                                            className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#C3202B] text-customgray"
+                                            className="px-3 py-2 outline-none w-56 ml-6 border border-customgray bg-[#C3202B] text-white"
                                         />
                                         {index !== 0 && (
                                             <button
                                                 type="button"
                                                 onClick={() => removeSkillInput(skill.id)}
-                                                className="text-customgray ml-2"
+                                                className="text-white ml-2"
                                             >
                                                 <HiOutlineMinus />
                                             </button>
@@ -390,7 +385,7 @@ const CvForm = () => {
                                         <button
                                             type="button"
                                             onClick={addSkillInput}
-                                            className="ml-2 text-customgray"
+                                            className="ml-2 text-white"
                                         >
                                             <HiOutlinePlus />
                                         </button>
@@ -410,7 +405,7 @@ const CvForm = () => {
                                             <h1 className="text-white mb-2 ml-5">{language.name}</h1>
                                             <div className="flex justify-center items-center">
                                                 <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.max(language.level - 10, 0))}>
-                                                    <HiOutlineMinus className="text-customgray mr-1" />
+                                                    <HiOutlineMinus className="text-white mr-1" />
                                                 </button>
                                                 <div className="w-full h-3 relative flex items-center rounded-full">
                                                     <input
@@ -427,10 +422,10 @@ const CvForm = () => {
                                                     />
                                                 </div>
                                                 <button type="button" onClick={() => updateLanguageSkill(language.id, 'level', Math.min(language.level + 10, 100))}>
-                                                    <LuPlus className="text-customgray ml-1" />
+                                                    <LuPlus className="text-white ml-1" />
                                                 </button>
                                                 <button type="button" onClick={() => handleRemoveLanguage(language.id)}>
-                                                    <HiOutlineTrash className="text-customgray ml-3" />
+                                                    <HiOutlineTrash className="text-white ml-3" />
                                                 </button>
                                             </div>
                                         </div>
@@ -441,10 +436,10 @@ const CvForm = () => {
                                             value={newLanguage}
                                             onChange={(e) => setNewLanguage(e.target.value)}
                                             placeholder="Enter language name"
-                                            className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#C3202B] text-customgray"
+                                            className="px-3 py-2 outline-none w-56 ml-3 border border-customgray bg-[#C3202B] text-white"
                                         />
                                         <button type="button" onClick={handleAddLanguage}>
-                                            <LuPlus className="text-customgray ml-1" />
+                                            <LuPlus className="text-white ml-1" />
                                         </button>
                                     </div>
                                 </div>
@@ -457,19 +452,19 @@ const CvForm = () => {
                                 <h1 className="text-2xl text-white font-semibold ml-10 mt-10">Contact Information</h1>
                                 <div className="ml-10 mt-5 relative">
                                     <input id="location" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Location" name="location" />
-                                    <HiLocationMarker className="absolute top-2 left-2 text-customgray" />
+                                    <HiLocationMarker className="absolute top-2 left-2 text-white" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
                                     <input id="phoneNumber" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Phone Number" name="phoneNumber" />
-                                    <HiPhone className="absolute top-2 left-2 text-customgray" />
+                                    <HiPhone className="absolute top-2 left-2 text-white" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
                                     <input id="emailAddress" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Email Address" name="emailAddress" />
-                                    <HiMail className="absolute top-2 left-2 text-customgray" />
+                                    <HiMail className="absolute top-2 left-2 text-white" />
                                 </div>
                                 <div className="ml-10 mt-5 relative">
                                     <input id="linkedinProfile" className="h-8 w-56 p-2 pl-8 bg-[#C3202B] border outline-none border-customgray text-white" type="text" placeholder="Linkedin Profile" name="linkedinProfile" />
-                                    <GrLinkedinOption className="absolute top-2 left-2 text-customgray" />
+                                    <GrLinkedinOption className="absolute top-2 left-2 text-white" />
                                 </div>
                             </div>
 
@@ -603,7 +598,7 @@ const CvForm = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => removeField(index, setExperienceFields)}
-                                                    className="cursor-pointer mr-2 hover:text-customRed"
+                                                    className="cursor-pointer mr-2 hover:text-red-700"
                                                     disabled={experienceFields.length === 1}
                                                 >
                                                     <CiCircleMinus className="w-10 h-10" />
@@ -611,7 +606,7 @@ const CvForm = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => addField(setExperienceFields)}
-                                                    className="cursor-pointer hover:text-customRed"
+                                                    className="cursor-pointer hover:text-red-700"
                                                 >
                                                     <CiCirclePlus className="w-10 h-10" />
                                                 </button>
@@ -638,10 +633,10 @@ const CvForm = () => {
                                             />
                                             {/* buttons */}
                                             <div className="flex justify-center items-center mt-5">
-                                                <button type="button" onClick={() => removeAchievementField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={achievementFields.length === 1}>
+                                                <button type="button" onClick={() => removeAchievementField(index)} className="cursor-pointer mr-2 hover:text-red-700" disabled={achievementFields.length === 1}>
                                                     <CiCircleMinus className="w-10 h-10 " />
                                                 </button>
-                                                <button type="button" onClick={() => addAchievementField()} className="cursor-pointer hover:text-customRed">
+                                                <button type="button" onClick={() => addAchievementField()} className="cursor-pointer hover:text-red-700">
                                                     <CiCirclePlus className="w-10 h-10 " />
                                                 </button>
                                             </div>
@@ -736,10 +731,10 @@ const CvForm = () => {
                                             {/* buttons */}
                                             <div className="flex justify-center items-center mt-5">
 
-                                                <button type="button" onClick={() => removeField(index, setEducationFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={educationFields.length === 1}>
+                                                <button type="button" onClick={() => removeField(index, setEducationFields)} className=" cursor-pointer mr-2 hover:text-red-700" disabled={educationFields.length === 1}>
                                                     <CiCircleMinus className="w-10 h-10 " />
                                                 </button>
-                                                <button type="button" onClick={() => addField(setEducationFields)} className="cursor-pointer hover:text-customRed">
+                                                <button type="button" onClick={() => addField(setEducationFields)} className="cursor-pointer hover:text-red-700">
                                                     <CiCirclePlus className="w-10 h-10 " />
                                                 </button>
                                             </div>
@@ -800,10 +795,10 @@ const CvForm = () => {
 
                                             <div className="flex justify-center items-center mt-5">
 
-                                                <button type="button" onClick={() => removeField(index, setQualificationFields)} className=" cursor-pointer mr-2 hover:text-customRed" disabled={qualificationFields.length === 1}>
+                                                <button type="button" onClick={() => removeField(index, setQualificationFields)} className=" cursor-pointer mr-2 hover:text-red-700" disabled={qualificationFields.length === 1}>
                                                     <CiCircleMinus className="w-10 h-10 " />
                                                 </button>
-                                                <button type="button" onClick={() => addField(setQualificationFields)} className="cursor-pointer hover:text-customRed">
+                                                <button type="button" onClick={() => addField(setQualificationFields)} className="cursor-pointer hover:text-red-700">
                                                     <CiCirclePlus className="w-10 h-10 " />
                                                 </button>
                                             </div>
@@ -813,55 +808,64 @@ const CvForm = () => {
                                 </div>
                             </div>
 
-                            {/* Custom Fields */}
-                            <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative mt-20">
+                            {/* custom field */}
 
-                                {customFields.map((customField, index) => (
-                                    <div key={index} className="pt-8 relative">
-                                        <input
-                                            type="text"
-                                            id={`title_${index}`}
-                                            name={`title_${index}`}
-                                            placeholder="Title"
-                                            value={customField.title}
-                                            onChange={(e) => handleCustomFieldChange(index, 'title', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                        />
+                            <div>
+                                <div className="text-xl font-bold mt-20 ml-10 mb-5">
+                                    <input type="text"
+                                        placeholder="Heading...."
+                                        onChange={handleCustomTitleChange}
+                                        value={customFieldTitle}
+                                        className="border-2 outline-none w-11/12 pl-2 h-10" />
 
-                                        <input
-                                            type="text"
-                                            id={`date_${index}`}
-                                            name={`date_${index}`}
-                                            placeholder="Date"
-                                            value={customField.date}
-                                            onChange={(e) => handleCustomFieldChange(index, 'date', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                        />
+                                </div>
+                                <div className="bg-[#EFF0F2] mx-10 py-5 px-5 relative">
 
-                                        <input
-                                            type="text"
-                                            id={`subtitle_${index}`}
-                                            name={`subtitle_${index}`}
-                                            placeholder="Subtitle"
-                                            value={customField.subtitle}
-                                            onChange={(e) => handleCustomFieldChange(index, 'subtitle', e.target.value)}
-                                            className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
-                                        />
+                                    {customFields.map((data, index) => (
+                                        <div key={index} className="pt-8 relative">
+                                            <input
+                                                type="text"
+                                                id={`date_${index}`}
+                                                name={`date_${index}`}
+                                                value={data.date}
+                                                onChange={(e) => handleChange(index, 'date', e.target.value, setCustomFields)}
+                                                placeholder='Date'
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`title_${index}`}
+                                                name={`title_${index}`}
+                                                value={data.title}
+                                                onChange={(e) => handleChange(index, 'title', e.target.value, setCustomFields)}
+                                                placeholder='Title'
+                                                className="w-11/12 px-4 py-2 mb-2 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                            />
+                                            <input
+                                                type="text"
+                                                id={`subtitle_${index}`}
+                                                name={`subtitle_${index}`}
+                                                value={data.subtitle}
+                                                onChange={(e) => handleChange(index, 'subtitle', e.target.value, setCustomFields)}
+                                                placeholder='Subtitle'
+                                                className="w-11/12 px-4 py-2 mb-4 border-b-2 border-gray-400 outline-none bg-[#EFF0F2]"
+                                            />
 
-                                        <div className="flex justify-center items-center mt-5">
-                                            <button type="button" onClick={() => removeCustomField(index)} className="cursor-pointer mr-2 hover:text-customRed" disabled={customFields.length === 1}>
-                                                <CiCircleMinus className="w-10 h-10 " />
-                                            </button>
-                                            <button type="button" onClick={() => addCustomField()} className="cursor-pointer hover:text-customRed">
-                                                <CiCirclePlus className="w-10 h-10 " />
-                                            </button>
+
+                                            <div className="flex justify-center items-center mt-5">
+
+                                                <button type="button" onClick={() => removeField(index, setCustomFields)} className=" cursor-pointer mr-2 hover:text-red-700" disabled={customFields.length === 1}>
+                                                    <CiCircleMinus className="w-10 h-10 " />
+                                                </button>
+                                                <button type="button" onClick={() => addField(setCustomFields)} className="cursor-pointer hover:text-red-700">
+                                                    <CiCirclePlus className="w-10 h-10 " />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
 
+                                </div>
                             </div>
-
-
 
 
                         </div>
