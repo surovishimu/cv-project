@@ -34,7 +34,7 @@ const useAuth = () => {
 
     const handleLogin = async (email, password) => {
         try {
-            const response = await fetch('http://localhost:5000/login', {
+            const response = await fetch('https://cv-server-iota.vercel.app/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,10 +69,15 @@ const useAuth = () => {
     };
 
 
-
     const handleChangePassword = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/changePassword/${user._id}`, {
+            setErrorMessage('');
+            // Check if the new password meets the minimum length requirement
+            if (newPassword.length < 6) {
+                throw new Error('Password must be at least 6 characters long');
+            }
+
+            const response = await fetch(`https://cv-server-iota.vercel.app/changePassword/${user._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,6 +93,8 @@ const useAuth = () => {
                     icon: 'success',
                 });
                 handleCloseModal();
+                setPrevPassword('');
+                setNewPassword('');
             } else {
                 const data = await response.json();
                 throw new Error(data.message || 'Failed to change password');
@@ -96,8 +103,6 @@ const useAuth = () => {
             setErrorMessage(error.message || 'Failed to change password');
         }
     };
-
-
 
 
     return {

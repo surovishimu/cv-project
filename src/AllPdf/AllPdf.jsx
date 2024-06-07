@@ -3,16 +3,17 @@ import { Link } from "react-router-dom";
 import { FaEye, FaSearch, FaTrash } from "react-icons/fa";
 import swal from "sweetalert";
 import { RingLoader } from "react-spinners";
+import useAuth from "../hooks/useAuth";
 
 
 const AllPdf = () => {
     const [pdfList, setPdfList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
-
+    const { user } = useAuth();
     useEffect(() => {
         // Fetch data from the given URL
-        fetch('http://localhost:5000/userInfo')
+        fetch('https://cv-server-iota.vercel.app/userInfo')
             .then((response) => response.json())
             .then((data) => {
                 setPdfList(data);
@@ -32,37 +33,57 @@ const AllPdf = () => {
         );
     }
     // Function to handle delete action
-    const handleDelete = (id) => {
-        swal({
-            title: "Are you sure?",
-            text: "You are about to delete this CV.",
-            icon: "warning",
-            buttons: ["Cancel", "Delete"],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    fetch(`http://localhost:5000/userInfo/${id}`, {
-                        method: 'DELETE',
-                    })
-                        .then((res) => res.json())
-                        .then((data) => {
-                            console.log(data);
-                            // Filter out the deleted item from the list
-                            const remainingPdf = pdfList.filter((pdf) => pdf._id !== id);
-                            setPdfList(remainingPdf);
-                        })
-                        .catch((error) => {
-                            console.error("Error deleting CV:", error);
-                            // Display error message if deletion fails
-                            swal("Error!", "Failed to delete CV. Please try again later.", "error");
-                        });
-                } else {
-                    // User clicked Cancel, do nothing
-                    return;
-                }
+
+    const handleDelete = async (id) => {
+        try {
+            const willMove = await swal({
+                title: "Are you sure?",
+                text: "You are about to move this CV to the archive.",
+                icon: "warning",
+                buttons: ["Cancel", "Move to Archive"],
+                dangerMode: true,
             });
+
+            if (willMove) {
+                // Step 1: Find the CV to be moved from the main list
+                const cvToDelete = pdfList.find(pdf => pdf._id === id);
+
+                // Step 2: Move the CV to the archive
+                const archiveResponse = await fetch(`https://cv-server-iota.vercel.app/archive`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(cvToDelete),
+                });
+
+                if (!archiveResponse.ok) {
+                    throw new Error("Failed to move CV to archive.");
+                }
+
+                // Step 3: If archiving is successful, delete the CV from the userInfo database
+                const deleteResponse = await fetch(`https://cv-server-iota.vercel.app/userInfo/${id}`, {
+                    method: 'DELETE',
+                });
+
+                if (!deleteResponse.ok) {
+                    throw new Error("Failed to delete CV from database.");
+                }
+
+                // Step 4: Update the UI by removing the CV from the main list
+                const remainingPdf = pdfList.filter((pdf) => pdf._id !== id);
+                setPdfList(remainingPdf);
+
+                // Optionally inform the user that the CV has been moved to the archive
+                swal("Success!", "CV has been moved to the archive.", "success");
+            }
+        } catch (error) {
+            console.error("Error handling CV:", error);
+            swal("Error!", "Failed to move CV to archive. Please try again later.", "error");
+        }
     };
+
+
 
     // Filter CVs based on search term and reverse the order
     const filteredPdfInfo = pdfList
@@ -108,7 +129,7 @@ const AllPdf = () => {
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{index + 1}</td>
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{cv.name}</td>
                                     <td className="px-4 py-2 border border-white text-xl font-semibold text-center">
-                                        {cv.user ? cv.user.username : ''}
+                                        {cv.user ? cv.user.username.split(' ')[0] : ''}
                                     </td>
 
                                     <td className="px-4 py-2 flex justify-center gap-5 items-center border border-white">
@@ -124,10 +145,12 @@ const AllPdf = () => {
                                             </button>
                                         </Link>
                                         {/* Delete Button */}
-                                        <button onClick={() => handleDelete(cv._id)} className="px-4 py-2 bg-red-500 hover:bg-[#C3202B] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center">
-                                            <FaTrash className="mr-1" />
-                                            Delete
-                                        </button>
+                                        {user && user.email === 'fabio.admin@email.com' && (
+                                            <button onClick={() => handleDelete(cv._id)} className="px-4 py-2 bg-red-500 hover:bg-[#C3202B] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center">
+                                                <FaTrash className="mr-1" />
+                                                Delete
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

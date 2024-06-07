@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import { useEffect, useState } from "react";
 
 
-const CensoredCV = () => {
+const ArchiveCensored = () => {
 
     const PdfInfo = useLoaderData();
 
@@ -14,42 +14,17 @@ const CensoredCV = () => {
 
     const [blurredImageUrl, setBlurredImageUrl] = useState(null);
 
+
     const getInitials = (name) => {
-        // Remove anything inside parentheses
-        name = name.replace(/\([^)]*\)/, '');
-
         // Split the name into individual parts
-        const parts = name.trim().split(/\s+/);
+        const parts = name.split(' ');
 
-        let result = [];
+        // Extract the first letter of each part and capitalize it
+        const initials = parts.map(part => part.charAt(0).toUpperCase());
 
-        if (parts.length === 2) {
-            // Case: exactly two parts
-            result.push(parts[0]);
-            result.push(parts[1].charAt(0).toUpperCase() + '.');
-        } else if (parts.length === 3) {
-            // Case: exactly three parts
-            result.push(parts[0]);
-            result.push(parts[1].charAt(0).toUpperCase() + '.');
-            result.push(parts[2].charAt(0).toUpperCase() + '.');
-        } else if (parts.length > 3) {
-            // Case: more than three parts
-            result.push(parts[0]);
-            result.push(parts[1]);
-            for (let i = 2; i < parts.length; i++) {
-                result.push(parts[i].charAt(0).toUpperCase() + '.');
-            }
-        } else {
-            // Case: one part (or handling single-word names)
-            result.push(parts[0]);
-        }
-
-        // Join the parts to form the final string
-        return result.join(' ');
+        // Join the initials with periods and return
+        return initials.join('. ') + '.';
     };
-
-
-
     useEffect(() => {
         const applyBlur = () => {
             if (imageUrl) {
@@ -94,10 +69,10 @@ const CensoredCV = () => {
             });
 
             // Convert canvas to image data URL
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/png', 1.0);
 
             // Add image to PDF
-            pdf.addImage(imgData, 'jpeg', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            pdf.addImage(imgData, 'png', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
 
             // Save PDF
             pdf.save(`${name}.pdf`);
@@ -207,18 +182,12 @@ const CensoredCV = () => {
                         {/* right side profile description */}
                         {profileDescription2 && (
                             <div className='w-full px-4'>
-                                <h1 className='uppercase mt-10 ml-5' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Profile summary</h1>
-                                <div className="relative">
-                                    <div className="absolute left-7 top-3 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}></div>
-                                    <div>
-                                        <p
-                                            className="mt-7 text-[#0c0a09] pb-4 w-10/12 ml-12"
-                                            style={{ fontSize: '15px' }}
-                                            dangerouslySetInnerHTML={{ __html: profileDescription2.replace(/\n/g, '<br />') }}
-                                        >
-                                        </p>
+                                <h1 className=' uppercase  mt-10 ml-5 ' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Profile summary</h1>
+                                <div className="relative ">
+                                    <div className="absolute left-7 top-3 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}> </div>
+                                    <div>  <p className="mt-7 text-[#0c0a09]  pb-10 w-10/12 ml-12 " style={{ fontSize: '15px' }}>{profileDescription2}</p>
                                     </div>
-                                    <div className="absolute top-2 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '19px' }}></div>
+                                    <div className="absolute top-2 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full " style={{ left: '19px' }}></div>
                                 </div>
                             </div>
                         )}
@@ -239,11 +208,15 @@ const CensoredCV = () => {
                                                 {experience.experienceStart} - {experience.present ? 'Present' : experience.experienceEnd}
                                             </p>
                                         )}
-                                        {experience.location && (
-                                            <p className="font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '15px' }}>
-                                                {experience.companyName && `${experience.companyName}${experience.location ? ', ' : ''}`}
-                                                {experience.location}
+                                        {/* Display company name and location if end date is not "Present" */}
+                                        {!experience.present && (
+                                            <p className="font-bold -ml-1" style={{ fontSize: '15px' }}>
+                                                <span className="font-bold -ml-1" >{experience.companyName}</span> {experience.location}
                                             </p>
+                                        )}
+                                        {/* Display location if end date is "Present" */}
+                                        {experience.present && (
+                                            <p className="-ml-2 font-bold" style={{ fontSize: '15px' }}>{experience.location}</p>
                                         )}
                                         {experience.experienceJobTitle && (
                                             <p className='-ml-2 ' style={{ fontSize: '15px' }}>{experience.experienceJobTitle}</p>
@@ -421,4 +394,4 @@ const CensoredCV = () => {
     );
 };
 
-export default CensoredCV;
+export default ArchiveCensored;

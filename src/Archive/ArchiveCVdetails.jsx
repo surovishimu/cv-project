@@ -1,76 +1,26 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
+import { HiPhone } from "react-icons/hi";
+import { FaEdit, FaLinkedin } from "react-icons/fa";
+import { HiLocationMarker } from "react-icons/hi";
+import { IoIosMail } from "react-icons/io";
 import blankImg from '../Image/blankProfile.png'
 import { FaDownload } from "react-icons/fa";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { useEffect, useState } from "react";
 
 
-const CensoredCV = () => {
+
+const ArchiveCVdetails = () => {
 
     const PdfInfo = useLoaderData();
+    console.log(PdfInfo);
+    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customFieldTitle, customData } = PdfInfo;
 
-    const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customFieldTitle, customData } = PdfInfo;
 
-    const [blurredImageUrl, setBlurredImageUrl] = useState(null);
-
-    const getInitials = (name) => {
-        // Remove anything inside parentheses
-        name = name.replace(/\([^)]*\)/, '');
-
-        // Split the name into individual parts
-        const parts = name.trim().split(/\s+/);
-
-        let result = [];
-
-        if (parts.length === 2) {
-            // Case: exactly two parts
-            result.push(parts[0]);
-            result.push(parts[1].charAt(0).toUpperCase() + '.');
-        } else if (parts.length === 3) {
-            // Case: exactly three parts
-            result.push(parts[0]);
-            result.push(parts[1].charAt(0).toUpperCase() + '.');
-            result.push(parts[2].charAt(0).toUpperCase() + '.');
-        } else if (parts.length > 3) {
-            // Case: more than three parts
-            result.push(parts[0]);
-            result.push(parts[1]);
-            for (let i = 2; i < parts.length; i++) {
-                result.push(parts[i].charAt(0).toUpperCase() + '.');
-            }
-        } else {
-            // Case: one part (or handling single-word names)
-            result.push(parts[0]);
-        }
-
-        // Join the parts to form the final string
-        return result.join(' ');
+    const breakString = (str, maxLength) => {
+        return str.length > maxLength ? str.match(new RegExp('.{1,' + maxLength + '}', 'g')).join('\n') : str;
     };
 
-
-
-    useEffect(() => {
-        const applyBlur = () => {
-            if (imageUrl) {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-                img.crossOrigin = 'anonymous'; // Enable CORS for the image
-                img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.filter = 'blur(15px)'; // Apply blur filter
-                    ctx.drawImage(img, 0, 0);
-                    const blurredDataUrl = canvas.toDataURL('image/png');
-                    setBlurredImageUrl(blurredDataUrl);
-                };
-                img.src = imageUrl;
-            }
-        };
-
-        applyBlur();
-    }, [imageUrl]);
 
 
     const generatePdf = async () => {
@@ -94,10 +44,10 @@ const CensoredCV = () => {
             });
 
             // Convert canvas to image data URL
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/png', 1.0);
 
             // Add image to PDF
-            pdf.addImage(imgData, 'jpeg', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            pdf.addImage(imgData, 'png', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
 
             // Save PDF
             pdf.save(`${name}.pdf`);
@@ -108,47 +58,33 @@ const CensoredCV = () => {
 
 
 
-
-
-
-
     return (
         <div className='w-4/5 flex justify-center items-start'>
             <div id="pdf-content" className="pdf-container w-full  bg-slate-50" > {/* Set a fixed width for the container */}
                 <div className="flex">
 
-
                     {/* left side content */}
-                    <div className="w-2/5 mx-auto bg-[#C3202B]">
+                    <div className="w-2/5 pb-10 mx-auto bg-[#C3202B]">
                         {/* image field */}
                         <div>
-                            {blurredImageUrl ? (
-                                <img
-                                    src={blurredImageUrl}
-                                    alt="Profile"
-                                    className="rounded-full object-cover w-44 h-44 mx-auto mt-20 mb-10"
-                                />
+                            {imageUrl ? (
+                                <img src={imageUrl} alt="Profile" className="rounded-full object-cover w-44 h-44 mx-auto mt-20 mb-10" />
                             ) : (
-                                <img
-                                    src={blankImg}
-                                    alt="Profile"
-                                    className="rounded-full object-cover w-52 h-52 mx-auto mt-10 mb-10"
-                                />
+                                <img src={blankImg} alt="Profile" className="rounded-full object-cover w-52 h-52 mx-auto mt-10" />
                             )}
                         </div>
-
-
 
                         {/* profile description */}
                         {profileDescription && (
                             <div className='w-11/12 mx-auto px-4'>
-                                <h1 className='text-white font-semibold uppercase text-center mt-5 ' style={{ letterSpacing: '4px', fontSize: '18px' }}>Profile</h1>
-                                <div className=" mt-5 text-white mx-auto position-relative " style={{ width: 'fit-content', fontSize: '15px' }}>
-                                    <p className="pb-12 text-center ">{profileDescription}</p>
-                                    <div className="border-b-2 w-1/2 mx-auto"></div>
+                                <h1 className='text-white font-semibold uppercase text-center mt-5' style={{ letterSpacing: '4px', fontSize: '18px' }}>Profile</h1>
+                                <div className="mt-5 text-white mx-auto position-relative" style={{ width: 'fit-content', fontSize: '15px' }}>
+                                    <p className="pb-12 text-center">{profileDescription}</p>
+                                    {profileDescription && <hr className="w-1/2  mx-auto " />}
                                 </div>
                             </div>
                         )}
+
 
 
                         {/* skills field */}
@@ -170,13 +106,14 @@ const CensoredCV = () => {
                         )}
 
 
+
                         {/* language skills field */}
                         {languagesData && languagesData.length > 0 && (
                             <div className=' w-11/12 px-6 mx-auto pb-5'>
                                 <h1 className='text-white font-semibold  uppercase text-center mt-10 mb-10' style={{ letterSpacing: '4px', fontSize: '18px' }}>Language Skills</h1>
                                 <div className="mb-14">
                                     {languagesData.map((languageSkill, index) => (
-                                        <div key={index} className="mt-3 flex justify-between  items-center px-14">
+                                        <div key={index} className="mt-3 flex justify-between items-center px-14">
                                             <h1 className="text-white font-thin mb-2" style={{ fontSize: '17px' }}>{languageSkill.name}</h1>
                                             <div className='bg-white rounded-full w-1/2 mt-4'>
                                                 <div className='bg-gray-400 h-3 rounded-full ' style={{ width: `${languageSkill.level}%` }}></div>
@@ -187,23 +124,75 @@ const CensoredCV = () => {
                                     ))}
 
                                 </div>
-                                <div className="border-b-2 w-1/2 mx-auto"></div>
+                                <hr className="w-1/2 mx-auto " />
                             </div>
                         )}
+
+
+                        {/* contact Information */}
+                        <div className='flex justify-center items-center w-full px-6 mb-10 mt-10'>
+                            <div className="text-center">
+                                {/* Check if any of the fields has a value before rendering the header and sections */}
+                                {(location || phoneNumber || emailAddress || linkedinProfile) && (
+                                    <>
+
+
+                                        {/* Location */}
+                                        {location && (
+                                            <div className='flex flex-col justify-center items-center mx-auto mb-8'>
+                                                <HiLocationMarker className="text-white text-3xl mb-2" />
+                                                <p className="text-white " style={{ fontSize: '17px' }}>{location}</p>
+                                            </div>
+                                        )}
+
+
+                                        {/* Phone Number */}
+                                        {phoneNumber && (
+                                            <div className='flex flex-col justify-center items-center mt-5 mx-auto mb-8'>
+                                                <HiPhone style={{ color: 'white' }} className="text-3xl mb-2" />
+                                                <p style={{ color: 'white', fontSize: '17px' }}>{phoneNumber}</p>
+                                            </div>
+                                        )}
+
+
+                                        {/* Email Address */}
+                                        {emailAddress && (
+                                            <div className='flex flex-col justify-center items-center mt-5 mx-auto mb-8'>
+                                                <IoIosMail style={{ color: 'white' }} className="text-3xl mb-2" />
+                                                <p className="text-white text-xl" style={{ whiteSpace: 'pre-wrap', fontSize: '17px' }}>{breakString(emailAddress, 28)}</p>
+                                            </div>
+                                        )}
+
+                                        {/* LinkedIn Profile */}
+                                        {linkedinProfile && (
+                                            <div className='flex flex-col justify-center items-center mt-5 mx-auto mb-5'>
+                                                <FaLinkedin style={{ color: 'white' }} className="text-3xl mb-2" />
+                                                <p className="text-white text-xl px-7" style={{ fontSize: '17px' }}>{linkedinProfile}</p>
+                                            </div>
+                                        )}
+
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+
 
 
 
                     </div>
 
 
+
                     {/* right side content */}
-                    <div className="w-3/5 min-h-screen ">
+                    <div className="w-3/5 ">
 
                         {/* name and title */}
                         <div className="bg-[#EFF0F2] mt-24 p-8 flex flex-col -space-y-2">
-                            <p className="mb-4 text-zinc-900" style={{ fontWeight: 'bold', fontSize: '45px' }}>{getInitials(name)}</p>
-                            <p className="text-2xl mb-4 ">{jobtitle}</p>
+                            <p className="mb-4 text-zinc-900" style={{ fontWeight: 'bold', fontSize: '45px' }}>{name}</p>
+                            <p className="text-2xl mb-4">{jobtitle}</p>
                         </div>
+
                         {/* right side profile description */}
                         {profileDescription2 && (
                             <div className='w-full px-4'>
@@ -224,21 +213,22 @@ const CensoredCV = () => {
                         )}
 
 
-
-
                         {/* professional experience */}
                         <div className=''>
                             <h1 className='uppercase ml-10 mt-10' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Professional Experience</h1>
-                            <div className="mx-10 p-8 relative">
+                            <div className="mx-10  p-8 relative">
                                 <div className="absolute left-2 top-16 bottom-10 bg-[#0d9488]  " style={{ width: '2px' }}></div>
                                 {experiences.map((experience, index) => (
                                     <div key={index} className="relative pl-0">
                                         <div className="absolute top-4 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
+                                        {/* Display start and end dates as plain text */}
                                         {experience.experienceStart && (
-                                            <p className=" pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
+                                            <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>
                                                 {experience.experienceStart} - {experience.present ? 'Present' : experience.experienceEnd}
                                             </p>
                                         )}
+
+                                        {/* Display other details */}
                                         {experience.location && (
                                             <p className="font-bold -ml-2 leading-2 mb-1" style={{ fontSize: '15px' }}>
                                                 {experience.companyName && `${experience.companyName}${experience.location ? ', ' : ''}`}
@@ -246,8 +236,9 @@ const CensoredCV = () => {
                                             </p>
                                         )}
                                         {experience.experienceJobTitle && (
-                                            <p className='-ml-2 ' style={{ fontSize: '15px' }}>{experience.experienceJobTitle}</p>
+                                            <p className='-ml-2' style={{ fontSize: '15px' }}>{experience.experienceJobTitle}</p>
                                         )}
+                                        {/* If there's no professional summary, add margin */}
                                         {!experience.professionalSummary && (
                                             <div style={{ marginBottom: '30px' }}></div>
                                         )}
@@ -259,7 +250,8 @@ const CensoredCV = () => {
                             </div>
                         </div>
 
-                        {/* achivement  */}
+
+                        {/* Achievements */}
                         {achievementsAndAwards && achievementsAndAwards.length > 0 && achievementsAndAwards.some(achievement => achievement && typeof achievement === 'string' && achievement.trim() !== '') && (
                             <div>
                                 <h1 className='text-lg font-bold uppercase ml-10 mt-5 -mb-3' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Achievements and Awards</h1>
@@ -283,6 +275,7 @@ const CensoredCV = () => {
 
 
                         {/* education field */}
+
                         {education.some(item => {
                             for (const key in item) {
                                 if (item[key] !== '') {
@@ -353,21 +346,24 @@ const CensoredCV = () => {
                                 </div>
                             )}
 
+
+
+
                         {/* qualification field */}
                         {qualifications.some(qualification => qualification && Object.values(qualification).some(value => value !== '')) && (
                             <div>
                                 <h1 className='uppercase mt-10 ml-12' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>{experienceTitle}</h1>
                                 <div className="mx-10 p-8 relative" style={{ width: '100%' }}>
-                                    <div className="absolute left-2 top-11 bottom-10 bg-[#0d9488] w-0.5"></div>
+                                    <div className="absolute left-2 top-12 bottom-10 bg-[#0d9488] w-0.5"></div>
                                     {qualifications.map((qualification, index) => (
                                         Object.values(qualification).some(value => value !== '') && (
                                             <div key={index} className='relative mb-10 pl-1'>
-                                                <div className="absolute top-3 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
+                                                <div className="absolute top-4 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '-33.7px' }}></div>
                                                 {qualification.year && (
                                                     <p className="pt-1 mb-2 uppercase -ml-2" style={{ fontSize: '17px', fontWeight: 'bold' }}>{qualification.year}</p>
                                                 )}
                                                 {qualification.technicalSkills && (
-                                                    <p className="text-lg font-bold -ml-2" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '16px' }}>{qualification.technicalSkills}</p>
+                                                    <p className="text-lg  font-bold -ml-2" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '16px' }}>{qualification.technicalSkills}</p>
                                                 )}
                                                 {qualification.additionalQualifications && (
                                                     <p className="-ml-2 text-gray-500 mb-8" style={{ maxWidth: '80%', wordWrap: 'break-word', fontSize: '15px' }}>{qualification.additionalQualifications}</p>
@@ -406,7 +402,6 @@ const CensoredCV = () => {
                         )}
 
 
-
                     </div>
                 </div>
             </div>
@@ -415,10 +410,13 @@ const CensoredCV = () => {
                 <div className="mt-4 flex justify-center">
                     <button className="bg-[#C3202B]  text-white font-bold py-2 px-4 rounded" onClick={generatePdf}><FaDownload /></button>
                 </div>
-
+                <div className="mt-4 flex justify-center">
+                    <Link to={`/updatePdf/${PdfInfo._id}`}>
+                        <button className="bg-[#C3202B]  text-white font-bold py-2 px-4 rounded" ><FaEdit /></button></Link>
+                </div>
             </div>
         </div >
     );
 };
 
-export default CensoredCV;
+export default ArchiveCVdetails;

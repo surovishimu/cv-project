@@ -17,7 +17,7 @@ import useAuth from "../hooks/useAuth";
 const CvForm = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    console.log(user)
+
 
     // qualification title change
     const [experienceTitle, setExperienceTitle] = useState('Qualifications');
@@ -275,7 +275,7 @@ const CvForm = () => {
 
                     // Send form data to the server
                     try {
-                        const response = await fetch('http://localhost:5000/userInfo', {
+                        const response = await fetch('https://cv-server-iota.vercel.app/userInfo', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'

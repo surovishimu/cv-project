@@ -344,7 +344,7 @@ const UpdatePdf = () => {
 
 
         };
-        fetch(`http://localhost:5000/userInfo/${_id}`, {
+        fetch(`https://cv-server-iota.vercel.app/userInfo/${_id}`, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",

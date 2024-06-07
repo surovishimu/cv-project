@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import './Style.css'
@@ -14,6 +14,7 @@ const Sidebar = () => {
         setNewPassword,
         prevPassword,
         newPassword,
+        errorMessage
     } = useAuth();
 
     const [showDropdown, setShowDropdown] = useState(false);
@@ -47,6 +48,15 @@ const Sidebar = () => {
                     className="flex items-center text-white px-7 py-3 mt-2 text-sm font-semibold"
                 >
                     All CV
+                </NavLink>
+            )}
+            {user && user.email === 'fabio.admin@email.com' && (
+                <NavLink
+                    to="archive"
+                    activeClassName="active"
+                    className="flex items-center text-white px-7 py-3 mt-2 text-sm font-semibold"
+                >
+                    Archive
                 </NavLink>
             )}
 
@@ -121,6 +131,11 @@ const Sidebar = () => {
                         >
                             Cancel
                         </button>
+                        {errorMessage && (
+                            <div className="text-red-500 px-7 py-1 mt-2 text-sm font-semibold">
+                                {errorMessage}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

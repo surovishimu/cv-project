@@ -13,13 +13,14 @@ import html2canvas from 'html2canvas';
 const PdfDetails = () => {
 
     const PdfInfo = useLoaderData();
-
+    console.log(PdfInfo);
     const { name, jobtitle, experiences, education, qualifications, imageUrl, profileDescription, location, phoneNumber, emailAddress, linkedinProfile, skillsData, languagesData, achievementsAndAwards, experienceTitle, profileDescription2, customFieldTitle, customData } = PdfInfo;
 
 
     const breakString = (str, maxLength) => {
         return str.length > maxLength ? str.match(new RegExp('.{1,' + maxLength + '}', 'g')).join('\n') : str;
     };
+
 
 
     const generatePdf = async () => {
@@ -46,7 +47,7 @@ const PdfDetails = () => {
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
             // Add image to PDF
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            pdf.addImage(imgData, 'jpeg', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
 
             // Save PDF
             pdf.save(`${name}.pdf`);
@@ -87,18 +88,22 @@ const PdfDetails = () => {
 
 
                         {/* skills field */}
-                        <div className='w-11/12 px-6 mx-auto pb-5'>
-                            <h1 className='font-semibold uppercase text-center mt-14 -mb-2 text-white' style={{ letterSpacing: '4px', fontSize: '18px' }}>Relevant Skills</h1>
-                            <ul className="mt-10 list-disc text-lg mb-14" style={{ width: 'fit-content', fontSize: '16px' }}>
-                                {skillsData.map((skill, index) => (
-                                    <li key={index} className="text-white flex items-center" style={{ wordWrap: 'break-word' }}>
-                                        <span className="mr-2">&#8226;</span>
-                                        <span>{skill.name}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                            {skillsData.length > 0 && <hr className="w-1/2 mx-auto " />}
-                        </div>
+                        {skillsData && skillsData.some(skill => skill.name.trim() !== '') && (
+                            <div className='w-11/12 px-6 mx-auto pb-5'>
+                                <h1 className='font-semibold uppercase text-center mt-14 -mb-2 text-white' style={{ letterSpacing: '4px', fontSize: '18px' }}>Relevant Skills</h1>
+                                <ul className="mt-10 list-disc text-lg mb-14" style={{ width: 'fit-content', fontSize: '16px' }}>
+                                    {skillsData.map((skill, index) => (
+                                        skill.name.trim() !== '' && (
+                                            <li key={index} className="text-white flex items-center" style={{ wordWrap: 'break-word' }}>
+                                                <span className="mr-2">&#8226;</span>
+                                                <span>{skill.name}</span>
+                                            </li>
+                                        )
+                                    ))}
+                                </ul>
+                                <hr className="w-1/2 mx-auto " />
+                            </div>
+                        )}
 
 
 
@@ -162,9 +167,10 @@ const PdfDetails = () => {
                                         {linkedinProfile && (
                                             <div className='flex flex-col justify-center items-center mt-5 mx-auto mb-5'>
                                                 <FaLinkedin style={{ color: 'white' }} className="text-3xl mb-2" />
-                                                <p className="text-white text-xl" style={{ fontSize: '17px' }}>{breakString(linkedinProfile, 15)}</p>
+                                                <p className="text-white text-xl px-7" style={{ fontSize: '17px' }}>{linkedinProfile}</p>
                                             </div>
                                         )}
+
                                     </>
                                 )}
                             </div>
@@ -190,12 +196,18 @@ const PdfDetails = () => {
                         {/* right side profile description */}
                         {profileDescription2 && (
                             <div className='w-full px-4'>
-                                <h1 className=' uppercase  mt-10 ml-5 ' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Profile summary</h1>
-                                <div className="relative ">
-                                    <div className="absolute left-7 top-3 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}> </div>
-                                    <div>  <p className="mt-7 text-[#0c0a09]  pb-10 w-10/12 ml-12 " style={{ fontSize: '15px' }}>{profileDescription2}</p>
+                                <h1 className='uppercase mt-10 ml-5' style={{ letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}>Profile summary</h1>
+                                <div className="relative">
+                                    <div className="absolute left-7 top-3 bottom-10 bg-[#0d9488]" style={{ width: '2px' }}></div>
+                                    <div>
+                                        <p
+                                            className="mt-7 text-[#0c0a09] pb-4 w-10/12 ml-12"
+                                            style={{ fontSize: '15px' }}
+                                            dangerouslySetInnerHTML={{ __html: profileDescription2.replace(/\n/g, '<br />') }}
+                                        >
+                                        </p>
                                     </div>
-                                    <div className="absolute top-2 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full " style={{ left: '19px' }}></div>
+                                    <div className="absolute top-2 w-5 h-5 bg-white border-2 border-[#0d9488] rounded-full" style={{ left: '19px' }}></div>
                                 </div>
                             </div>
                         )}
@@ -388,11 +400,6 @@ const PdfDetails = () => {
                                 </div>
                             </div>
                         )}
-
-
-
-
-
 
 
                     </div>
