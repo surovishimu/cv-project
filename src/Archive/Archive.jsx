@@ -13,7 +13,6 @@ const Archive = () => {
         fetch('https://cv-server-iota.vercel.app/archive')
             .then(response => response.json())
             .then(data => {
-
                 setArchivedPdfList(data);
                 setLoading(false);
             })
@@ -61,33 +60,33 @@ const Archive = () => {
                     <table className="w-full rounded-lg border-collapse border bg-white bg-gradient-to-br from-gray-400 to-gray-600">
                         <thead className="bg-gray-200">
                             <tr>
-                                <th className="px-4 py-2 border border-white">#</th>
-                                <th className="px-4 py-2 border border-white">Name</th>
-                                <th className="px-4 py-2 border border-white">CV Creator</th>
-                                <th className="px-4 py-2 border border-white">Actions</th>
+                                <th className="px-3 py-2 border border-white">#</th> {/* Reduced padding */}
+                                <th className="px-3 py-2 border border-white">Name</th> {/* Reduced padding */}
+                                <th className="px-3 py-2 border border-white">CV Creator</th> {/* Reduced padding */}
+                                <th className="px-3 py-2 border border-white">Actions</th> {/* Reduced padding */}
                             </tr>
                         </thead>
                         <tbody>
                             {filteredArchivedPdfList.map((cv, index) => (
-                                <tr key={index}>
-                                    <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{index + 1}</td>
-                                    <td className="px-4 py-2 border border-white text-xl font-semibold text-center">{cv.name}</td>
-                                    <td className="px-4 py-2 border border-white text-xl font-semibold text-center">
+                                <tr key={index} className="h-8"> {/* Reduced row height */}
+                                    <td className="px-3 py-1 border border-white text-sm font-bold text-center">{index + 1}</td> {/* Reduced padding */}
+                                    <td className="px-3 py-1 border border-white text-sm font-bold text-center">{cv.name}</td> {/* Reduced padding */}
+                                    <td className="px-3 py-1 border border-white text-sm font-bold text-center">
                                         {cv.user ? cv.user.username.split(' ')[0] : ''}
-                                    </td>
-                                    <td className="px-4 py-2 flex justify-center gap-5 items-center border border-white">
-                                        {/* View Button */}
+                                    </td> {/* Reduced padding */}
+                                    <td className="px-3 py-1 flex justify-center gap-3 items-center border border-white">
+                                        {/* View Buttons */}
                                         <Link to={`/archiveCensoredCv/${cv._id}`}>
-                                            <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center">
+                                            <button className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center  h-7  text-sm">
                                                 Censored<FaEye className="ml-1" />
                                             </button>
                                         </Link>
                                         <Link to={`/archiveCVDetails/${cv._id}`}>
-                                            <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center">
+                                            <button className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center h-7  text-sm">
                                                 Uncensored<FaEye className="ml-1" />
                                             </button>
                                         </Link>
-                                    </td>
+                                    </td> {/* Reduced padding */}
                                 </tr>
                             ))}
                         </tbody>

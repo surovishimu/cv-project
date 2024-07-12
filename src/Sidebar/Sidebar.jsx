@@ -32,7 +32,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="w-1/5 min-h-full bg-gray-400 menu">
+        <div className="w-1/5 min-h-full bg-gray-400 menu ">
             <NavLink
                 to="/"
                 activeClassName="active"
